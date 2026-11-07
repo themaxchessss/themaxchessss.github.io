@@ -261,7 +261,8 @@ body{background:linear-gradient(135deg,#101426 0%,#17152f 54%,#20172d 100%);back
 .clock.active-clock{background:linear-gradient(135deg,#ffcf5c,#ff9f1c);color:#2b1500}
 .sq.last{box-shadow:inset 0 0 0 100px rgba(255,183,3,.38)}
 .sq.selected{box-shadow:inset 0 0 0 100px rgba(100,70,220,.45)}
-.gifgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:14px}.gifcard{display:flex;flex-direction:column;gap:8px;align-items:flex-start}.gifcard img{display:block;width:100%;height:auto;background:#000;border-radius:8px}.gifcard .widebtn{text-decoration:none;display:inline-block}
+.hiregrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}.hireform{display:flex;flex-direction:column;gap:6px;margin-top:12px;max-width:640px}.hireform input,.hireform select,.hireform textarea{width:100%;box-sizing:border-box;padding:10px;border-radius:8px;border:1px solid #3c3a37;background:#1f1e1c;color:inherit;font:inherit}.hireform label{font-weight:700;margin-top:6px}.hireform .greenbtn{margin-top:10px;align-self:flex-start}
+.gifgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:14px}.gifcard{display:flex;flex-direction:column;gap:8px;align-items:flex-start}.gifcard img{display:block;width:100%;height:auto;background:#000;border-radius:8px}.gifcard .widebtn{text-decoration:none;display:inline-block}.gifwide{grid-column:1/-1}.gifwide img{max-width:728px}.gifcard img[width="320"]{max-width:160px}
 .sq.incheck{background-image:radial-gradient(circle,rgba(255,0,0,.95) 0%,rgba(231,0,0,.75) 28%,rgba(169,0,0,0) 72%)}
 .promo-choices{display:flex;gap:10px;justify-content:center;margin:14px 0}.promo-btn{font-size:46px;line-height:1;width:72px;height:72px;border-radius:10px;border:1px solid #555;background:#2b2a27;color:#fff;cursor:pointer}.promo-btn:hover,.promo-btn:focus{background:#3c3a37;outline:2px solid #8bc34a}
 .sq.legal:after{background:rgba(70,40,160,.55)}
@@ -463,11 +464,12 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="about">About MaxChess</button>
    <button class="navitem" data-page="business-cards">Printable Business Cards</button>
    <button class="navitem" data-page="card-cutter">Help cut MaxChess cards</button>
+   <button class="navitem" data-page="hiring">Join the team</button>
   </div></div>
   <div class="navgroup"><button type="button" class="navtop">Tools</button><div class="dropdown">
    <button class="navitem" data-page="new-features">✨ New features</button>
    <button class="navitem" data-page="analysis">Analysis board</button>
-   <button class="navitem" data-page="gifs">GIFs</button>
+   <button class="navitem" data-page="gifs">GIFs &amp; flyers</button>
    <button class="navitem" data-page="community-comments">Comments &amp; questions</button>
   </div></div>
   <button type="button" class="navtop navitem" data-page="business-cards">Cards</button>
@@ -673,11 +675,26 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  <p class="desc">Safety: ask a parent or guardian before applying, printing, using scissors or a paper cutter, or sharing any information. A parent or guardian should supervise cutting. This page is an expression-of-interest form, not a job offer; tasks, timing, and any payment must be agreed with a parent or guardian before work begins.</p>
 </div></section>
 <section class="pageview" id="page-about"><div class="simplepage"><h2>About MaxChess</h2><div class="puzzlebox"><p><b>Chess should be fun and accessible.</b></p><p>MaxChess is a free chess-learning project with a playable board, beginner lessons, board themes, and move history. No subscription is needed.</p><p class="muted">This is an independent project inspired by the clean, community-focused style of modern chess sites; it is not affiliated with Lichess.</p></div></div></section>
-<section class="pageview" id="page-gifs"><div class="simplepage"><h2>MaxChess GIFs</h2><p class="muted">Animated MaxChess ads you can save and share. Right-click (or press and hold) a GIF to save it, or use the button.</p>
+<section class="pageview" id="page-gifs"><div class="simplepage"><h2>MaxChess GIFs, flyers &amp; ads</h2><p class="muted">Free MaxChess promo you can save, print and share. Right-click (or press and hold) a picture to save it, or use the download buttons.</p>
+<h3 style="margin:18px 0 0">Animated GIFs</h3>
 <div class="gifgrid">
  <div class="puzzlebox gifcard"><img src="gifs/maxchess-intro-ad.gif" alt="MaxChess animated ad: the king drops onto the board, then THINK FAST. PLAY SMART. WIN BIG." width="640" height="335" loading="lazy"><b>Intro</b><p class="muted">The king drops in, the tagline pops, the PLAY button bounces.</p><a class="widebtn" href="gifs/maxchess-intro-ad.gif" download="maxchess-intro-ad.gif">Download GIF</a></div>
  <div class="puzzlebox gifcard"><img src="gifs/maxchess-glow-ad.gif" alt="MaxChess animated ad: glowing golden king with spinning light rays" width="600" height="314" loading="lazy"><b>Glow</b><p class="muted">A glowing king with spinning rays and a shining MAXCHESS logo.</p><a class="widebtn" href="gifs/maxchess-glow-ad.gif" download="maxchess-glow-ad.gif">Download GIF</a></div>
-</div></div></section>
+</div>
+<h3 style="margin:26px 0 0">Flyers &amp; posters</h3>
+<div class="gifgrid">
+ <div class="puzzlebox gifcard"><img src="promo/flyer-cute.jpg" alt="Cute MaxChess flyer with smiling chess pieces and a QR code" width="1240" height="1754" loading="lazy"><b>Cute flyer</b><p class="muted">A friendly pastel flyer with a QR code that opens MaxChess. Prints on A4. Download the PDF to print it.</p><a class="widebtn" href="promo/MaxChess-flyer-cute-A4.pdf" download>Download PDF</a></div>
+ <div class="puzzlebox gifcard"><img src="promo/poster-square.jpg" alt="MaxChess square poster with a glowing golden king on a chessboard" width="1400" height="1400" loading="lazy"><b>Square poster</b><p class="muted">The glowing golden king poster, great for social media.</p><a class="widebtn" href="promo/poster-square.jpg" download>Download picture</a></div>
+ <div class="puzzlebox gifcard"><img src="promo/ipad-cover.jpg" alt="MaxChess iPad cover artwork" width="1500" height="2083" loading="lazy"><b>iPad cover</b><p class="muted">Portrait artwork for an iPad case or skin.</p><a class="widebtn" href="promo/ipad-cover.jpg" download>Download picture</a></div>
+</div>
+<h3 style="margin:26px 0 0">Ads</h3>
+<div class="gifgrid">
+ <div class="puzzlebox gifcard"><img src="promo/ad-landscape-1200x628.jpg" alt="MaxChess landscape ad" width="1200" height="628" loading="lazy"><b>Landscape ad 1200 × 628</b><p class="muted">For Facebook, link previews and search ads.</p><a class="widebtn" href="promo/ad-landscape-1200x628.jpg" download>Download picture</a></div>
+ <div class="puzzlebox gifcard"><img src="promo/ad-300x250.png" alt="MaxChess 300 by 250 ad" width="600" height="500" loading="lazy"><b>Medium box 300 × 250</b><p class="muted">A standard website banner size.</p><a class="widebtn" href="promo/ad-300x250.png" download>Download picture</a></div>
+ <div class="puzzlebox gifcard"><img src="promo/ad-160x600.png" alt="MaxChess 160 by 600 tall ad" width="320" height="1200" loading="lazy"><b>Tall banner 160 × 600</b><p class="muted">A standard tall website banner.</p><a class="widebtn" href="promo/ad-160x600.png" download>Download picture</a></div>
+ <div class="puzzlebox gifcard gifwide"><img src="promo/ad-728x90.png" alt="MaxChess 728 by 90 banner ad" width="1456" height="180" loading="lazy"><b>Banner 728 × 90</b><p class="muted">A standard wide website banner.</p><a class="widebtn" href="promo/ad-728x90.png" download>Download picture</a></div>
+</div>
+</div></section>
 <section class="pageview" id="page-new-features"><div class="simplepage"><h2>✨ New MaxChess features</h2><p class="muted">New ways to play, customize, practise and connect. Free to use.</p>
 <div class="puzzlebox"><h3>♟ Chess960 random start</h3><p>Every game starts with a new back-rank arrangement. This practice mode uses legal chess moves; Chess960 castling is not supported by the current chess engine yet.</p><button class="greenbtn" id="start960">Start a random Chess960 game</button><p class="desc" id="chess960Status" aria-live="polite">Ready for a surprise starting position?</p></div>
 <div class="puzzlebox" style="margin-top:14px"><h3>🎨 Free piece shop</h3><p>Choose a free piece color set. Your choice is saved on this device.</p><div class="selectrow"><label for="pieceShopChoice">Piece set</label><select id="pieceShopChoice"><option value="friendly">Classic MaxChess</option><option value="ice">Ice crystals</option><option value="ruby">Ruby red</option><option value="gold">Golden royal</option><option value="classic">Classic symbols</option><option value="bold">Bold solid</option></select></div><button class="greenbtn" id="applyPieceShop">Use this piece set</button><p class="desc" id="pieceShopStatus" aria-live="polite">All piece sets are free.</p></div>
@@ -685,6 +702,21 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 <div class="puzzlebox" style="margin-top:14px"><h3>🏆 Player leaderboard</h3><p>See real MaxChess player ratings and game records.</p><button class="greenbtn" id="openNewLeaderboard">Open leaderboard</button></div>
 <div class="puzzlebox" style="margin-top:14px"><h3>💬 Chat with players</h3><p>Use game chat while playing an online opponent, or post a chess question in the community. Be kind and never share private information.</p><div class="hq-actions"><button type="button" id="openGameChat">Open online play</button><button type="button" id="openCommunityChat">Community chat</button><button type="button" id="openFriendsPrivateChat">Friends private chat</button></div><p class="desc">Private messages are available with accepted friends only. Blocking and reporting tools are included.</p></div>
 <div class="puzzlebox" style="margin-top:14px"><h3>🎬 Game replay</h3><p>Replay a saved game by loading its PGN on the Analysis board. You can copy a game's notation from the Play screen and paste it into the PGN importer.</p><div class="hq-actions"><button type="button" id="openReplayBoard">Open analysis &amp; replay</button><button type="button" id="saveReplayPGN">Save current game PGN</button></div><p class="desc" id="replayFeatureStatus" aria-live="polite">Saved PGN stays on this device.</p><textarea id="savedReplayPGN" rows="3" readonly aria-label="Saved game PGN" style="width:100%;margin-top:8px;padding:9px;background:var(--panel3);color:var(--text);border:1px solid var(--line);border-radius:6px;font:12px monospace" placeholder="Your saved PGN will appear here."></textarea><button type="button" class="toolbtn" id="loadSavedReplay">Load saved PGN into Analysis</button></div>
+</div></section>
+<section class="pageview" id="page-hiring"><div class="simplepage"><h2>Join the MaxChess team</h2>
+<p class="muted">MaxChess is a free chess site that is still growing. If you want to help make it better, tell us what you would like to do.</p>
+<h3 style="margin:18px 0 0">Ways to help</h3>
+<div class="hiregrid"><div class="puzzlebox"><b>Puzzle maker</b><p class="muted">Find and check tactics puzzles so players always have fresh ones to solve.</p></div><div class="puzzlebox"><b>Lesson writer or coach</b><p class="muted">Explain chess ideas in simple words for beginners and improving players.</p></div><div class="puzzlebox"><b>Community helper</b><p class="muted">Welcome new players, answer questions and keep the comments friendly.</p></div><div class="puzzlebox"><b>Designer</b><p class="muted">Make boards, pieces, flyers and pictures that look great.</p></div><div class="puzzlebox"><b>Tester</b><p class="muted">Try new features, find bugs and tell us what feels confusing.</p></div><div class="puzzlebox"><b>Ambassador</b><p class="muted">Share MaxChess with your school, club or friends. We have flyers and ads ready.</p></div></div>
+<h3 style="margin:24px 0 0">Apply</h3>
+<form class="puzzlebox hireform" id="hireForm" autocomplete="off">
+<label for="hireName">Your name</label><input id="hireName" required maxlength="80">
+<label for="hireRole">What would you like to do?</label><select id="hireRole"><option>Puzzle maker</option><option>Lesson writer or coach</option><option>Community helper</option><option>Designer</option><option>Tester</option><option>Ambassador</option><option>Something else</option></select>
+<label for="hireLink">Chess profile or link (optional)</label><input id="hireLink" maxlength="160" placeholder="For example your Lichess or Chess.com name">
+<label for="hireWhy">Tell us about you</label><textarea id="hireWhy" rows="5" required maxlength="1200" placeholder="Why do you want to help, and what have you done before?"></textarea>
+<p class="muted">Under 18? Ask a parent or teacher before you apply. Pressing the button opens an email to the MaxChess team with your answers. Nothing is sent until you press Send in your email app.</p>
+<button class="greenbtn" type="submit">Email my application</button>
+</form>
+<script>document.getElementById('hireForm').addEventListener('submit',function(e){e.preventDefault();var v=function(i){return document.getElementById(i).value.trim()};var body='Name: '+v('hireName')+'\nRole: '+v('hireRole')+'\nChess profile: '+(v('hireLink')||'-')+'\n\n'+v('hireWhy');location.href='mailto:mbeaton36@outlook.com?subject='+encodeURIComponent('MaxChess team application: '+v('hireRole'))+'&body='+encodeURIComponent(body)});</script>
 </div></section>
 </main>
 <aside class="rightbar"><h2>Your chess dashboard</h2><div class="mini-card"><b>♟ Your rating</b><div class="rating-number" id="ratingNumber">1200</div><div class="rating-note" id="ratingRecord">0 wins · 0 losses · 0 draws</div><p>Your profile rating is saved online. Ranked rating updates are coming next.</p></div><div class="mini-card"><div style="font-size:25px">♟</div><b>Welcome to MaxChess</b><p>Play a game, learn a skill, and keep improving one move at a time.</p><button class="mini-link" data-rightgo="play">Start playing →</button></div><div class="mini-card"><b>Quick learning plan</b><p>New to chess? Follow these steps in order.</p><div class="right-stat"><span>Learn the pieces</span><b>01</b></div><div class="right-stat"><span>Protect your king</span><b>02</b></div><div class="right-stat"><span>Control the center</span><b>03</b></div><button class="mini-link" data-rightgo="learn">Open lessons →</button></div><div class="mini-card"><b>Game tools</b><p>Change the board and pieces to suit you.</p><button class="mini-link" id="rightTheme">Customize appearance →</button></div><div class="mini-card"><b>Made for everyone</b><p>Free to play. Friendly to beginners. Built for curious chess players.</p></div></aside>

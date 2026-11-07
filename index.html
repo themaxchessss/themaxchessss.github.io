@@ -400,6 +400,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 .max-business-card.back-card .mbc-back-title{font-size:14px;font-weight:900;letter-spacing:2px;color:#e8c765}
 .max-business-card.back-card .mbc-back-qr{width:82px;height:82px;object-fit:contain;background:#fff;padding:3px;border-radius:4px}
 .max-business-card.back-card .mbc-back-url{font-size:9px;font-weight:700;overflow-wrap:anywhere}
+.max-business-card.back-card .mbc-back-tagline{font-size:8px;font-weight:800;letter-spacing:1px}
 .max-business-card.card-blue .mbc-back-title{color:#9fe5ff}
 .max-business-card.card-mono .mbc-back-title{color:#222}
 .max-business-card.card-blue{background:linear-gradient(135deg,#082c55,#1474ad)}
@@ -413,7 +414,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  #page-business-cards .max-business-card .mbc-qr{width:42px;height:42px;flex-basis:42px}
 }
 @media print{
- @page{size:letter portrait;margin:.35in}
+ @page{size:A4 portrait;margin:.35in}
  body{background:#fff!important;color:#111!important}
  body *{visibility:hidden!important}
  #page-business-cards,#page-business-cards *{visibility:visible!important}
@@ -421,7 +422,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  #page-business-cards .card-editor,#page-business-cards .card-preview-wrap h3,#page-business-cards .simplepage>h2,#page-business-cards .simplepage>p{display:none!important}
  #page-business-cards .simplepage{max-width:none!important;margin:0!important;padding:0!important}
  #page-business-cards .card-preview-wrap{margin:0!important}
- #page-business-cards .print-card-sheet{grid-template-columns:repeat(2,3.5in);grid-template-rows:repeat(4,2in);gap:.12in;justify-content:center;break-inside:avoid;page-break-inside:avoid}
+ #page-business-cards .print-card-sheet{grid-template-columns:repeat(2,3.5in);grid-template-rows:repeat(5,2in);gap:.12in;justify-content:center;break-inside:avoid;page-break-inside:avoid}
  #page-business-cards #printCardSheet{break-after:page;page-break-after:always}
  #page-business-cards .max-business-card{width:3.5in;height:2in;aspect-ratio:auto;border:1px dashed #777;border-radius:0;box-shadow:none;padding:.16in;print-color-adjust:exact;-webkit-print-color-adjust:exact}
  #page-business-cards .max-business-card.back-card .mbc-back-qr{width:1.05in;height:1.05in;flex-basis:auto}
@@ -601,34 +602,34 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 <section class="pageview" id="page-business-cards">
  <div class="simplepage printable-page">
   <h2>♞ Print Your MaxChess Business Cards</h2>
-  <p class="muted">Add your details, preview your cards, then print the sheet and cut along the borders. Eight matching cards fit on one sheet.</p>
+  <p class="muted">Edit your card details, then print 10 matching fronts and 10 QR-code backs on A4 paper. The two pages are aligned for double-sided printing.</p>
   <div class="puzzlebox card-editor">
    <h3>Your card details</h3>
    <label for="printCardName">Name or chess nickname</label>
-   <input id="printCardName" maxlength="32" value="MaxChess Player" placeholder="Your name">
+   <input id="printCardName" maxlength="32" value="MAXCHESS" placeholder="Your name">
    <label for="printCardTitle">Short title (optional)</label>
-   <input id="printCardTitle" maxlength="38" value="Chess Player" placeholder="e.g. Club Champion">
+   <input id="printCardTitle" maxlength="38" value="PLAY. LEARN. COMPETE." placeholder="e.g. Club Champion">
    <label for="printCardLichess">Lichess username (optional)</label>
    <input id="printCardLichess" maxlength="30" placeholder="Your Lichess username">
    <label for="printCardExtra">Extra line (optional)</label>
-   <input id="printCardExtra" maxlength="45" placeholder="e.g. Rapid • 1200">
+   <input id="printCardExtra" maxlength="45" value="Free Chess • Puzzles • Tournaments" placeholder="e.g. Rapid • 1200">
    <label for="printCardDesign">Card design</label>
    <select id="printCardDesign" style="display:block;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:5px;background:var(--panel3);color:var(--strong)">
-    <option value="card-gold">Gold &amp; midnight</option><option value="card-mono">Black &amp; white</option><option value="card-blue">Electric blue</option>
+    <option value="card-mono" selected>Black &amp; white</option><option value="card-gold">Gold &amp; midnight</option><option value="card-blue">Electric blue</option>
    </select>
    <p class="desc">Add a Lichess username to show a QR code linking to that public profile. Only add details you are happy to share. Ask a parent or guardian before sharing personal information.</p>
    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
-    <button class="greenbtn" type="button" id="printCardsButton">🖨️ Print 8 cards</button>
+    <button class="greenbtn" type="button" id="printCardsButton">🖨️ Print 10 cards</button>
     <button class="widebtn" type="button" id="saveCardsPdfButton">📄 Save as PDF</button>
     <button class="widebtn" type="button" id="shareCardsButton">↗ Share</button>
    </div>
    <p class="desc" id="printCardsStatus" role="status" aria-live="polite">Print opens your print window. Choose “Actual size” or 100%; choose “Save as PDF” there to create a PDF file.</p>
   </div>
   <div class="card-preview-wrap">
-   <h3>Front — 8 cards</h3>
-   <div class="print-card-sheet" id="printCardSheet" aria-label="Preview of eight printable MaxChess business card fronts"></div>
-   <h3 class="card-back-heading">Back — 8 cards (website QR code)</h3>
-   <div class="print-card-sheet card-back-sheet" id="printCardBackSheet" aria-label="Preview of eight printable MaxChess business card backs"></div>
+   <h3>Front — 10 cards</h3>
+   <div class="print-card-sheet" id="printCardSheet" aria-label="Preview of ten printable MaxChess business card fronts"></div>
+   <h3 class="card-back-heading">Back — 10 cards (website QR code)</h3>
+   <div class="print-card-sheet card-back-sheet" id="printCardBackSheet" aria-label="Preview of ten printable MaxChess business card backs"></div>
   </div>
   <div class="card-gallery">
    <h3>MaxChess card designs</h3>
@@ -1495,7 +1496,7 @@ window.dispatchEvent(new Event("maxchess:ready"));
   const design=document.getElementById('printCardDesign').value;
   const foot=[extra,lichess?'Lichess: '+lichess:'','themaxchessss.github.io'].filter(Boolean).join('  •  ');
   sheet.replaceChildren();
-  for(let i=0;i<8;i++){
+  for(let i=0;i<10;i++){
    const card=document.createElement('article');card.className='max-business-card '+design;
    const brand=document.createElement('div');brand.className='mbc-brand';
    const trophy=document.createElement('span');trophy.className='mbc-trophy';trophy.textContent='🏆';
@@ -1518,16 +1519,17 @@ window.dispatchEvent(new Event("maxchess:ready"));
    const back=document.createElement('article');back.className='max-business-card back-card '+design;
    const heading=document.createElement('div');heading.className='mbc-back-title';heading.textContent='SCAN TO PLAY';
    const qr=document.createElement('img');qr.className='mbc-back-qr';qr.alt='QR code linking to the MaxChess website';
-   qr.loading='eager';qr.decoding='sync';qr.src='https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=4&data='+encodeURIComponent('https://themaxchessss.github.io/');
+   qr.loading='eager';qr.decoding='sync';qr.src='cards/maxchess-qr-plain.png';
+   const tagline=document.createElement('div');tagline.className='mbc-back-tagline';tagline.textContent='PLAY • LEARN • COMPETE';
    const url=document.createElement('div');url.className='mbc-back-url';url.textContent='themaxchessss.github.io';
-   back.append(heading,qr,url);backSheet.append(back);
+   back.append(heading,qr,tagline,url);backSheet.append(back);
   }
  }
  fields.forEach(id=>document.getElementById(id).addEventListener('input',paint));
  document.getElementById('printCardDesign').addEventListener('change',paint);
  function printSheet(asPdf){
   paint();
-  status.textContent=asPdf?'In the print window, choose “Save as PDF” as the destination, then save your eight-card sheet.':'In the print window, choose Actual Size or 100% and print on letter-size paper. Cut along the dashed borders.';
+  status.textContent=asPdf?'In the print window, choose “Save as PDF” as the destination, then save your 10-card A4 file.':'In the print window, choose Actual Size or 100% and print on A4 paper. Print both pages double-sided, flip on the long edge, then cut along the dashed borders.';
   window.print();
  }
  document.getElementById('printCardsButton').addEventListener('click',()=>printSheet(false));

@@ -806,6 +806,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  };
  function note(msg){toast.textContent=msg;toastbar.textContent=msg;toastbar.style.display='block';clearTimeout(note.t);note.t=setTimeout(()=>toastbar.style.display='none',2300)}
  function sqname(r,c){return files[c]+(8-r)}
+ const pieceSkins={friendly:{white:'#ffd23f',black:'#2ec4b6'},ice:{white:'#b9f2ff',black:'#164b78'},ruby:{white:'#ffb3c7',black:'#8c1538'},gold:{white:'#ffe08a',black:'#5b3b0a'}};
  function render(){
   if(!game)return;boardEl.innerHTML='';let rows=[0,1,2,3,4,5,6,7],cols=[0,1,2,3,4,5,6,7];if(flipped){rows.reverse();cols.reverse()}
   rows.forEach((r,ri)=>cols.forEach((c,ci)=>{let sq=sqname(r,c),p=game.get(sq),b=document.createElement('button');b.className='sq '+((r+c)%2===0?'light':'dark');b.setAttribute('role','gridcell');b.setAttribute('aria-label',sq+(p?', '+(p.color==='w'?'white ':'black ')+p.type:' empty'));if(selected===sq)b.classList.add('selected');if(legal.some(m=>m.to===sq)){b.classList.add('legal');if(p)b.classList.add('capture')}if(lastMove&&(lastMove.from===sq||lastMove.to===sq))b.classList.add('last');if(p&&p.type==='k'&&p.color===game.turn()&&game.in_check())b.classList.add('incheck');
@@ -957,7 +958,6 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   navigate('play');note('Chess960 practice started! Castling is unavailable in this version.');
  }
  $('start960').onclick=startRandomChess960;
- const pieceSkins={friendly:{white:'#ffd23f',black:'#2ec4b6'},ice:{white:'#b9f2ff',black:'#164b78'},ruby:{white:'#ffb3c7',black:'#8c1538'},gold:{white:'#ffe08a',black:'#5b3b0a'}};
  $('applyPieceShop').onclick=()=>{
   const v=$('pieceShopChoice').value;style=v;
   try{localStorage.setItem('maxchess_pieces',v)}catch(e){}

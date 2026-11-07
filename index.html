@@ -998,6 +998,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  paintDailyFeature();
  const savedSkin=(()=>{try{return localStorage.getItem('maxchess_pieces')||'friendly'}catch(e){return 'friendly'}})();
  if($('pieceShopChoice'))$('pieceShopChoice').value=['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)?savedSkin:'friendly';
+ if(['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)){style=savedSkin;render();}
  
  const accountModal=$('accountModal'),accountForm=$('accountForm'),accountUsername=$('accountUsername'),accountPassword=$('accountPassword'),accountEmail=$('accountEmail');
  const authStatus=$('authStatus'),supabaseUrl=$('supabaseUrl'),supabaseKey=$('supabaseKey');

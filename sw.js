@@ -1,5 +1,5 @@
-const CACHE_NAME = "maxchess-shell-v19";
-const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
+const CACHE_NAME = "maxchess-shell-v20";
+const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./404.html"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -17,7 +17,7 @@ self.addEventListener("fetch", event => {
     }).catch(() => caches.match("./index.html")));
     return;
   }
-  const staticExternal = url.hostname === "cdn.jsdelivr.net" || url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";
+  const staticExternal = url.hostname === "cdn.jsdelivr.net" || url.hostname === "cdnjs.cloudflare.com" || url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";
   const staticLocal = url.origin === self.location.origin && /\.(?:svg|png|jpg|jpeg|webp|css|js|woff2?)$/i.test(url.pathname);
   if (!staticExternal && !staticLocal) return;
   event.respondWith(caches.match(request).then(cached => {

@@ -465,6 +465,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="card-cutter">Help cut MaxChess cards</button>
   </div></div>
   <div class="navgroup"><button type="button" class="navtop">Tools</button><div class="dropdown">
+   <button class="navitem" data-page="new-features">✨ New features</button>
    <button class="navitem" data-page="analysis">Analysis board</button>
    <button class="navitem" data-page="gifs">GIFs</button>
    <button class="navitem" data-page="community-comments">Comments &amp; questions</button>
@@ -675,6 +676,14 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  <div class="puzzlebox gifcard"><img src="gifs/maxchess-intro-ad.gif" alt="MaxChess animated ad: the king drops onto the board, then THINK FAST. PLAY SMART. WIN BIG." width="640" height="335" loading="lazy"><b>Intro</b><p class="muted">The king drops in, the tagline pops, the PLAY button bounces.</p><a class="widebtn" href="gifs/maxchess-intro-ad.gif" download="maxchess-intro-ad.gif">Download GIF</a></div>
  <div class="puzzlebox gifcard"><img src="gifs/maxchess-glow-ad.gif" alt="MaxChess animated ad: glowing golden king with spinning light rays" width="600" height="314" loading="lazy"><b>Glow</b><p class="muted">A glowing king with spinning rays and a shining MAXCHESS logo.</p><a class="widebtn" href="gifs/maxchess-glow-ad.gif" download="maxchess-glow-ad.gif">Download GIF</a></div>
 </div></div></section>
+<section class="pageview" id="page-new-features"><div class="simplepage"><h2>✨ New MaxChess features</h2><p class="muted">New ways to play, customize, practise and connect. Free to use.</p>
+<div class="puzzlebox"><h3>♟ Chess960 random start</h3><p>Every game starts with a new back-rank arrangement. This practice mode uses legal chess moves; Chess960 castling is not supported by the current chess engine yet.</p><button class="greenbtn" id="start960">Start a random Chess960 game</button><p class="desc" id="chess960Status" aria-live="polite">Ready for a surprise starting position?</p></div>
+<div class="puzzlebox" style="margin-top:14px"><h3>🎨 Free piece shop</h3><p>Choose a free piece color set. Your choice is saved on this device.</p><div class="selectrow"><label for="pieceShopChoice">Piece set</label><select id="pieceShopChoice"><option value="friendly">Classic MaxChess</option><option value="ice">Ice crystals</option><option value="ruby">Ruby red</option><option value="gold">Golden royal</option><option value="classic">Classic symbols</option><option value="bold">Bold solid</option></select></div><button class="greenbtn" id="applyPieceShop">Use this piece set</button><p class="desc" id="pieceShopStatus" aria-live="polite">All piece sets are free.</p></div>
+<div class="puzzlebox" style="margin-top:14px"><h3>🌟 Daily chess challenge</h3><p>Complete today's missions and earn 10 practice points for each one. Progress is saved on this device.</p><div id="dailyFeatureMissions" class="lesson-list"></div><div class="hq-stats"><div class="hq-stat"><strong id="dailyFeatureXP">0</strong><span>Points earned today</span></div><div class="hq-stat"><strong id="dailyFeatureStreak">0</strong><span>Challenge streak</span></div></div><p class="desc" id="dailyFeatureStatus" aria-live="polite"></p></div>
+<div class="puzzlebox" style="margin-top:14px"><h3>🏆 Player leaderboard</h3><p>See real MaxChess player ratings and game records.</p><button class="greenbtn" id="openNewLeaderboard">Open leaderboard</button></div>
+<div class="puzzlebox" style="margin-top:14px"><h3>💬 Chat with players</h3><p>Use game chat while playing an online opponent, or post a chess question in the community. Be kind and never share private information.</p><div class="hq-actions"><button type="button" id="openGameChat">Open online play</button><button type="button" id="openCommunityChat">Community chat</button></div><p class="desc">Direct private messages are not available yet.</p></div>
+<div class="puzzlebox" style="margin-top:14px"><h3>🎬 Game replay</h3><p>Replay a saved game by loading its PGN on the Analysis board. You can copy a game's notation from the Play screen and paste it into the PGN importer.</p><div class="hq-actions"><button type="button" id="openReplayBoard">Open analysis &amp; replay</button><button type="button" id="saveReplayPGN">Save current game PGN</button></div><p class="desc" id="replayFeatureStatus" aria-live="polite">Saved PGN stays on this device.</p></div>
+</div></section>
 </main>
 <aside class="rightbar"><h2>Your chess dashboard</h2><div class="mini-card"><b>♟ Your rating</b><div class="rating-number" id="ratingNumber">1200</div><div class="rating-note" id="ratingRecord">0 wins · 0 losses · 0 draws</div><p>Your profile rating is saved online. Ranked rating updates are coming next.</p></div><div class="mini-card"><div style="font-size:25px">♟</div><b>Welcome to MaxChess</b><p>Play a game, learn a skill, and keep improving one move at a time.</p><button class="mini-link" data-rightgo="play">Start playing →</button></div><div class="mini-card"><b>Quick learning plan</b><p>New to chess? Follow these steps in order.</p><div class="right-stat"><span>Learn the pieces</span><b>01</b></div><div class="right-stat"><span>Protect your king</span><b>02</b></div><div class="right-stat"><span>Control the center</span><b>03</b></div><button class="mini-link" data-rightgo="learn">Open lessons →</button></div><div class="mini-card"><b>Game tools</b><p>Change the board and pieces to suit you.</p><button class="mini-link" id="rightTheme">Customize appearance →</button></div><div class="mini-card"><b>Made for everyone</b><p>Free to play. Friendly to beginners. Built for curious chess players.</p></div></aside>
 </div>
@@ -801,7 +810,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   if(!game)return;boardEl.innerHTML='';let rows=[0,1,2,3,4,5,6,7],cols=[0,1,2,3,4,5,6,7];if(flipped){rows.reverse();cols.reverse()}
   rows.forEach((r,ri)=>cols.forEach((c,ci)=>{let sq=sqname(r,c),p=game.get(sq),b=document.createElement('button');b.className='sq '+((r+c)%2===0?'light':'dark');b.setAttribute('role','gridcell');b.setAttribute('aria-label',sq+(p?', '+(p.color==='w'?'white ':'black ')+p.type:' empty'));if(selected===sq)b.classList.add('selected');if(legal.some(m=>m.to===sq)){b.classList.add('legal');if(p)b.classList.add('capture')}if(lastMove&&(lastMove.from===sq||lastMove.to===sq))b.classList.add('last');if(p&&p.type==='k'&&p.color===game.turn()&&game.in_check())b.classList.add('incheck');
    if(ci===0){let co=document.createElement('span');co.className='coord';co.textContent=sq[1];b.appendChild(co)}if(ri===7){let co=document.createElement('span');co.className='coord';co.style.left='auto';co.style.right='3px';co.style.top='auto';co.style.bottom='1px';co.textContent=sq[0];b.appendChild(co)}
-   if(p){let sp=document.createElement('span');sp.className='piece';const solid=style==='bold'||style==='friendly';sp.textContent=glyph[(solid?'b':p.color)+p.type];sp.style.color=style==='friendly'?(p.color==='w'?'#ffd23f':'#2ec4b6'):(p.color==='w'?'#fffef4':'#22231e');sp.style.textShadow=(p.color==='w'||style==='friendly')?'0 1px 2px #222,1px 0 #222,-1px 0 #222,0 -1px #222':'0 1px 1px #ffffff77';if(style==='bold'){sp.style.webkitTextStroke='1.5px #161512';sp.style.fontWeight='900'}b.appendChild(sp)}b.addEventListener('click',()=>tap(sq));boardEl.appendChild(b)
+   if(p){let sp=document.createElement('span');sp.className='piece';const solid=style==='bold'||style==='friendly'||!!pieceSkins[style];sp.textContent=glyph[(solid?'b':p.color)+p.type];const skin=pieceSkins[style];sp.style.color=skin?(p.color==='w'?skin.white:skin.black):style==='friendly'?(p.color==='w'?'#ffd23f':'#2ec4b6'):(p.color==='w'?'#fffef4':'#22231e');sp.style.textShadow=(p.color==='w'||style==='friendly')?'0 1px 2px #222,1px 0 #222,-1px 0 #222,0 -1px #222':'0 1px 1px #ffffff77';if(style==='bold'){sp.style.webkitTextStroke='1.5px #161512';sp.style.fontWeight='900'}b.appendChild(sp)}b.addEventListener('click',()=>tap(sq));boardEl.appendChild(b)
   }));
   updateInfo()
  }
@@ -925,8 +934,70 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  function applyTheme(k){const t=themes[k]||themes.brown;document.documentElement.style.setProperty('--boardlight',t[0]);document.documentElement.style.setProperty('--boarddark',t[1])}
  $('boardTheme').onchange=()=>{applyTheme($('boardTheme').value);try{localStorage.setItem('maxchess_theme',$('boardTheme').value)}catch(e){}saveProgressCloud();note('Board theme: '+$('boardTheme').selectedOptions[0].text+'.')};
  $('pieceStyle').onchange=()=>{style=$('pieceStyle').value;try{localStorage.setItem('maxchess_pieces',style)}catch(e){}render();saveProgressCloud();note('Piece style: '+$('pieceStyle').selectedOptions[0].text+'.')};
- try{const st=localStorage.getItem('maxchess_theme'),sp=localStorage.getItem('maxchess_pieces');if(st&&themes[st]){$('boardTheme').value=st;applyTheme(st)}if(sp&&['classic','bold','friendly'].includes(sp)){$('pieceStyle').value=sp;style=sp}}catch(e){}
+ try{const st=localStorage.getItem('maxchess_theme'),sp=localStorage.getItem('maxchess_pieces');if(st&&themes[st]){$('boardTheme').value=st;applyTheme(st)}if(sp&&['classic','bold','friendly','ice','ruby','gold'].includes(sp)){$('pieceStyle').value=sp;style=sp}}catch(e){}
  $('themeQuick').onclick=$('rightTheme').onclick=()=>{navigate('play');$('boardTheme').focus();note('Choose a board theme in the Game panel.')};
+ 
+ 
+ // MaxChess feature pack: Chess960 practice, free piece skins, daily missions and feature shortcuts.
+ function startRandomChess960(){
+  if(!game){note('The chess engine is not ready yet.');return}
+  const back=Array(8).fill(''),pick=a=>a[Math.floor(Math.random()*a.length)];
+  const lightBishop=[1,3,5,7][Math.floor(Math.random()*4)],darkBishop=[0,2,4,6][Math.floor(Math.random()*4)];
+  back[lightBishop]='B';back[darkBishop]='B';
+  let empty=back.map((v,i)=>v?null:i).filter(v=>v!==null),q=pick(empty);back[q]='Q';
+  empty=back.map((v,i)=>v?null:i).filter(v=>v!==null);
+  const combos=[];for(let i=0;i<empty.length;i++)for(let j=i+1;j<empty.length;j++)combos.push([empty[i],empty[j]]);
+  const ns=pick(combos);back[ns[0]]='N';back[ns[1]]='N';
+  empty=back.map((v,i)=>v?null:i).filter(v=>v!==null);back[empty[0]]='R';back[empty[1]]='K';back[empty[2]]='R';
+  const row=back.join('').toLowerCase(),fen=row+'/pppppppp/8/8/8/8/PPPPPPPP/'+back.join('')+' w - - 0 1';
+  reset(false);
+  if(!game.load(fen)){note('Could not create that Chess960 position. Try again.');return}
+  computerMode=false;selected=null;legal=[];lastMove=null;render();
+  $('chess960Status').textContent='Your random back rank: '+back.join(' ')+' · White to move.';
+  navigate('play');note('Chess960 practice started! Castling is unavailable in this version.');
+ }
+ $('start960').onclick=startRandomChess960;
+ const pieceSkins={friendly:{white:'#ffd23f',black:'#2ec4b6'},ice:{white:'#b9f2ff',black:'#164b78'},ruby:{white:'#ffb3c7',black:'#8c1538'},gold:{white:'#ffe08a',black:'#5b3b0a'}};
+ $('applyPieceShop').onclick=()=>{
+  const v=$('pieceShopChoice').value;style=v;
+  try{localStorage.setItem('maxchess_pieces',v)}catch(e){}
+  render();$('pieceStyle').value=['friendly','classic','bold'].includes(v)?v:'friendly';
+  $('pieceShopStatus').textContent='Equipped: '+$('pieceShopChoice').selectedOptions[0].text+'.';
+  note('Your new piece set is ready!');
+ };
+ // Extend board rendering colors for the free skins without changing move rules.
+ const originalSkinRender=render;
+ function paintDailyFeature(){
+  const key='maxchess_daily_feature_v1',today=new Date().toLocaleDateString('en-CA');
+  let data={date:today,done:[],streak:0,lastDate:''};
+  try{data=Object.assign(data,JSON.parse(localStorage.getItem(key)||'{}'))}catch(e){}
+  if(data.date!==today){const y=new Date();y.setDate(y.getDate()-1);const yesterday=y.toLocaleDateString('en-CA');data.streak=data.lastDate===yesterday?Number(data.streak||0):0;data.date=today;data.done=[];}
+  const tasks=['Solve one chess puzzle','Play one chess game','Study one lesson or opening'];
+  const host=$('dailyFeatureMissions');if(!host)return;
+  host.innerHTML=tasks.map((t,i)=>'<label class="lesson" style="display:flex;align-items:center;gap:10px"><input type="checkbox" data-daily-feature="'+i+'" '+(data.done.includes(i)?'checked':'')+' style="width:18px;height:18px"> <span>'+t+'</span><small style="margin-left:auto">'+(data.done.includes(i)?'Complete':'10 points')+'</small></label>').join('');
+  $('dailyFeatureXP').textContent=data.done.length*10;$('dailyFeatureStreak').textContent=data.streak||0;
+  $('dailyFeatureStatus').textContent=data.done.length===3?'All today's missions complete! Great work.':'Complete all three missions to finish your daily challenge.';
+  host.querySelectorAll('[data-daily-feature]').forEach(c=>c.onchange=()=>{
+   const i=Number(c.dataset.dailyFeature);data.done=data.done||[];
+   if(c.checked&&!data.done.includes(i))data.done.push(i);
+   if(!c.checked)data.done=data.done.filter(x=>x!==i);
+   if(data.done.length===3&&data.lastDate!==today){data.streak=Number(data.streak||0)+1;data.lastDate=today}
+   data.date=today;try{localStorage.setItem(key,JSON.stringify(data))}catch(e){}
+   paintDailyFeature();
+  });
+ }
+ $('openNewLeaderboard').onclick=()=>navigate('community');
+ $('openGameChat').onclick=()=>navigate('play');
+ $('openCommunityChat').onclick=()=>navigate('community-comments');
+ $('openReplayBoard').onclick=()=>navigate('analysis');
+ $('saveReplayPGN').onclick=()=>{
+  if(!game){$('replayFeatureStatus').textContent='The chess engine is not ready.';return}
+  const pgn=game.pgn();if(!pgn||!game.history().length){$('replayFeatureStatus').textContent='Play at least one move before saving a replay.';return}
+  try{localStorage.setItem('maxchess_last_replay_pgn',pgn);$('replayFeatureStatus').textContent='Your latest game PGN is saved. Open Analysis and paste it into the PGN importer to replay it.';note('Game PGN saved on this device.')}catch(e){$('replayFeatureStatus').textContent='Could not save the replay on this device.'}
+ };
+ paintDailyFeature();
+ const savedSkin=(()=>{try{return localStorage.getItem('maxchess_pieces')||'friendly'}catch(e){return 'friendly'}})();
+ if($('pieceShopChoice'))$('pieceShopChoice').value=['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)?savedSkin:'friendly';
  
  const accountModal=$('accountModal'),accountForm=$('accountForm'),accountUsername=$('accountUsername'),accountPassword=$('accountPassword'),accountEmail=$('accountEmail');
  const authStatus=$('authStatus'),supabaseUrl=$('supabaseUrl'),supabaseKey=$('supabaseKey');

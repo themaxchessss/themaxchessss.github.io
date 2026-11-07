@@ -1096,7 +1096,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  $('maxFunNext').onclick=nextMaxFun;$('maxFunScore').textContent='Score: 0 · Best: '+maxFunBest;nextMaxFun();
 
  async function loadFriends(){
-  const req=$('friendRequests'),friends=$('myFriends');if(!authClient||!authUser){req.innerHTML='<p class="muted">Sign in to view friend requests.</p>';friends.innerHTML='<p class="muted">Sign in to view friends.</p>';return}
+  const req=$('friendRequests'),friends=$('myFriends');if(authClient&&authUser){$('privateChatInput').disabled=false;$('sendPrivateMessage').disabled=false}if(!authClient||!authUser){req.innerHTML='<p class="muted">Sign in to view friend requests.</p>';friends.innerHTML='<p class="muted">Sign in to view friends.</p>';activeDirectChat=null;if(privateChatChannel&&authClient){authClient.removeChannel(privateChatChannel);privateChatChannel=null}$('privateChatTitle').textContent='Sign in to use private chat.';$('privateChatMessages').innerHTML='<p class="muted">Your private messages will appear here after you sign in.</p>';$('privateChatInput').disabled=true;$('sendPrivateMessage').disabled=true;$('blockedPlayers').innerHTML='<p class="muted">Sign in to manage blocked players.</p>';return}
   const q=await authClient.from('friendships').select('id,requester_id,addressee_id,status,created_at').or('requester_id.eq.'+authUser.id+',addressee_id.eq.'+authUser.id).order('created_at',{ascending:false});
   if(q.error){req.textContent='Could not load friend requests: '+q.error.message;friends.textContent='Could not load friends.';return}
   const rows=q.data||[],ids=[...new Set(rows.map(x=>x.requester_id===authUser.id?x.addressee_id:x.requester_id))];

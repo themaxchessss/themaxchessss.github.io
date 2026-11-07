@@ -229,7 +229,7 @@ select.toolbtn{background:var(--panel2);border:0}
 .puzzle-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.puzzle-rating{font-size:32px;color:var(--green2)}.puzzle-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:16px 0}.puzzle-actions button{min-height:48px;padding:12px}.puzzle-steps{padding-left:22px;line-height:1.8}.puzzle-play-tools{margin-top:12px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px}.puzzle-play-tools>b{display:block;margin-bottom:10px}.puzzle-play-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.puzzle-play-actions button{min-height:44px}.lesson-path{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:14px;align-items:start}.lesson-path .lesson-list{margin:0}.lesson-detail{line-height:1.65}.lesson-detail h3{font-size:21px}.lesson-detail .lesson-goal{padding:10px 12px;background:var(--panel2);border-radius:10px;margin:10px 0}.lesson-detail .lesson-quiz{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.lesson-quiz button{display:block;width:100%;text-align:left;padding:11px;margin:7px 0;border-radius:10px;background:var(--panel2);color:var(--text);min-height:44px}.lesson-quiz .quiz-feedback{font-weight:700;margin-top:8px}@media(max-width:760px){.puzzle-actions{grid-template-columns:1fr}.puzzle-actions button{width:100%;font-size:15px}.puzzle-play-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.lesson-path{grid-template-columns:1fr}.lesson-path .lesson-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.lesson-path .lesson{min-height:64px;padding:12px;font-size:14px}.lesson-detail{font-size:15px;padding:16px}.puzzle-play-tools{position:relative}.boardtools{gap:7px}.boardtools .toolbtn{min-height:42px}}
 /* ---- MaxChess identity: midnight indigo + amber, rounded and playful ---- */
 :root{--bg:#15122f;--panel:#201c4d;--panel2:#2c2764;--panel3:#181539;--line:#3d3794;--text:#cfcbf0;--strong:#fff;--muted:#a29dd6;--green:#ffb703;--green2:#ffcf5c;--blue:#9bbcff;--boardlight:#efeaff;--boarddark:#8d78e0;--gold:#ffcf5c}
-body{background:radial-gradient(1100px 600px at 85% -10%,#2b2380 0%,transparent 60%),radial-gradient(900px 500px at -10% 10%,#3a1f6b 0%,transparent 55%),var(--bg);background-attachment:fixed;font-family:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",sans-serif}
+body{background:linear-gradient(135deg,#101426 0%,#17152f 54%,#20172d 100%);background-attachment:fixed;font-family:"Nunito",ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",sans-serif}
 .topbar{height:64px;background:rgba(21,18,47,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);box-shadow:none}
 .brand{font-weight:900;font-size:23px;letter-spacing:-.5px}
 .brandmark{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,#ffcf5c,#ff7a1a);color:#2b1500;font-size:24px;transform:rotate(-6deg)}
@@ -499,8 +499,8 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  </div>
 
  <style>
- .maxchess-promo-gif{width:100%;max-width:1080px;margin:18px auto;border:3px solid #1677ed;border-radius:12px;overflow:hidden;background:#050505;box-shadow:0 0 22px #1677ed44}.maxchess-promo-gif a{display:block;line-height:0}.maxchess-promo-gif img{display:block;width:100%;height:auto;max-height:335px;object-fit:contain;margin:0 auto}@media(prefers-reduced-motion:reduce){.maxchess-promo-gif img{animation:none}}
- .maxchess-promo{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(120px, .8fr) 2fr;align-items:center;gap:clamp(12px,3vw,30px);max-width:1080px;min-height:190px;margin:18px auto;padding:clamp(16px,3vw,28px);border:3px solid #1677ed;border-radius:12px;background:radial-gradient(ellipse at 20% 50%,#4b2c05 0,#15100a 38%,#050505 75%);box-shadow:0 0 22px #1677ed44,inset 0 0 28px #d9941533;color:#fff}
+ .maxchess-promo-gif{width:100%;max-width:1080px;margin:18px auto;border:3px solid #d5a63a;border-radius:12px;overflow:hidden;background:#050505;box-shadow:0 0 22px #d5a63a33}.maxchess-promo-gif a{display:block;line-height:0}.maxchess-promo-gif img{display:block;width:100%;height:auto;max-height:335px;object-fit:contain;margin:0 auto}@media(prefers-reduced-motion:reduce){.maxchess-promo-gif img{animation:none}}
+ .maxchess-promo{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(120px, .8fr) 2fr;align-items:center;gap:clamp(12px,3vw,30px);max-width:1080px;min-height:190px;margin:18px auto;padding:clamp(16px,3vw,28px);border:3px solid #d5a63a;border-radius:12px;background:radial-gradient(ellipse at 20% 50%,#4b2c05 0,#15100a 38%,#050505 75%);box-shadow:0 0 22px #d5a63a33,inset 0 0 28px #d9941533;color:#fff}
  .maxchess-promo:before{content:"";position:absolute;z-index:-1;inset:-30%;background:linear-gradient(110deg,transparent 38%,#ffdc6b18 48%,#fff5c044 50%,#ffdc6b18 52%,transparent 62%);transform:translateX(-55%);animation:maxPromoSweep 6s ease-in-out infinite}
  .maxchess-promo-logo{width:min(100%,170px);aspect-ratio:1;object-fit:contain;filter:drop-shadow(0 0 14px #ffbf27aa);animation:maxPromoGlow 3s ease-in-out infinite}
  .maxchess-promo-copy{text-align:center;min-width:0}
@@ -725,7 +725,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 (function(){
 var appReady=false;
 window.addEventListener("maxchess:ready",function(){appReady=true});
-window.addEventListener("error",function(){appReady=false});
+window.addEventListener("error",function(event){if(event&&event.error){appReady=false;var n=document.getElementById("maxchess-boot-warning");if(!n){n=document.createElement("div");n.id="maxchess-boot-warning";n.setAttribute("role","status");n.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;padding:12px 14px;border:1px solid #d5a63a;border-radius:12px;background:#17152f;color:#fff;font:600 14px/1.45 system-ui;box-shadow:0 8px 30px #0009";n.innerHTML="Some MaxChess features did not start. Use the menus to move around, or reload the page to try again. <button type=\"button\" style=\"margin-left:8px;padding:6px 10px;border-radius:8px;background:#ffbf47;color:#241700;font-weight:800\" onclick=\"location.reload()\">Reload</button>";document.body.appendChild(n);}}});
 document.addEventListener("click",function(event){
 if(appReady)return;
 var target=event.target;
@@ -740,6 +740,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
 })();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (()=> {

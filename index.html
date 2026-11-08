@@ -1122,9 +1122,10 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  }
  async function openPrivateChat(userId,username,friendshipId){
   if(!authClient||!authUser){note('Sign in to use private chat.');return}
+  activeDirectChat=null;$('privateChatInput').value='';$('privateChatInput').disabled=true;$('sendPrivateMessage').disabled=true;$('privateChatMessages').innerHTML='<p class="muted">Checking chat permissions…</p>';
   const blocked=await authClient.from('user_blocks').select('blocker_id,blocked_id').or('and(blocker_id.eq.'+authUser.id+',blocked_id.eq.'+userId+'),and(blocker_id.eq.'+userId+',blocked_id.eq.'+authUser.id+')').limit(1);
-  if(blocked.error){$('privateChatStatus').textContent='Could not check chat permissions.';return}
-  if(blocked.data?.length){$('privateChatTitle').textContent='Chat unavailable';$('privateChatMessages').innerHTML='<p class="muted">A block is active between these accounts. You cannot message each other.</p>';return}
+  if(blocked.error){$('privateChatTitle').textContent='Chat unavailable';$('privateChatStatus').textContent='Could not check chat permissions.';return}
+  if(blocked.data?.length){$('privateChatTitle').textContent='Chat unavailable';$('privateChatMessages').innerHTML='<p class="muted">A block is active between these accounts. You cannot message each other.</p>';$('privateChatStatus').textContent='Private chat is disabled for this player.';return}
   activeDirectChat={id:userId,name:username,friendshipId};$('privateChatTitle').textContent='Private chat with '+username;$('privateChatInput').disabled=false;$('sendPrivateMessage').disabled=false;$('privateChatStatus').textContent='Only you and this accepted friend can read these messages.';
   if(privateChatChannel){await authClient.removeChannel(privateChatChannel);privateChatChannel=null}
   privateChatChannel=authClient.channel('maxchess-private-'+authUser.id+'-'+userId).on('postgres_changes',{event:'INSERT',schema:'public',table:'direct_messages'},payload=>{const m=payload.new;if(activeDirectChat&&((m.sender_id===authUser.id&&m.recipient_id===activeDirectChat.id)||(m.sender_id===activeDirectChat.id&&m.recipient_id===authUser.id)))loadDirectMessages()}).subscribe();

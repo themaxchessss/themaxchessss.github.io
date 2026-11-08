@@ -1,0 +1,104 @@
+name: MaxChess hourly health check
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  website-smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install browser test tools
+        run: |
+          npm init -y
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Check homepage, browser errors, navigation and internal links
+        id: smoke
+        run: |
+          cat > health-check.cjs <<'EOF'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const problems = [];
+            for (const viewport of [{ width: 1280, height: 900 }, { width: 820, height: 1180 }]) {
+              const page = await browser.newPage({ viewport });
+              page.on('pageerror', error => problems.push('Browser JavaScript error: ' + error.message));
+              page.on('console', msg => { if (msg.type() === 'error') problems.push('Console error: ' + msg.text()); });
+              page.on('requestfailed', request => {
+                if (request.url().startsWith('https://themaxchessss.github.io/'))
+                  problems.push('Failed site request: ' + request.url() + ' (' + request.failure()?.errorText + ')');
+              });
+              try {
+                const response = await page.goto('https://themaxchessss.github.io/', { waitUntil: 'networkidle', timeout: 60000 });
+                if (!response || !response.ok()) problems.push('Homepage HTTP status: ' + (response?.status() ?? 'no response'));
+                await page.waitForTimeout(1500);
+                const title = await page.title();
+                if (!title.toLowerCase().includes('maxchess')) problems.push('Homepage title does not mention MaxChess');
+                const navTargets = await page.locator('[data-page]').evaluateAll(nodes => [...new Set(nodes.map(n => n.getAttribute('data-page')).filter(Boolean))]);
+                const missing = await page.evaluate(targets => targets.filter(id => !document.getElementById('page-' + id)), navTargets);
+                if (missing.length) problems.push('Navigation targets missing page sections: ' + missing.join(', '));
+                const internalLinks = await page.locator('a[href]').evaluateAll(nodes => [...new Set(nodes.map(n => n.href).filter(h => h.startsWith(location.origin) && !h.includes('#') && !h.endsWith('/')))].slice(0, 60));
+                for (const url of internalLinks) {
+                  try {
+                    const result = await page.request.get(url, { timeout: 15000 });
+                    if (result.status() >= 400) problems.push('Broken internal link (' + result.status() + '): ' + url);
+                  } catch (e) { problems.push('Could not check internal link: ' + url + ' — ' + e.message); }
+                }
+              } catch (e) { problems.push('Page load/test failed at viewport ' + viewport.width + ': ' + e.message); }
+              await page.close();
+            }
+            await browser.close();
+            if (problems.length) {
+              console.error('MAXCHESS HEALTH CHECK FOUND PROBLEMS');
+              for (const problem of [...new Set(problems)]) console.error('- ' + problem);
+              process.exit(1);
+            }
+            console.log('MaxChess homepage loaded at desktop and tablet-sized viewports; no browser errors or missing navigation targets were detected, and checked internal links responded successfully.');
+          })().catch(e => { console.error(e); process.exit(1); });
+          EOF
+          node health-check.cjs
+
+      - name: Open or update a problem report
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Automated health check] MaxChess may have a problem';
+            const { owner, repo } = context.repo;
+            const runs = await github.rest.issues.listForRepo({ owner, repo, state: 'open', per_page: 100 });
+            const existing = runs.data.find(issue => issue.title === title);
+            const body = 'The hourly MaxChess website smoke test failed. Check the failed workflow run for details: ' + context.serverUrl + '/' + owner + '/' + repo + '/actions/runs/' + context.runId;
+            if (existing) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner, repo, title, body, labels: [] });
+            }
+
+      - name: Close problem report after a successful check
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '[Automated health check] MaxChess may have a problem';
+            const { owner, repo } = context.repo;
+            const runs = await github.rest.issues.listForRepo({ owner, repo, state: 'open', per_page: 100 });
+            const existing = runs.data.find(issue => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body: 'The latest hourly health check passed. Automatically closing this report.' });
+              await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: 'closed' });
+            }

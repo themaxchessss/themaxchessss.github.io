@@ -528,6 +528,10 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
   <button class="card" data-homegoto="analysis" type="button"><span class="ci">⌕</span><b>Analysis board</b><small>Study any position</small></button>
   <button class="card" data-homegoto="openings" type="button"><span class="ci">♜</span><b>Openings</b><small>Build your opening plan</small></button>
  </div>
+ <div class="home-panel" style="max-width:1080px;margin:18px auto 0;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border:1px solid #8c6bc8">
+  <div><h3>🤖 Use MaxChess in ChatGPT</h3><p>Get chess coaching, game reviews, puzzle explanations and help planning your training with the MaxChess ChatGPT companion.</p></div>
+  <button class="greenbtn" type="button" data-homegoto="chatgpt" style="width:auto;min-width:190px;margin:0">Explore the ChatGPT companion →</button>
+ </div>
  <div class="home-panel" style="max-width:1080px;margin:14px auto 0;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap"><div><h3>♟ Bring your friends to MaxChess</h3><p>Challenge a friend, share a puzzle, and help grow our chess community. Free to play.</p><small class="muted">Invite link: https://themaxchessss.github.io/</small></div><button class="greenbtn" id="shareMaxChess" type="button" style="width:auto;min-width:170px;margin:0">↗ Share MaxChess</button></div>
  <div class="hero-lower">
   <div class="home-panel"><h3>Play on this device</h3><p>Start right away, no account needed.</p><button class="home-row" id="homeLocal" type="button">Two players, one screen <span>→</span></button><button class="home-row" id="homePlayComputer" type="button">Play the computer <span>→</span></button></div>
@@ -544,6 +548,32 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  </div>
  <div class="growth-actions"><button class="growth-primary" type="button" data-hqgo="play">♟ Start playing</button><button class="growth-secondary" type="button" id="shareMaxChessFaq">↗ Invite a friend</button></div>
 </section>
+</section>
+<section class="pageview" id="page-chatgpt">
+ <div class="simplepage">
+  <h2>Use MaxChess in ChatGPT 🤖♟️</h2>
+  <p>Meet the MaxChess companion: a chess helper in ChatGPT. Ask questions, share a position or paste a game to learn more about chess.</p>
+  <div class="home-panel" style="margin:18px 0">
+   <h3>What can you use it for?</h3>
+   <ul>
+    <li><b>Chess coaching:</b> understand tactics, strategy, openings and endgames.</li>
+    <li><b>Game reviews:</b> share a PGN or move list and learn from mistakes and missed chances.</li>
+    <li><b>Position help:</b> share a FEN or describe a board position to explore candidate moves and threats.</li>
+    <li><b>Puzzle explanations:</b> understand why a tactic works, not just which move to play.</li>
+    <li><b>Training plans:</b> build a practice routine, lesson or chess-club activity.</li>
+    <li><b>Lichess help:</b> get guidance with public profiles, studies and importing or exporting games.</li>
+   </ul>
+  </div>
+  <div class="home-panel" style="margin:18px 0">
+   <h3>What it does not do</h3>
+   <p>The ChatGPT companion gives advice and analysis in the chat. It does not automatically log in to your MaxChess, Lichess or Chess.com accounts, change ratings, or publish games. For playing on the actual MaxChess board, use the free website.</p>
+  </div>
+  <div class="growth-actions">
+   <a class="growth-primary" href="https://chatgpt.com/g/g-" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open MaxChess in ChatGPT</a>
+   <button class="growth-secondary" type="button" data-homegoto="play">Play on MaxChess</button>
+  </div>
+  <p class="desc">If the ChatGPT companion link is not available yet, search for “MaxChess Companion” in ChatGPT.</p>
+ </div>
 </section>
 <section class="pageview" id="page-play">
  <div class="welcome"><div><h1>Play chess</h1><p>A fresh game is just one move away.</p></div><span class="badge">✦ Free to play</span></div>

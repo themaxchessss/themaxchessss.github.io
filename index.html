@@ -1029,7 +1029,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   const host=$('dailyFeatureMissions');if(!host)return;
   host.innerHTML=tasks.map((t,i)=>'<label class="lesson" style="display:flex;align-items:center;gap:10px"><input type="checkbox" data-daily-feature="'+i+'" '+(data.done.includes(i)?'checked':'')+' style="width:18px;height:18px"> <span>'+t+'</span><small style="margin-left:auto">'+(data.done.includes(i)?'Complete':'10 points')+'</small></label>').join('');
   $('dailyFeatureXP').textContent=data.done.length*10;$('dailyFeatureStreak').textContent=data.streak||0;
-  $('dailyFeatureStatus').textContent=data.done.length===3?'All today's missions complete! Great work.':'Complete all three missions to finish your daily challenge.';
+  $('dailyFeatureStatus').textContent=data.done.length===3?'All of today\'s missions are complete! Great work.':'Complete all three missions to finish your daily challenge.';
   host.querySelectorAll('[data-daily-feature]').forEach(c=>c.onchange=()=>{
    const i=Number(c.dataset.dailyFeature);data.done=data.done||[];
    if(c.checked&&!data.done.includes(i))data.done.push(i);
@@ -1054,7 +1054,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  paintDailyFeature();
  const savedSkin=(()=>{try{return localStorage.getItem('maxchess_pieces')||'friendly'}catch(e){return 'friendly'}})();
  if($('pieceShopChoice'))$('pieceShopChoice').value=['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)?savedSkin:'friendly';
- if(['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)){style=savedSkin;render();}
+ if(['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)){style=savedSkin;setTimeout(render,0);}
  
  const accountModal=$('accountModal'),accountForm=$('accountForm'),accountUsername=$('accountUsername'),accountPassword=$('accountPassword'),accountEmail=$('accountEmail');
  const authStatus=$('authStatus'),supabaseUrl=$('supabaseUrl'),supabaseKey=$('supabaseKey');

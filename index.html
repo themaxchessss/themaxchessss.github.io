@@ -435,6 +435,41 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  #page-business-cards .max-business-card .mbc-title{font-size:10pt}
  #page-business-cards .max-business-card .mbc-foot{font-size:7.5pt}
 }
+
+/* Mobile header overlap fix: keep the wrapped navigation inside the header. */
+@media (max-width:820px){
+  .topbar{
+    height:auto!important;
+    min-height:64px;
+    flex-wrap:wrap;
+    align-items:center;
+    padding:8px 12px;
+    row-gap:6px;
+  }
+  .brand{flex:0 1 auto;margin-right:0}
+  .topright{flex:0 0 auto;margin-left:auto}
+  .topnav{
+    order:3;
+    flex:0 0 100%;
+    width:100%;
+    height:auto!important;
+    min-height:0;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:3px;
+  }
+  .navgroup{flex:0 0 auto;min-height:42px}
+  .navtop{margin:2px;padding:9px 10px;min-height:42px}
+  .dropdown{top:100%;z-index:35}
+}
+@media (max-width:420px){
+  .brandname{font-size:21px}
+  .topright{gap:2px}
+  .toplink,.login,.signup{padding:7px 8px;font-size:12px}
+  .topnav{justify-content:flex-start}
+}
+
 </style>
 </head>
 <body>

@@ -497,7 +497,8 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="achievements">Achievements &amp; stats</button>
    <button class="navitem" data-page="schools">School &amp; teachers</button>
    <button class="navitem" data-page="tournaments">Tournaments</button>
-   <button class="navitem" data-page="donate">Support MaxChess</button>   <button class="navitem" data-page="about">About MaxChess</button>
+   <button class="navitem" data-page="donate">Support MaxChess</button>
+   <button class="navitem" data-page="about">About MaxChess</button>
    <button class="navitem" data-page="business-cards">Printable Business Cards</button>
    <button class="navitem" data-page="card-cutter">Help cut MaxChess cards</button>
    <button class="navitem" data-page="hiring">Join the team</button>
@@ -999,7 +1000,8 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
 
  function saveActiveComputerGame(){if(!computerMode||onlineGameId||!authClient||!authUser||!game)return;if(game.game_over()){try{localStorage.removeItem('maxchess_active_computer_game_v1')}catch(e){}saveProgressCloud();return}const snapshot={fen:game.fen(),computerLevel,clockInitial,whiteSeconds,blackSeconds,savedAt:new Date().toISOString()};try{localStorage.setItem('maxchess_active_computer_game_v1',JSON.stringify(snapshot))}catch(e){}saveProgressCloud()}
  function reset(computer=false){if(!game)return;setLocalPlayerLayout();flipped=false;try{if(stockfishWorker)stockfishWorker.postMessage('stop')}catch(e){}thinking=false;stockfishPurpose='analysis';game.reset();try{localStorage.removeItem('maxchess_active_computer_game_v1')}catch(e){}ratingFinalized=false;hintUsed=false;localLichessImportAttempted=false;if($('retryLichessImport')){$('retryLichessImport').hidden=true;$('retryLichessImport').disabled=false;$('retryLichessImport').textContent='Import to Lichess'}puzzleMode=false;if(onlineGameId||onlinePoll){onlineGameId=null;onlineColor=null;onlineBusy=false;$('onlineGameActions').style.display='none';if(onlinePoll){clearInterval(onlinePoll);onlinePoll=null}$('opponentName').textContent='Black pieces';$('onlineStatus').textContent='Sign in, then find an opponent anywhere on MaxChess.';loadGameChat()}selected=null;legal=[];lastMove=null;computerMode=computer;applyTcExtra();clockInitial=tcSecs();whiteSeconds=blackSeconds=clockInitial;clockStarted=false;clockPaused=false;flaggedSide=null;render();note(computer?'Beginner computer game started.':'New game started.')}
- $('newGame').onclick=()=>reset(false);$('startGame').onclick=()=>reset(false);$('computerLevel').onchange=()=>{computerLevel=Number($('computerLevel').value)||800;note('Computer level set to '+computerLevel+'.')};$('undo').onclick=()=>{if(onlineGameId){note('Takeback is not available in online games.');return}if(game.undo()){if(computerMode&&game.turn()==='b')game.undo();selected=null;legal=[];lastMove=null;render();note('Last move taken back.')}else note('There are no moves to take back yet.')};$('flip').onclick=()=>{flipped=!flipped;render()};$('playComputer').onclick=()=>{reset(true);navigate('play')};$('computerStart').onclick=()=>{computerLevel=Number($('computerLevel').value)||800;reset(true);navigate('play');note('Rated computer game started · opponent '+computerLevel+'.')};$('analysisStart').onclick=()=>navigate('play');$('openingStart').onclick=()=>navigate('play');$('practiceStart').onclick=()=>navigate('play');$('puzzleStart').onclick=()=>navigate('play'); function getGameHintMove(){
+ $('newGame').onclick=()=>reset(false);$('startGame').onclick=()=>reset(false);$('computerLevel').onchange=()=>{computerLevel=Number($('computerLevel').value)||800;note('Computer level set to '+computerLevel+'.')};$('undo').onclick=()=>{if(onlineGameId){note('Takeback is not available in online games.');return}if(game.undo()){if(computerMode&&game.turn()==='b')game.undo();selected=null;legal=[];lastMove=null;render();note('Last move taken back.')}else note('There are no moves to take back yet.')};$('flip').onclick=()=>{flipped=!flipped;render()};$('playComputer').onclick=()=>{reset(true);navigate('play')};$('computerStart').onclick=()=>{computerLevel=Number($('computerLevel').value)||800;reset(true);navigate('play');note('Rated computer game started · opponent '+computerLevel+'.')};$('analysisStart').onclick=()=>navigate('play');$('openingStart').onclick=()=>navigate('play');$('practiceStart').onclick=()=>navigate('play');$('puzzleStart').onclick=()=>navigate('play');
+ function getGameHintMove(){
   const moves=game.moves({verbose:true});if(!moves.length)return null;
   const side=game.turn(),depth=2;let best=side==='w'?-Infinity:Infinity,choices=[];
   for(const move of moves){
@@ -1498,7 +1500,8 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   $('opponentSub').textContent='Online opponent'+(opponentRating?' · '+opponentRating+' rating':'');
   $('playerName').textContent='You · '+(isBlack?'Black':'White')+' pieces';
   $('playerSub').textContent=isBlack?'Your side · White moves first':'Your side · White to move first';
- } function setLocalPlayerLayout(){
+ }
+ function setLocalPlayerLayout(){
   const top=$('topPlayerBar'),bottom=$('bottomPlayerBar'),whiteClock=$('whiteClock'),blackClock=$('blackClock');
   if(!top||!bottom||!whiteClock||!blackClock)return;
   top.appendChild(blackClock);bottom.appendChild(whiteClock);

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#030716"/><stop offset=".55" stop-color="#071d48"/><stop offset="1" stop-color="#02040b"/></linearGradient>
+ <linearGradient id="gold" x2="0" y2="1"><stop stop-color="#fff5a6"/><stop offset=".35" stop-color="#ffd33d"/><stop offset="1" stop-color="#a85a00"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#ffe66d" stop-opacity=".7"/><stop offset="1" stop-color="#ffe66d" stop-opacity="0"/></radialGradient>
+ <filter id="shine"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="1200" fill="url(#bg)"/>
+<g stroke="#168bff" stroke-width="5" fill="none" opacity=".6"><path d="M0 170L110 240 65 330 200 420 135 560 260 650"/><path d="M1200 120L1090 225 1145 335 1010 435 1070 560 940 660"/></g>
+<circle cx="600" cy="590" r="390" fill="url(#glow)"/>
+<text x="600" y="155" text-anchor="middle" font-family="Georgia,serif" font-size="112" font-weight="bold" letter-spacing="7" fill="url(#gold)" stroke="#5d3000" stroke-width="2" filter="url(#shine)">MAXCHESS</text>
+<text x="600" y="225" text-anchor="middle" font-family="Arial,sans-serif" font-size="39" font-weight="bold" fill="#fff">THINK FAST. PLAY SMART. <tspan fill="#ffd33d">WIN BIG.</tspan></text>
+<rect x="195" y="270" width="810" height="90" rx="45" fill="url(#gold)" stroke="#fff0a0" stroke-width="5" filter="url(#shine)"/>
+<text x="600" y="332" text-anchor="middle" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="#10101a">FREE ONLINE CHESS</text>
+<g transform="translate(600 685)" text-anchor="middle" filter="url(#shine)">
+ <text y="95" font-family="serif" font-size="440" fill="url(#gold)" stroke="#8c4b00" stroke-width="5">♛</text>
+</g>
+<g font-family="Arial,sans-serif" font-size="34" font-weight="bold" fill="#fff">
+ <text x="75" y="470">✓ Play Online</text><text x="75" y="535">✓ Learn Chess</text><text x="75" y="600">✓ Solve Puzzles</text><text x="75" y="665">✓ Join Tournaments</text><text x="75" y="730">✓ Track Your Rating</text>
+</g>
+<g transform="translate(850 470)"><rect width="290" height="145" rx="28" fill="url(#gold)" stroke="#fff1a0" stroke-width="6" filter="url(#shine)"/><text x="145" y="90" text-anchor="middle" font-family="Arial,sans-serif" font-size="46" font-weight="900" fill="#111">PLAY NOW ▶</text></g>
+<g transform="translate(0 1010)"><rect width="1200" height="190" fill="#02040b" opacity=".9"/><g fill="#ffd84b" font-size="34" font-family="Arial,sans-serif" font-weight="bold" text-anchor="middle"><text x="150" y="75">LEARN</text><text x="390" y="75">PUZZLES</text><text x="630" y="75">TOURNAMENTS</text><text x="870" y="75">LEADERBOARD</text><text x="1080" y="75">ANY DEVICE</text></g><text x="600" y="145" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="39" fill="url(#gold)">Join the MaxChess Community Today!</text></g>
+</svg>

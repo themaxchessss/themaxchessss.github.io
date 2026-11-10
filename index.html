@@ -887,6 +887,9 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   if(!game||!game.game_over())return;
   const retryButton=$('retryLichessImport');
   if(localLichessImportAttempted)return;
+  // Lock immediately: render() can run more than once while the network request is pending.
+  // Without this guard, one finished computer game could be submitted several times.
+  localLichessImportAttempted=true;
   if(retryButton){retryButton.hidden=false;retryButton.disabled=true;retryButton.textContent='Importing to Lichess…'}
   try{
    if(!authClient)throw new Error('MaxChess account service is unavailable. Refresh and try again.');

@@ -1586,13 +1586,18 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   try{
    const {data,error}=await authClient.functions.invoke('maxchess-lichess-auth',{body:{code,code_verifier:saved.verifier,redirect_uri:saved.redirectUri}});
    if(error||data?.error)throw new Error(data?.error||error?.message||'Could not verify your Lichess account.');
-   if(!data?.token_hash)throw new Error('MaxChess did not receive a secure sign-in confirmation. Please try again.');
-   const {data:sessionData,error:sessionError}=await authClient.auth.verifyOtp({token_hash:data.token_hash,type:'magiclink'});
-   if(sessionError)throw sessionError;
-   authUser=sessionData.user||sessionData.session?.user||null;
-   if(!authUser)throw new Error('MaxChess did not create a signed-in session. Please try again.');
+   if(data?.token_hash){
+    const {data:sessionData,error:sessionError}=await authClient.auth.verifyOtp({token_hash:data.token_hash,type:'magiclink'});
+    if(sessionError)throw sessionError;
+    authUser=sessionData.user||sessionData.session?.user||null;
+   }else if(data?.linked){
+    const {data:current,error:currentError}=await authClient.auth.getUser();
+    if(currentError)throw currentError;
+    authUser=current?.user||null;
+   }else throw new Error('MaxChess did not receive a secure sign-in confirmation. Please try again.');
+   if(!authUser)throw new Error('MaxChess did not create or restore a signed-in session. Please sign in to MaxChess and try again.');
    accountModal.classList.remove('open');paintProfile();
-   note('Welcome to MaxChess, '+(data.lichess_username||'Lichess player')+'!');
+   note(data?.linked?'Lichess connected to your existing MaxChess account.':'Welcome to MaxChess, '+(data.lichess_username||'Lichess player')+'!');
   }catch(err){setAuthStatus(err?.message||'Lichess sign-in failed. Please try again.')}
   finally{if(btn)btn.disabled=false}
  }
@@ -1740,17 +1745,32 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    }catch(error){const message='Could not load classes: '+(error?.message||'Network error. Check your connection and try again.');mine.textContent=message;dash.textContent=message}
   }
   let schoolLichessRequestQueue=Promise.resolve();
+  let schoolLichessNextAllowedAt=0;
+  const schoolLichessProfileCache=new Map();
+  const schoolLichessDelay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   async function schoolFetchLichessProfile(username){
    const clean=String(username||'').trim();
    if(!/^[A-Za-z0-9_-]{2,30}$/.test(clean))throw new Error('Enter a valid Lichess username (2–30 letters, numbers, _ or -).');
-   const request=schoolLichessRequestQueue.then(()=>fetch('https://lichess.org/api/user/'+encodeURIComponent(clean),{headers:{Accept:'application/json'}}));
+   const cacheKey=clean.toLowerCase(),cached=schoolLichessProfileCache.get(cacheKey);
+   if(cached&&cached.expiresAt>Date.now())return cached.profile;
+   const request=schoolLichessRequestQueue.then(async()=>{
+    const wait=Math.max(0,schoolLichessNextAllowedAt-Date.now());
+    if(wait)await schoolLichessDelay(wait);
+    const response=await fetch('https://lichess.org/api/user/'+encodeURIComponent(clean),{headers:{Accept:'application/json'}});
+    if(response.status===429){
+     const retryAfter=Number(response.headers.get('Retry-After'));
+     schoolLichessNextAllowedAt=Date.now()+(Number.isFinite(retryAfter)&&retryAfter>0?retryAfter*1000:60000);
+    }
+    return response;
+   });
    schoolLichessRequestQueue=request.then(()=>undefined,()=>undefined);
    const r=await request;
    if(r.status===404)throw new Error('That Lichess username was not found. Check the spelling.');
-   if(r.status===429)throw new Error('Lichess is receiving too many requests. Wait a minute and try again.');
+   if(r.status===429)throw new Error('Lichess rate limit reached. MaxChess will pause Lichess profile checks for at least one minute. Try again later.');
    if(!r.ok)throw new Error('Lichess could not verify that public profile (HTTP '+r.status+').');
    const d=await r.json();
    if(!d||!d.id||!d.username)throw new Error('Lichess returned an incomplete public profile.');
+   schoolLichessProfileCache.set(cacheKey,{profile:d,expiresAt:Date.now()+10*60*1000});
    return d;
   }
   async function schoolPublicStats(provider,username){

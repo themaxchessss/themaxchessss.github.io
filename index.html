@@ -441,6 +441,24 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 }
 
 /* Mobile header overlap fix: keep the wrapped navigation inside the header. */
+/* Touch, keyboard and small-screen quality pass */
+:where(button,a,select,input,textarea){-webkit-tap-highlight-color:transparent}
+:where(button,a,select,input,textarea):focus-visible{outline:3px solid var(--gold,#d5a63a);outline-offset:2px}
+.pageview{scroll-margin-top:12px}
+.simplepage{min-width:0;overflow-wrap:anywhere}
+.simplepage img,.puzzlebox img{max-width:100%;height:auto}
+@media (max-width:600px){
+ .main{min-width:0}
+ .simplepage{padding:14px!important}
+ .puzzlebox{padding:13px!important}
+ .boardtools{gap:7px}
+ .boardtools .toolbtn{min-height:42px;flex:1 1 125px}
+ .watch-grid{grid-template-columns:minmax(0,1fr)!important}
+ input,select,textarea{font-size:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 @media (max-width:820px){
   .topbar{
     height:auto!important;
@@ -485,17 +503,20 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 <header class="topbar">
  <div class="brand" id="brandHome" role="link" tabindex="0" aria-label="MaxChess home"><img class="brandlogo" src="./icon.svg" alt="MaxChess crown logo" width="38" height="38"><span class="brandname">Max<b>Chess</b></span></div>
  <nav class="topnav" aria-label="Main">
-  <div class="navgroup"><button type="button" class="navtop">Play</button><div class="dropdown">
+  <div class="navgroup"><button type="button" class="navtop" aria-haspopup="true" aria-expanded="false">Play</button><div class="dropdown">
    <button class="navitem active" data-page="home">Home</button>
    <button class="navitem" data-page="play">Play chess</button>
    <button class="navitem" data-page="computer">Play computer</button>
   </div></div>
   <div class="navgroup"><button type="button" class="navtop navitem" data-page="puzzles">Puzzles</button></div>
   <button type="button" class="navtop navitem" data-page="watch">Watch</button>
-  <div class="navgroup"><button type="button" class="navtop">Learn</button><div class="dropdown">
+  <div class="navgroup"><button type="button" class="navtop" aria-haspopup="true" aria-expanded="false">Learn</button><div class="dropdown">
    <button class="navitem" data-page="learn">Learn chess</button>
+   <button class="navitem" data-page="openings">Opening principles</button>
+   <button class="navitem" data-page="practice">Practice room</button>
+   <button class="navitem" data-page="training">Training center</button>
   </div></div>
-  <div class="navgroup"><button type="button" class="navtop">Community</button><div class="dropdown">
+  <div class="navgroup"><button type="button" class="navtop" aria-haspopup="true" aria-expanded="false">Community</button><div class="dropdown">
    <button class="navitem" data-page="community">Leaderboard &amp; games</button>
    <button class="navitem" data-page="profile">Player profile</button>
    <button class="navitem" data-page="friends">Friends</button>
@@ -509,7 +530,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="card-cutter">Help cut MaxChess cards</button>
    <button class="navitem" data-page="hiring">Join the team</button>
   </div></div>
-  <div class="navgroup"><button type="button" class="navtop">Tools</button><div class="dropdown">
+  <div class="navgroup"><button type="button" class="navtop" aria-haspopup="true" aria-expanded="false">Tools</button><div class="dropdown">
    <button class="navitem" data-page="new-features">✨ New features</button>
    <button class="navitem" data-page="analysis">Analysis board</button>
    <button class="navitem" data-page="gifs">GIFs &amp; flyers</button>
@@ -1131,7 +1152,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  const searchBox=$('siteSearch');if(searchBox){const routes=[['play chess','play'],['play','play'],['computer','computer'],['puzzle','puzzles'],['tactics','puzzles'],['learn','learn'],['lesson','learn'],['opening','openings'],['practice','practice'],['analysis','analysis'],['study','analysis'],['leaderboard','community'],['community','community'],['friend','friends'],['tournament','tournaments'],['comment','community-comments'],['question','community-comments'],['about','about']];searchBox.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const q=searchBox.value.trim().toLowerCase();if(!q)return;const hit=routes.find(([word])=>q===word||q.includes(word)||word.includes(q));if(hit){navigate(hit[1]);searchBox.value='';note('Opened '+hit[0]+'.')}else note('Try play, computer, puzzles, lessons, openings, analysis, friends or tournaments.');});}
  document.querySelectorAll('[data-hqgo]').forEach(b=>b.onclick=()=>navigate(b.dataset.hqgo));
  $('homePlay').onclick=()=>navigate('play');$('homeComputer').onclick=()=>{reset(true);navigate('play')};$('homeLocal').onclick=()=>{reset(false);navigate('play')};$('homePlayComputer').onclick=()=>{reset(true);navigate('play')};document.querySelectorAll('[data-homegoto]').forEach(b=>b.onclick=()=>navigate(b.dataset.homegoto));
- document.querySelectorAll('.navgroup > .navtop').forEach(top=>{top.addEventListener('click',event=>{const group=top.closest('.navgroup');if(!group||!group.querySelector('.dropdown'))return;event.preventDefault();event.stopPropagation();const opening=!group.classList.contains('open');document.querySelectorAll('.navgroup.open').forEach(g=>g.classList.remove('open'));if(opening)group.classList.add('open')})});document.addEventListener('click',event=>{if(!event.target.closest('.navgroup'))document.querySelectorAll('.navgroup.open').forEach(g=>g.classList.remove('open'))});document.querySelectorAll('.navitem').forEach(b=>b.onclick=()=>{document.querySelectorAll('.navgroup.open').forEach(g=>g.classList.remove('open'));if(b.dataset.page==='profile')viewPlayerId=null;navigate(b.dataset.page)});document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>navigate(b.dataset.goto));document.querySelectorAll('[data-rightgo]').forEach(b=>b.onclick=()=>navigate(b.dataset.rightgo));
+ document.querySelectorAll('.navgroup > .navtop').forEach(top=>{top.addEventListener('click',event=>{const group=top.closest('.navgroup');if(!group||!group.querySelector('.dropdown'))return;event.preventDefault();event.stopPropagation();const opening=!group.classList.contains('open');document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')});if(opening){group.classList.add('open');top.setAttribute('aria-expanded','true')}})});document.addEventListener('click',event=>{if(!event.target.closest('.navgroup'))document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')})});document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')})}});document.querySelectorAll('.navitem').forEach(b=>b.onclick=()=>{document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')});if(b.dataset.page==='profile')viewPlayerId=null;navigate(b.dataset.page)});document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>navigate(b.dataset.goto));document.querySelectorAll('[data-rightgo]').forEach(b=>b.onclick=()=>navigate(b.dataset.rightgo));
  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===b));$('gameTab').classList.toggle('hidden',b.dataset.tab!=='game');$('learnTab').classList.toggle('hidden',b.dataset.tab!=='learn')});
  function setLesson(id,target){let x=lessons[id];if(!x)return;target.innerHTML='<h3>'+x[0]+'</h3><p>'+x[1]+'</p><div class="lesson-goal"><b>Remember:</b> '+x[2]+'</div><p><b>Try this:</b> '+x[3]+'</p><div class="lesson-quiz"><b>Quick check</b><p>'+x[4]+'</p>'+x[5].map((a,i)=>'<button type="button" data-lesson-answer="'+i+'">'+a+'</button>').join('')+'<div class="quiz-feedback" aria-live="polite"></div></div>';target.querySelectorAll('[data-lesson-answer]').forEach(b=>b.onclick=()=>{const ok=Number(b.dataset.lessonAnswer)===x[6],out=target.querySelector('.quiz-feedback');out.textContent=ok?'✅ Correct! '+x[7]:'Not quite — try again. Think about the lesson above.';out.style.color=ok?'var(--green2)':'var(--gold)';if(ok){b.style.outline='2px solid var(--green2)';target.querySelectorAll('[data-lesson-answer]').forEach(q=>q.disabled=true)}})}
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-lesson]').forEach(x=>x.classList.toggle('chosen',x===b));setLesson(b.dataset.lesson,$('lessonDetail'))});

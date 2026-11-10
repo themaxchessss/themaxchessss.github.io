@@ -840,7 +840,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
   <p id="profileInfo"></p>
   <details>
    <summary class="danger-sum">Delete account</summary>
-   <p style="margin-top:10px">This permanently deletes your MaxChess sign-in and removes your profile, friendships, matchmaking entry and tournament entries. Any active online game is recorded as a loss. This cannot be undone.</p>
+   <p style="margin-top:10px">Your account is scheduled for permanent deletion in 7 days. MaxChess will email you a one-time Undo Deletion link. Open that link within 7 days to restore your account. If you do nothing, your profile and MaxChess account data will be permanently deleted. Any active online game will be recorded as a loss at that time.</p>
    <label for="closeConfirm">Type DELETE to confirm</label>
    <input id="closeConfirm" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="DELETE">
    <div class="account-actions"><button type="button" class="danger" id="closeAccountBtn">Delete my account</button></div>
@@ -1640,16 +1640,17 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   const st=$('closeStatus'),btn=$('closeAccountBtn');
   if(!authClient||!authUser){st.textContent='Sign in first.';return}
   if($('closeConfirm').value.trim()!=='DELETE'){st.textContent='Type DELETE in capital letters to confirm.';return}
-  btn.disabled=true;st.textContent='Deleting your account…';
+  btn.disabled=true;st.textContent='Scheduling deletion and sending your undo email…';
   try{
    const {data,error}=await authClient.functions.invoke('maxchess-close-account',{body:{confirm:'DELETE'}});
    if(error||data?.error){let msg=data?.error||error?.message||'Please try again.';if(error?.context?.json){try{msg=(await error.context.json()).error||msg}catch(e){}}throw new Error(msg)}
-   if(!data?.ok)throw new Error('The server did not confirm account deletion. Your account may still exist; try again or contact MaxChess support.')
+   if(!data?.ok||!data?.pending||!data?.emailed)throw new Error('MaxChess did not confirm that the undo email was sent. Your account may not be scheduled; please try again.');
+   const expiry=data.expires_at?new Date(data.expires_at).toLocaleString():'in 7 days';
    if(onlinePoll){clearInterval(onlinePoll);onlinePoll=null}onlineGameId=null;onlineColor=null;onlineBusy=false;
    try{await authClient.auth.signOut()}catch(e){}
    authUser=null;paintProfile();loadGameChat();profileModal.classList.remove('open');
-   note('Your MaxChess account was deleted.');
-  }catch(err){st.textContent='Could not delete your account: '+(err?.message||'Please try again.')}
+   note('Deletion scheduled. Check your email for the Undo Deletion link. You have 7 days to use it (until '+expiry+').');
+  }catch(err){st.textContent='Could not schedule deletion: '+(err?.message||'Please try again.')}
   finally{btn.disabled=false}
  };
  $('signupBtn').onclick=async()=>{if(authUser){if(authClient){const {error}=await authClient.auth.signOut();if(error){note('Could not sign out: '+error.message);return}authUser=null;paintProfile();note('Signed out of MaxChess.')}return}openAccount('signup')};

@@ -473,6 +473,10 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
   .topnav{justify-content:flex-start}
 }
 
+
+/* ---- MaxChess Watch ---- */
+#page-watch .puzzlebox{min-width:0}
+#page-watch .greenbtn,#page-watch .widebtn{display:block;text-align:center;text-decoration:none;margin-top:10px}
 </style>
 </head>
 <body>
@@ -486,6 +490,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="computer">Play computer</button>
   </div></div>
   <div class="navgroup"><button type="button" class="navtop navitem" data-page="puzzles">Puzzles</button></div>
+  <button type="button" class="navtop navitem" data-page="watch">Watch</button>
   <div class="navgroup"><button type="button" class="navtop">Learn</button><div class="dropdown">
    <button class="navitem" data-page="learn">Learn chess</button>
   </div></div>
@@ -801,6 +806,27 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 <div id="teamPrivateArea" class="puzzlebox" hidden style="margin-top:14px"><h3>MaxChess Team Area</h3><p class="muted">Your application was approved. This private area is available to your signed-in account.</p><h4>Your application answers</h4><p><b>Name:</b> <span id="teamAnswerName"></span></p><p><b>Role:</b> <span id="teamAnswerRole"></span></p><p><b>Chess profile:</b> <span id="teamAnswerLink"></span></p><p><b>Your answer:</b></p><p id="teamAnswerWhy" style="white-space:pre-wrap;overflow-wrap:anywhere"></p></div>
 </form>
 </div></section>
+<section class="pageview" id="page-watch">
+ <div class="simplepage" style="max-width:1000px">
+  <h2>MaxChess Watch</h2>
+  <p class="muted">Watch chess from the MaxChess community and follow major tournaments around the world.</p>
+  <div class="watch-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;margin-top:18px">
+   <section class="puzzlebox">
+    <h3>♟ MaxChess games</h3>
+    <p>Watch games played on MaxChess when players choose to share them publicly.</p>
+    <div class="status" role="status"><strong>No public games are being shown yet.</strong>The public game-sharing and live spectator connection still need to be built. Private games will not be displayed here.</div>
+    <p class="desc">MaxChess will only show games that players have chosen to make public.</p>
+   </section>
+   <section class="puzzlebox">
+    <h3>🏆 Major chess tournaments</h3>
+    <p>Find official event pages, live boards, and commentary from major chess events.</p>
+    <a class="greenbtn" href="https://www.chess.com/events" target="_blank" rel="noopener noreferrer">Explore chess tournament broadcasts ↗</a>
+    <a class="widebtn" href="https://www.youtube.com/@FIDE_chess" target="_blank" rel="noopener noreferrer">Watch FIDE’s official video channel ↗</a>
+    <p class="desc">These links open the event organizers’ or broadcasters’ own pages. MaxChess does not claim to own their streams.</p>
+   </section>
+  </div>
+ </div>
+</section>
 </main>
 <aside class="rightbar"><h2>Your chess dashboard</h2><div class="mini-card"><b>♟ Your rating</b><div class="rating-number" id="ratingNumber">1200</div><div class="rating-note" id="ratingRecord">0 wins · 0 losses · 0 draws</div><p>Your profile rating is saved online. Ranked rating updates are coming next.</p></div><div class="mini-card"><div style="font-size:25px">♟</div><b>Welcome to MaxChess</b><p>Play a game, learn a skill, and keep improving one move at a time.</p><button class="mini-link" data-rightgo="play">Start playing →</button></div><div class="mini-card"><b>Quick learning plan</b><p>New to chess? Follow these steps in order.</p><div class="right-stat"><span>Learn the pieces</span><b>01</b></div><div class="right-stat"><span>Protect your king</span><b>02</b></div><div class="right-stat"><span>Control the center</span><b>03</b></div><button class="mini-link" data-rightgo="learn">Open lessons →</button></div><div class="mini-card"><b>Game tools</b><p>Change the board and pieces to suit you.</p><button class="mini-link" id="rightTheme">Customize appearance →</button></div><div class="mini-card"><b>Made for everyone</b><p>Free to play. Friendly to beginners. Built for curious chess players.</p></div></aside>
 </div>

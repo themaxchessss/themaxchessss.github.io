@@ -1441,7 +1441,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   }
   const moveList=$('studyMoveList');if(moveList){const history=studyGame.history();moveList.replaceChildren();if(!history.length){const empty=document.createElement('div');empty.className='notation-empty';empty.textContent='Study moves will appear here.';moveList.append(empty)}else{for(let i=0;i<history.length;i+=2){const row=document.createElement('div');row.className='notation-row';const number=document.createElement('span');number.className='notation-number';number.textContent=(Math.floor(i/2)+1)+'.';const white=document.createElement('span');white.className='notation-move';white.textContent=history[i];const black=document.createElement('span');black.className='notation-move';black.textContent=history[i+1]||'…';row.append(number,white,black);moveList.append(row)}}}
   const status=$('studyGameStatus');
-  if(status){let message=studyGame.isCheckmate()?'Checkmate. This study line is finished.':studyGame.isDraw()?'Draw position.':studyGame.isCheck()?(studyGame.turn()==='w'?'White':'Black')+' is in check.':(studyGame.turn()==='w'?'White':'Black')+' to move. Select a piece to explore a move.';status.textContent=message}
+  if(status){let message=studyGame.in_checkmate()?'Checkmate. This study line is finished.':studyGame.in_draw()?'Draw position.':studyGame.in_check()?(studyGame.turn()==='w'?'White':'Black')+' is in check.':(studyGame.turn()==='w'?'White':'Black')+' to move. Select a piece to explore a move.';status.textContent=message}
  }
  function tapStudySquare(square){
   if(studySelected&&studyLegal.some(m=>m.to===square)){

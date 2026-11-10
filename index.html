@@ -627,9 +627,9 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  <div class="welcome"><div><h1>Play chess</h1><p>A fresh game is just one move away.</p></div><span class="badge">✦ Free to play</span></div>
  <div class="playgrid">
   <div class="boardcol">
-   <div class="playerbar"><div class="avatar">♟</div><div><div class="playername" id="opponentName">Black pieces</div><div class="playersub" id="opponentSub">Local two-player game</div></div><div class="clock" id="blackClock">10:00</div></div>
+   <div class="playerbar" id="topPlayerBar"><div class="avatar" id="topPlayerAvatar">♟</div><div><div class="playername" id="opponentName">Black pieces</div><div class="playersub" id="opponentSub">Local two-player game</div></div><div class="clock" id="blackClock">10:00</div></div>
    <div class="board" id="board" role="grid" aria-label="Chess board"></div>
-   <div class="playerbar"><div class="avatar">♙</div><div><div class="playername">White pieces</div><div class="playersub">You can play both sides</div></div><div class="clock" id="whiteClock">10:00</div></div>
+   <div class="playerbar" id="bottomPlayerBar"><div class="avatar" id="bottomPlayerAvatar">♙</div><div><div class="playername" id="playerName">White pieces</div><div class="playersub" id="playerSub">You can play both sides</div></div><div class="clock" id="whiteClock">10:00</div></div>
    <div class="boardtools"><button class="toolbtn" id="newGame">＋ New game</button><button class="toolbtn" id="undo">↶ Takeback</button><button class="toolbtn" id="flip">⇅ Flip board</button><button class="toolbtn" id="hint">✦ Hint</button><select class="toolbtn" id="timeControl" aria-label="Time control"><option value="0">No clock</option><option value="60">1 + 0 Bullet</option><option value="180">3 + 0 Blitz</option><option value="300">5 + 0 Blitz</option><option value="600" selected>10 + 0 Rapid</option><option value="900">15 + 0 Rapid</option><optgroup label="With delay"><option value="300:d3">5 | 3 delay</option><option value="600:d5">10 | 5 delay</option><option value="900:d10">15 | 10 delay</option></optgroup><optgroup label="With bonus per move"><option value="180:i2">3 + 2 bonus</option><option value="300:i3">5 + 3 bonus</option><option value="600:i5">10 + 5 bonus</option><option value="900:i10">15 + 10 bonus</option></optgroup></select><select class="toolbtn" id="clockDelay" aria-label="Clock delay or increment"><option value="0">No delay / bonus</option><optgroup label="Delay (clock waits)"><option value="d2">Delay 2s</option><option value="d3">Delay 3s</option><option value="d5">Delay 5s</option><option value="d10">Delay 10s</option></optgroup><optgroup label="Bonus (added per move)"><option value="i1">+1s per move</option><option value="i2">+2s per move</option><option value="i3">+3s per move</option><option value="i5">+5s per move</option><option value="i10">+10s per move</option></optgroup></select><button class="toolbtn" id="exportPGN">⇩ Download PGN</button><button class="toolbtn" id="sharePGN">↗ Share game</button><button class="toolbtn" id="exportFEN">Copy position (FEN)</button></div>
    <div class="boardfoot"><span id="moveCount">Move 1</span><span>Tap a piece, then a square</span><span id="turnFoot">White to move</span></div>
    <div id="puzzlePlayTools" class="puzzle-play-tools" style="display:none"><b>♞ Puzzle controls</b><div class="puzzle-play-actions"><button class="toolbtn" id="puzzlePlayHint">💡 Hint</button><button class="toolbtn" id="puzzlePlayReset">↻ Reset</button><button class="toolbtn" id="puzzlePlaySolution">Show solution</button><button class="greenbtn" id="puzzlePlayNext">Next puzzle →</button></div><div id="puzzlePlayStatus" class="desc" aria-live="polite">Find the best move.</div></div>
@@ -996,7 +996,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  function computerMove(){if(!game||game.game_over()||game.turn()!=='b'||!computerMode||thinking)return;thinking=true;stockfishPurpose='computer';stockfishFen=game.fen();const requestedFen=stockfishFen;$('statusText').textContent='MaxChess is thinking…';const touchDevice=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(touchDevice){computerMoveFallback();return}if(!createStockfishWorker()){computerMoveFallback();return}if(stockfishReady)launchStockfishComputerMove();setTimeout(()=>{if(game&&computerMode&&!game.game_over()&&game.turn()==='b'&&game.fen()===requestedFen&&thinking){try{if(stockfishWorker)stockfishWorker.postMessage('stop')}catch(e){}stockfishPurpose='analysis';computerMoveFallback();note('Computer engine took too long, so MaxChess used its backup move.')}},12000)}
 
  function saveActiveComputerGame(){if(!computerMode||onlineGameId||!authClient||!authUser||!game)return;if(game.game_over()){try{localStorage.removeItem('maxchess_active_computer_game_v1')}catch(e){}saveProgressCloud();return}const snapshot={fen:game.fen(),computerLevel,clockInitial,whiteSeconds,blackSeconds,savedAt:new Date().toISOString()};try{localStorage.setItem('maxchess_active_computer_game_v1',JSON.stringify(snapshot))}catch(e){}saveProgressCloud()}
- function reset(computer=false){if(!game)return;try{if(stockfishWorker)stockfishWorker.postMessage('stop')}catch(e){}thinking=false;stockfishPurpose='analysis';game.reset();try{localStorage.removeItem('maxchess_active_computer_game_v1')}catch(e){}ratingFinalized=false;hintUsed=false;localLichessImportAttempted=false;if($('retryLichessImport')){$('retryLichessImport').hidden=true;$('retryLichessImport').disabled=false;$('retryLichessImport').textContent='Import to Lichess'}puzzleMode=false;if(onlineGameId||onlinePoll){onlineGameId=null;onlineColor=null;onlineBusy=false;$('onlineGameActions').style.display='none';if(onlinePoll){clearInterval(onlinePoll);onlinePoll=null}$('opponentName').textContent='Black pieces';$('onlineStatus').textContent='Sign in, then find an opponent anywhere on MaxChess.';loadGameChat()}selected=null;legal=[];lastMove=null;computerMode=computer;applyTcExtra();clockInitial=tcSecs();whiteSeconds=blackSeconds=clockInitial;clockStarted=false;clockPaused=false;flaggedSide=null;render();note(computer?'Beginner computer game started.':'New game started.')}
+ function reset(computer=false){if(!game)return;setLocalPlayerLayout();flipped=false;try{if(stockfishWorker)stockfishWorker.postMessage('stop')}catch(e){}thinking=false;stockfishPurpose='analysis';game.reset();try{localStorage.removeItem('maxchess_active_computer_game_v1')}catch(e){}ratingFinalized=false;hintUsed=false;localLichessImportAttempted=false;if($('retryLichessImport')){$('retryLichessImport').hidden=true;$('retryLichessImport').disabled=false;$('retryLichessImport').textContent='Import to Lichess'}puzzleMode=false;if(onlineGameId||onlinePoll){onlineGameId=null;onlineColor=null;onlineBusy=false;$('onlineGameActions').style.display='none';if(onlinePoll){clearInterval(onlinePoll);onlinePoll=null}$('opponentName').textContent='Black pieces';$('onlineStatus').textContent='Sign in, then find an opponent anywhere on MaxChess.';loadGameChat()}selected=null;legal=[];lastMove=null;computerMode=computer;applyTcExtra();clockInitial=tcSecs();whiteSeconds=blackSeconds=clockInitial;clockStarted=false;clockPaused=false;flaggedSide=null;render();note(computer?'Beginner computer game started.':'New game started.')}
  $('newGame').onclick=()=>reset(false);$('startGame').onclick=()=>reset(false);$('computerLevel').onchange=()=>{computerLevel=Number($('computerLevel').value)||800;note('Computer level set to '+computerLevel+'.')};$('undo').onclick=()=>{if(onlineGameId){note('Takeback is not available in online games.');return}if(game.undo()){if(computerMode&&game.turn()==='b')game.undo();selected=null;legal=[];lastMove=null;render();note('Last move taken back.')}else note('There are no moves to take back yet.')};$('flip').onclick=()=>{flipped=!flipped;render()};$('playComputer').onclick=()=>{reset(true);navigate('play')};$('computerStart').onclick=()=>{computerLevel=Number($('computerLevel').value)||800;reset(true);navigate('play');note('Rated computer game started · opponent '+computerLevel+'.')};$('analysisStart').onclick=()=>navigate('play');$('openingStart').onclick=()=>navigate('play');$('practiceStart').onclick=()=>navigate('play');$('puzzleStart').onclick=()=>navigate('play');
  function getGameHintMove(){
   const moves=game.moves({verbose:true});if(!moves.length)return null;
@@ -1484,15 +1484,37 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    if(imports.length)note('Game finished and imported to Lichess for '+imports.map(x=>x.username).join(' and ')+'.');
   }
  }
+ function setOnlinePlayerLayout(color, opponentLabel, opponentRating){
+  const top=$('topPlayerBar'),bottom=$('bottomPlayerBar'),whiteClock=$('whiteClock'),blackClock=$('blackClock');
+  if(!top||!bottom||!whiteClock||!blackClock)return;
+  const isBlack=color==='b';
+  top.appendChild(isBlack?whiteClock:blackClock);
+  bottom.appendChild(isBlack?blackClock:whiteClock);
+  flipped=isBlack;
+  $('topPlayerAvatar').textContent=isBlack?'♙':'♟';
+  $('bottomPlayerAvatar').textContent=isBlack?'♟':'♙';
+  $('opponentName').textContent=opponentLabel||'Online opponent';
+  $('opponentSub').textContent='Online opponent'+(opponentRating?' · '+opponentRating+' rating':'');
+  $('playerName').textContent='You · '+(isBlack?'Black':'White')+' pieces';
+  $('playerSub').textContent=isBlack?'Your side · White moves first':'Your side · White to move first';
+ }
+ function setLocalPlayerLayout(){
+  const top=$('topPlayerBar'),bottom=$('bottomPlayerBar'),whiteClock=$('whiteClock'),blackClock=$('blackClock');
+  if(!top||!bottom||!whiteClock||!blackClock)return;
+  top.appendChild(blackClock);bottom.appendChild(whiteClock);
+  $('topPlayerAvatar').textContent='♟';$('bottomPlayerAvatar').textContent='♙';
+  $('opponentName').textContent='Black pieces';$('opponentSub').textContent='Local two-player game';
+  $('playerName').textContent='White pieces';$('playerSub').textContent='You can play both sides';
+ }
  async function loadOnlineGame(row){
   if(!row||!authUser)return;
   onlineGameId=row.id;onlineColor=row.white_player===authUser.id?'w':'b';computerMode=false;
+  setOnlinePlayerLayout(onlineColor,'Online opponent',null);
   if(onlinePoll){clearInterval(onlinePoll);onlinePoll=null}
   game.load(row.fen);selected=null;legal=[];lastMove=null;const tc=String(row.time_control||'0+0').match(/^(\d+)\+(\d+)$/);clockInitial=tc?Number(tc[1])*60:0;whiteSeconds=row.white_ms==null?clockInitial:Number(row.white_ms)/1000;blackSeconds=row.black_ms==null?clockInitial:Number(row.black_ms)/1000;clockStarted=clockInitial>0;clockPaused=false;flaggedSide=null;$('onlineGameActions').style.display='flex';$('onlineAcceptDraw').style.display='none';$('onlineDeclineDraw').style.display='none';paintClocks();render();
   const otherId=onlineColor==='w'?row.black_player:row.white_player;
   const prof=await authClient.from('profiles').select('username,rating').eq('id',otherId).maybeSingle();
-  $('opponentName').textContent=prof.data?.username||'Online opponent';
-  $('opponentSub').textContent='Online player · '+(prof.data?.rating||1200)+' rating';
+  setOnlinePlayerLayout(onlineColor,prof.data?.username||'Online opponent',prof.data?.rating||1200);
   $('onlineStatus').textContent='Game started! You are playing '+(onlineColor==='w'?'White':'Black')+'.';
   note('Opponent found! Your online game is ready.');loadGameChat();
   onlinePoll=setInterval(async()=>{

@@ -35,8 +35,17 @@ jobs:
           (async () => {
             const browser = await chromium.launch({ headless: true });
             const problems = [];
-            for (const viewport of [{ width: 1280, height: 900 }, { width: 820, height: 1180 }]) {
-              const page = await browser.newPage({ viewport });
+            for (const device of [
+              { name: 'desktop', viewport: { width: 1280, height: 900 } },
+              { name: 'tablet', viewport: { width: 820, height: 1180 } },
+              { name: 'iPad 9th generation touch', viewport: { width: 810, height: 1080 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 }
+            ]) {
+              const page = await browser.newPage({
+                viewport: device.viewport,
+                isMobile: device.isMobile || false,
+                hasTouch: device.hasTouch || false,
+                deviceScaleFactor: device.deviceScaleFactor || 1
+              });
               page.on('pageerror', error => problems.push('Browser JavaScript error: ' + error.message));
               page.on('console', msg => { if (msg.type() === 'error') problems.push('Console error: ' + msg.text()); });
               page.on('requestfailed', request => {
@@ -59,7 +68,19 @@ jobs:
                     if (result.status() >= 400) problems.push('Broken internal link (' + result.status() + '): ' + url);
                   } catch (e) { problems.push('Could not check internal link: ' + url + ' — ' + e.message); }
                 }
-              } catch (e) { problems.push('Page load/test failed at viewport ' + viewport.width + ': ' + e.message); }
+                if (device.hasTouch) {
+                  const playMenu = page.locator('.topnav button.navtop[aria-haspopup="true"]').first();
+                  await playMenu.click();
+                  const playLink = page.locator('.topnav button[data-page="play"]');
+                  await playLink.click();
+                  await page.waitForFunction(() => document.querySelectorAll('#board .sq').length === 64, { timeout: 15000 });
+                  await page.locator('#board .sq[aria-label^="e2, white"]').click();
+                  await page.locator('#board .sq[aria-label^="e4, empty"]').click();
+                  const moveWorked = await page.locator('#board .sq[aria-label^="e4, white"]').count() === 1
+                    && await page.locator('#board .sq[aria-label^="e2, empty"]').count() === 1;
+                  if (!moveWorked) problems.push('iPad touch test: tapping e2 then e4 did not move the white pawn');
+                }
+              } catch (e) { problems.push('Page load/test failed at ' + device.name + ': ' + e.message); }
               await page.close();
             }
             await browser.close();

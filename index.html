@@ -873,6 +873,13 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <p id="teamHubWelcome">Your approved application unlocks this area.</p>
    <p><b>Your approved role:</b> <span id="teamHubRole">Team member</span></p>
   </div>
+  <div id="teamRoleWorkspace" class="puzzlebox" style="margin-top:14px">
+   <h3>🧭 Your role workspace</h3><p class="muted">A task list matched to your approved role.</p>
+   <div id="teamRoleTasks"></div>
+   <label for="teamRoleNotes" style="display:block;margin-top:14px">My work notes</label>
+   <textarea id="teamRoleNotes" rows="4" maxlength="2000" placeholder="Write ideas, progress or questions…" style="display:block;width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel3);color:var(--strong)"></textarea>
+   <p class="desc">Checkmarks and notes save only in this browser on this device. They are not sent to the owner or shared with other team members.</p>
+  </div>
   <div class="puzzlebox" style="margin-top:14px">
    <h3>Team workspace</h3>
    <ul>
@@ -1441,6 +1448,40 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  async function connectAuth(url,key,save=true){if(!window.supabase?.createClient){setAuthStatus('Could not load the Supabase client library. Refresh and try again.');return false}if(!/^https:\/\/[^/]+\.supabase\.co\/?$/.test(url)||!key.trim()){setAuthStatus('Enter a valid Supabase project URL and public anon/publishable key.');return false}try{authClient=window.supabase.createClient(url.replace(/\/$/,''),key.trim());const {data,error}=await authClient.auth.getSession();if(error)throw error;authUser=data.session?.user||null;if(wasRecovery&&authUser&&!connectAuth.shown){connectAuth.shown=true;openAccount('reset')}if(save)localStorage.setItem('maxchess_auth_config',JSON.stringify({url:url.replace(/\/$/,''),key:key.trim()}));authClient.auth.onAuthStateChange((_event,session)=>{authUser=session?.user||null;paintProfile();loadFriends();loadTournaments();loadCommunityComments();loadTeamApplication();if(authUser)resumeActiveOnlineGame()});paintProfile();setAuthStatus('');loadCommunityComments();loadTeamApplication();if(authUser)resumeActiveOnlineGame();return true}catch(e){authClient=null;setAuthStatus('Connection failed: '+(e.message||'check your project URL and public key'));return false}}
 
 
+
+ function renderTeamRoleWorkspace(role){
+  const host=$('teamRoleTasks');if(!host)return;
+  const sets={
+   'Puzzle maker':['Create an original puzzle position.','Write the best move and explain why it works.','Check the puzzle has the intended solution.','Test it on a phone or tablet.'],
+   'Lesson writer or coach':['Plan a lesson with one clear learning goal.','Set up a board position and explain the idea.','Add a next-move question and answer.','Check that the lesson suits its difficulty level.'],
+   'Chess coach':['Prepare a short coaching topic.','Choose a sample position to discuss.','Write two questions that help a learner think.','Give kind, useful feedback; keep player details private.'],
+   'Quiz maker':['Create a next-move question.','Verify the answer for the exact position.','Explain why the best move works.','Test the quiz on an iPad-sized screen.'],
+   'Opening researcher':['Choose an opening idea to research.','Check the move order and resulting position.','Explain the idea in beginner-friendly language.','Create an original example position.'],
+   'Endgame specialist':['Choose an endgame theme.','Set up a correct position.','Explain the winning or drawing plan.','Create a practice question.'],
+   'Tournament organizer':['Suggest a friendly tournament format.','Write simple pairing and scoring rules.','Prepare fair-play reminders.','Get owner approval before announcing it.'],
+   'Event host':['Suggest an event theme and schedule.','Prepare a welcome message and rules.','Check the instructions are clear.','Ask the owner before inviting players.'],
+   'Game broadcaster':['Choose a public or approved game.','Prepare a commentary outline.','Explain key moves for newer players.','Check permission before sharing game or player details.'],
+   'Stream / video helper':['Plan a short video or broadcast segment.','Write a simple run-of-show.','Check audio, captions and screen layout.','Get approval before publishing.'],
+   'Chess content creator':['Draft an original chess tip.','Add a board diagram or example.','Check spelling and chess accuracy.','Send the draft for review before posting.'],
+   'Community helper':['Draft a friendly welcome for new players.','Collect common questions and helpful answers.','Flag safety concerns to the owner.','Never ask for passwords or private information.'],
+   'Fair-play helper':['Read the fair-play guidance.','Write down factual details of a reported concern.','Send concerns privately to the owner.','Do not investigate, accuse, punish or access accounts.'],
+   'Designer':['Sketch one useful page or board improvement.','Check contrast, readability and mobile layout.','Use original artwork or assets with permission.','Share a preview for approval.'],
+   'Website tester':['Test one feature on a phone or tablet.','Write exact steps to reproduce a bug.','Record expected and actual results.','Retest after a fix.'],
+   'Bug reporter':['Give the bug a short title.','List the steps that cause it.','Describe expected versus actual behavior.','Only attach screenshots without private information.'],
+   'Translator':['Choose a short lesson or instruction.','Keep chess terms consistent.','Check the translation reads naturally.','Ask for a fluent-speaker review if possible.'],
+   'Accessibility helper':['Check text size and color contrast.','Try keyboard and touch controls.','Look for confusing labels or missing instructions.','Suggest one specific improvement.'],
+   'Documentation writer':['Choose one MaxChess feature.','Write clear step-by-step instructions.','Check each step on the current website.','Send the guide for review.'],
+   'Website developer':['Describe one small improvement or bug fix.','Check its effect on mobile users.','Make code changes only with owner approval.','Test before anything is published.'],
+   'Ambassador':['Prepare an accurate description of MaxChess.','Suggest a suitable chess club or community.','Ask permission before sharing promotions.','Never promise features or speak for the owner without approval.']
+  };
+  const tasks=sets[role]||['Read the team guidelines.','Choose one useful MaxChess improvement.','Write a clear plan for the owner.','Wait for approval before publishing or contacting players.'];
+  const key='maxchess_team_'+(authUser?.id||'user')+'_'+role.replace(/[^a-z0-9]/gi,'_');
+  let done={};try{done=JSON.parse(localStorage.getItem(key)||'{}')||{};}catch(_e){}
+  host.replaceChildren();const intro=document.createElement('p');intro.className='muted';intro.textContent='Starter tasks for '+role;host.appendChild(intro);
+  tasks.forEach((task,i)=>{const label=document.createElement('label');label.style.cssText='display:flex;gap:10px;align-items:flex-start;margin:10px 0;line-height:1.4';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!done[i];cb.style.cssText='width:20px;height:20px;flex:0 0 20px;margin-top:1px';const span=document.createElement('span');span.textContent=task;cb.addEventListener('change',()=>{done[i]=cb.checked;try{localStorage.setItem(key,JSON.stringify(done));}catch(_e){}});label.append(cb,span);host.appendChild(label);});
+  const notes=$('teamRoleNotes'),nk=key+'_notes';if(notes){try{notes.value=localStorage.getItem(nk)||'';}catch(_e){}notes.oninput=()=>{try{localStorage.setItem(nk,notes.value);}catch(_e){}};}
+ }
+
  async function loadTeamApplication(){
   const status=$('teamApplicationStatus'), area=$('teamPrivateArea');
   if(!status||!area)return;
@@ -1459,6 +1500,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    if(teamNav)teamNav.hidden=false;
    $('teamHubWelcome').textContent='Welcome, '+app.applicant_name+'! Your application has been approved.';
    $('teamHubRole').textContent=app.role==='Lesson writer or coach'?'Lesson writer + Coach':app.role;
+   renderTeamRoleWorkspace(app.role);
    if(app.role==='Lesson writer or coach'&&lessonCreator){lessonCreator.hidden=false;loadTeamLessonDrafts();}
    $('teamAnswerName').textContent=app.applicant_name;
    $('teamAnswerRole').textContent=app.role;

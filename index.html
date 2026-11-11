@@ -1563,7 +1563,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    challenge:$('teamLessonChallenge').value.trim(),
    answer:$('teamLessonAnswer').value.trim(),
    board_fen:lessonBoardFen(),
-   study_data:{version:1,chapters:[...lessonStudyChapters,lessonStudyCurrentChapter()].filter(ch=>ch.moves.length||ch.quiz.trim()||Object.values(ch.annotations||{}).some(v=>String(v).trim()))]},
+   study_data:{version:1,chapters:lessonStudyToPublish},
    status:'published'
   };
   button.disabled=true;button.textContent='Publishing…';status.textContent='';

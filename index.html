@@ -1241,7 +1241,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  function renderLessonEditorBoard(){
   const board=$('lessonEditorBoard');if(!board)return;board.replaceChildren();
   lessonBoard.forEach((row,r)=>row.forEach((piece,c)=>{
-   const idx=r*8+c,sq=document.createElement('button');sq.type='button';sq.className='lesson-editor-square '+((r+c)%2===0?'light':'dark');sq.dataset.index=idx;sq.setAttribute('role','gridcell');sq.setAttribute('aria-label String'.replace(' String',''),String.fromCharCode(97+c)+(8-r)+(piece?', '+piece:' empty'));
+   const idx=r*8+c,sq=document.createElement('button');sq.type='button';sq.className='lesson-editor-square '+((r+c)%2===0?'light':'dark');sq.dataset.index=idx;sq.setAttribute('role','gridcell');sq.setAttribute('aria-label',String.fromCharCode(97+c)+(8-r)+(piece?', '+piece:' empty'));
    if(lessonPickedSquare===idx)sq.classList.add('picked');
    if(piece){sq.textContent=lessonPieceGlyph[piece]||'';sq.draggable=true}
    board.append(sq);
@@ -1452,13 +1452,14 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    lesson_text:$('teamLessonText').value.trim(),
    challenge:$('teamLessonChallenge').value.trim(),
    answer:$('teamLessonAnswer').value.trim(),
+   board_fen:lessonBoardFen(),
    status:'published'
   };
   button.disabled=true;button.textContent='Publishing…';status.textContent='';
   try{
    const {error}=await authClient.from('team_lesson_drafts').insert(payload);
    if(error)throw error;
-   $('teamLessonForm').reset();
+   $('teamLessonForm').reset();lessonBoard=parseLessonFen(lessonStartFen);lessonPalettePiece=null;lessonPickedSquare=null;renderLessonEditorBoard();
    status.textContent='Published! Your lesson is now in Learn under MADE BY MAXCHESS USERS.';
    await loadTeamLessonDrafts();
   }catch(err){status.textContent=err.message||'Could not save your lesson draft.';}

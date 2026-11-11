@@ -535,8 +535,8 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="analysis">Analysis board</button>
    <button class="navitem" data-page="gifs">GIFs &amp; flyers</button>
    <button class="navitem" data-page="community-comments">Comments &amp; questions</button>
-   <button class="navitem" data-page="team-hub" id="teamHubNav" hidden>♟ Approved Team Hub</button>
   </div></div>
+  <button type="button" class="navtop navitem" data-page="team-hub" id="teamHubNav" hidden>♟ Team</button>
   <button type="button" class="navtop navitem" data-page="business-cards">Cards</button>
  </nav>
  <input class="topsearch" id="siteSearch" aria-label="Search MaxChess pages and tools" placeholder="Search lessons, puzzles, tools…">
@@ -847,6 +847,34 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
     <li>Share lesson, puzzle, design, or testing suggestions with the project owner for review.</li>
    </ul>
    <p class="desc">This is an in-site team area, not a messaging system or permission to edit the website or repository.</p>
+  </div>
+  <div id="teamLessonCreator" class="puzzlebox" style="margin-top:14px" hidden>
+   <h3>📘 Create a lesson draft</h3>
+   <p class="muted">Write a chess lesson for the MaxChess Learn section. Your draft is saved privately for review; it does not go live automatically.</p>
+   <form id="teamLessonForm">
+    <label for="teamLessonTitle">Lesson title</label>
+    <input id="teamLessonTitle" required minlength="3" maxlength="80" placeholder="Example: How to spot a knight fork" style="display:block;width:100%;margin:5px 0 12px;padding:10px;border:1px solid var(--line);border-radius:5px;background:var(--panel3);color:var(--strong)">
+    <label for="teamLessonTopic">Topic</label>
+    <select id="teamLessonTopic" required style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px">
+     <option>Pieces and rules</option><option>Tactics</option><option>Openings</option><option>Strategy</option><option>Endgames</option><option>Checkmate</option><option>Other</option>
+    </select>
+    <label for="teamLessonLevel">Difficulty</label>
+    <select id="teamLessonLevel" required style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px">
+     <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+    </select>
+    <label for="teamLessonGoal">What will the learner understand?</label>
+    <textarea id="teamLessonGoal" required minlength="10" maxlength="500" rows="2" placeholder="By the end, the learner will be able to…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
+    <label for="teamLessonText">Teach the idea step by step</label>
+    <textarea id="teamLessonText" required minlength="20" maxlength="5000" rows="6" placeholder="Explain the chess idea. Add a short example using moves or a position…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
+    <label for="teamLessonChallenge">Quick question or challenge</label>
+    <textarea id="teamLessonChallenge" required minlength="5" maxlength="1000" rows="3" placeholder="Ask the learner to find a move or explain an idea…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
+    <label for="teamLessonAnswer">Answer and explanation</label>
+    <textarea id="teamLessonAnswer" required minlength="1" maxlength="1000" rows="3" placeholder="Give the correct answer and explain why…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
+    <button class="greenbtn" id="teamLessonSubmit" type="submit">Save lesson draft</button>
+    <p id="teamLessonStatus" class="desc" role="status" aria-live="polite"></p>
+   </form>
+   <h4>Your saved lesson drafts</h4>
+   <div id="teamLessonDraftList" aria-live="polite"><p class="muted">Your saved drafts will appear here.</p></div>
   </div>
   <div class="puzzlebox" style="margin-top:14px">
    <h3>Send a team idea</h3>
@@ -1289,6 +1317,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   if(!status||!area)return;
   area.hidden=true;
   const teamNav=$('teamHubNav');if(teamNav)teamNav.hidden=true;
+  const lessonCreator=$('teamLessonCreator');if(lessonCreator)lessonCreator.hidden=true;
   if(!authClient||!authUser){status.textContent='Sign in to apply and check your application status.';return}
   status.textContent='Checking your application…';
   const {data,error}=await authClient.from('team_applications').select('id,applicant_name,role,chess_profile,motivation,status,ai_reason,created_at').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(1);
@@ -1301,6 +1330,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    if(teamNav)teamNav.hidden=false;
    $('teamHubWelcome').textContent='Welcome, '+app.applicant_name+'! Your application has been approved.';
    $('teamHubRole').textContent=app.role;
+   if(app.role==='Lesson writer or coach'&&lessonCreator){lessonCreator.hidden=false;loadTeamLessonDrafts();}
    $('teamAnswerName').textContent=app.applicant_name;
    $('teamAnswerRole').textContent=app.role;
    $('teamAnswerLink').textContent=app.chess_profile||'Not provided';
@@ -1308,6 +1338,48 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    area.hidden=false;
   }
  }
+ async function loadTeamLessonDrafts(){
+  const list=$('teamLessonDraftList');
+  if(!list||!authClient||!authUser)return;
+  list.textContent='Loading your drafts…';
+  const {data,error}=await authClient.from('team_lesson_drafts')
+   .select('id,title,topic,level,status,created_at')
+   .eq('author_id',authUser.id).order('created_at',{ascending:false}).limit(30);
+  if(error){list.textContent='Could not load drafts. Please try again later.';return;}
+  list.replaceChildren();
+  if(!data?.length){list.textContent='No lesson drafts yet. Create your first one above.';return;}
+  data.forEach(d=>{
+   const item=document.createElement('div');item.className='lesson-detail';
+   const heading=document.createElement('h4');heading.textContent=d.title;
+   const meta=document.createElement('p');meta.className='desc';
+   meta.textContent=d.topic+' · '+d.level+' · '+d.status+' · '+new Date(d.created_at).toLocaleDateString();
+   item.append(heading,meta);list.append(item);
+  });
+ }
+ $('teamLessonForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const status=$('teamLessonStatus'),button=$('teamLessonSubmit');
+  if(!authClient||!authUser){status.textContent='Please sign in again.';return;}
+  const payload={
+   author_id:authUser.id,
+   title:$('teamLessonTitle').value.trim(),
+   topic:$('teamLessonTopic').value,
+   level:$('teamLessonLevel').value,
+   learning_goal:$('teamLessonGoal').value.trim(),
+   lesson_text:$('teamLessonText').value.trim(),
+   challenge:$('teamLessonChallenge').value.trim(),
+   answer:$('teamLessonAnswer').value.trim()
+  };
+  button.disabled=true;button.textContent='Saving…';status.textContent='';
+  try{
+   const {error}=await authClient.from('team_lesson_drafts').insert(payload);
+   if(error)throw error;
+   $('teamLessonForm').reset();
+   status.textContent='Saved privately as a draft. It is not published yet.';
+   await loadTeamLessonDrafts();
+  }catch(err){status.textContent=err.message||'Could not save your lesson draft.';}
+  finally{button.disabled=false;button.textContent='Save lesson draft';}
+ });
  $('teamHubCopyIdea')?.addEventListener('click',async()=>{
   const idea=$('teamHubIdea').value.trim(),out=$('teamHubIdeaStatus');
   if(!idea){out.textContent='Write an idea first.';return}

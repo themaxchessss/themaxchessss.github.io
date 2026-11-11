@@ -496,6 +496,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 /* ---- MaxChess Watch ---- */
 #page-watch .puzzlebox{min-width:0}
 #page-watch .greenbtn,#page-watch .widebtn{display:block;text-align:center;text-decoration:none;margin-top:10px}
+.lesson-board-editor{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel2)}.lesson-editor-board{width:min(100%,440px);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));margin:12px auto;box-shadow:0 4px 18px #0006}.lesson-editor-square{position:relative;display:grid;place-items:center;min-width:0;aspect-ratio:1;padding:0;border-radius:0;font-size:clamp(22px,5.5vw,48px);line-height:1;color:#161512;touch-action:manipulation}.lesson-editor-square.light{background:var(--boardlight)}.lesson-editor-square.dark{background:var(--boarddark)}.lesson-editor-square.picked{outline:3px solid var(--gold);outline-offset:-3px}.lesson-piece-palette{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}.lesson-piece-palette button{min-width:38px;min-height:40px;padding:4px 7px;border:1px solid var(--line);border-radius:7px;background:var(--panel3);color:var(--strong);font-size:25px}.lesson-piece-palette button.active{outline:2px solid var(--gold)}.lesson-board-actions{display:flex;flex-wrap:wrap;gap:8px}.lesson-board-preview{width:min(100%,300px);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));margin:12px 0}.lesson-board-preview span{display:grid;place-items:center;aspect-ratio:1;font-size:clamp(18px,4vw,32px);color:#161512}.lesson-board-preview .light{background:var(--boardlight)}.lesson-board-preview .dark{background:var(--boarddark)}@media(max-width:600px){.lesson-board-editor{padding:9px}.lesson-editor-board{width:100%}.lesson-piece-palette button{min-width:34px;min-height:38px}}
 </style>
 </head>
 <body>
@@ -868,6 +869,18 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
     <textarea id="teamLessonGoal" required minlength="10" maxlength="500" rows="2" placeholder="By the end, the learner will be able to…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
     <label for="teamLessonText">Teach the idea step by step</label>
     <textarea id="teamLessonText" required minlength="20" maxlength="5000" rows="6" placeholder="Explain the chess idea. Add a short example using moves or a position…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
+    <div class="lesson-board-editor">
+     <h4>♟ Set up the lesson board</h4>
+     <p class="muted">Choose a piece, then tap a square to place it. Or drag a piece to another square. Tap a piece on the board and then its destination to move it.</p>
+     <div class="lesson-piece-palette" id="lessonPiecePalette" aria-label="Choose a chess piece">
+      <button type="button" data-piece="wk" aria-label="White king">♔</button><button type="button" data-piece="wq" aria-label="White queen">♕</button><button type="button" data-piece="wr" aria-label="White rook">♖</button><button type="button" data-piece="wb" aria-label="White bishop">♗</button><button type="button" data-piece="wn" aria-label="White knight">♘</button><button type="button" data-piece="wp" aria-label="White pawn">♙</button>
+      <button type="button" data-piece="bk" aria-label="Black king">♚</button><button type="button" data-piece="bq" aria-label="Black queen">♛</button><button type="button" data-piece="br" aria-label="Black rook">♜</button><button type="button" data-piece="bb" aria-label="Black bishop">♝</button><button type="button" data-piece="bn" aria-label="Black knight">♞</button><button type="button" data-piece="bp" aria-label="Black pawn">♟</button>
+      <button type="button" data-piece="erase" aria-label="Erase a square">⌫ Erase</button>
+     </div>
+     <div class="lesson-editor-board" id="lessonEditorBoard" role="grid" aria-label="Editable lesson chessboard"></div>
+     <div class="lesson-board-actions"><button type="button" class="toolbtn" id="lessonBoardStart">Starting position</button><button type="button" class="toolbtn" id="lessonBoardClear">Clear board</button></div>
+     <p class="desc" id="lessonBoardHelp" aria-live="polite">Starting position loaded. You can move or add pieces.</p>
+    </div>
     <label for="teamLessonChallenge">Quick question or challenge</label>
     <textarea id="teamLessonChallenge" required minlength="5" maxlength="1000" rows="3" placeholder="Ask the learner to find a move or explain an idea…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
     <label for="teamLessonAnswer">Answer and explanation</label>
@@ -1214,11 +1227,51 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
  $('homePlay').onclick=()=>navigate('play');$('homeComputer').onclick=()=>{reset(true);navigate('play')};$('homeLocal').onclick=()=>{reset(false);navigate('play')};$('homePlayComputer').onclick=()=>{reset(true);navigate('play')};document.querySelectorAll('[data-homegoto]').forEach(b=>b.onclick=()=>navigate(b.dataset.homegoto));
  document.querySelectorAll('.navgroup > .navtop').forEach(top=>{top.addEventListener('click',event=>{const group=top.closest('.navgroup');if(!group||!group.querySelector('.dropdown'))return;event.preventDefault();event.stopPropagation();const opening=!group.classList.contains('open');document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')});if(opening){group.classList.add('open');top.setAttribute('aria-expanded','true')}})});document.addEventListener('click',event=>{if(!event.target.closest('.navgroup'))document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')})});document.addEventListener('keydown',event=>{if(event.key==='Escape'){document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')})}});document.querySelectorAll('.navitem').forEach(b=>b.onclick=()=>{document.querySelectorAll('.navgroup.open').forEach(g=>{g.classList.remove('open');const t=g.querySelector(':scope > .navtop');if(t)t.setAttribute('aria-expanded','false')});if(b.dataset.page==='profile')viewPlayerId=null;navigate(b.dataset.page)});document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>navigate(b.dataset.goto));document.querySelectorAll('[data-rightgo]').forEach(b=>b.onclick=()=>navigate(b.dataset.rightgo));
  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===b));$('gameTab').classList.toggle('hidden',b.dataset.tab!=='game');$('learnTab').classList.toggle('hidden',b.dataset.tab!=='learn')});
+ const lessonPieceGlyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
+ const lessonStartFen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+ let lessonBoard=lessonStartFen.split(' ')[0].split('/').map(row=>{const a=[];for(const ch of row){if(/[1-8]/.test(ch)){for(let n=0;n<Number(ch);n++)a.push('')}else a.push((ch===ch.toUpperCase()?'w':'b')+ch.toLowerCase())}return a});
+ let lessonPalettePiece=null,lessonPickedSquare=null,lessonDragFrom=null;
+ function lessonBoardFen(){
+  const rows=lessonBoard.map(row=>{let out='',empty=0;for(const p of row){if(!p){empty++;continue}if(empty){out+=empty;empty=0}const c=p[1];out+=p[0]==='w'?c.toUpperCase():c}if(empty)out+=empty;return out});
+  return rows.join('/')+' w - - 0 1';
+ }
+ function parseLessonFen(fen){
+  try{return fen.split(' ')[0].split('/').map(row=>{const a=[];for(const ch of row){if(/[1-8]/.test(ch)){for(let n=0;n<Number(ch);n++)a.push('')}else a.push((ch===ch.toUpperCase()?'w':'b')+ch.toLowerCase())}if(a.length!==8)throw 0;return a})}catch(e){return null}
+ }
+ function renderLessonEditorBoard(){
+  const board=$('lessonEditorBoard');if(!board)return;board.replaceChildren();
+  lessonBoard.forEach((row,r)=>row.forEach((piece,c)=>{
+   const idx=r*8+c,sq=document.createElement('button');sq.type='button';sq.className='lesson-editor-square '+((r+c)%2===0?'light':'dark');sq.dataset.index=idx;sq.setAttribute('role','gridcell');sq.setAttribute('aria-label String'.replace(' String',''),String.fromCharCode(97+c)+(8-r)+(piece?', '+piece:' empty'));
+   if(lessonPickedSquare===idx)sq.classList.add('picked');
+   if(piece){sq.textContent=lessonPieceGlyph[piece]||'';sq.draggable=true}
+   board.append(sq);
+  }));
+ }
+ function lessonMoveOrPlace(idx){
+  const r=Math.floor(idx/8),c=idx%8,help=$('lessonBoardHelp');
+  if(lessonPalettePiece==='erase'){lessonBoard[r][c]='';lessonPickedSquare=null;help.textContent='Square cleared.'}
+  else if(lessonPalettePiece){lessonBoard[r][c]=lessonPalettePiece;help.textContent='Piece placed. Choose another piece or move it on the board.'}
+  else if(lessonPickedSquare!==null){const fr=Math.floor(lessonPickedSquare/8),fc=lessonPickedSquare%8;if(lessonPickedSquare!==idx){lessonBoard[r][c]=lessonBoard[fr][fc];lessonBoard[fr][fc]='';help.textContent='Piece moved.'}lessonPickedSquare=null}
+  else if(lessonBoard[r][c]){lessonPickedSquare=idx;help.textContent='Now tap the square where you want this piece to go.'}
+  else help.textContent='Choose a piece above, or tap a piece on the board first.';
+  renderLessonEditorBoard();
+ }
+ $('lessonPiecePalette')?.addEventListener('click',e=>{const b=e.target.closest('button[data-piece]');if(!b)return;lessonPalettePiece=b.dataset.piece;lessonPickedSquare=null;$('lessonPiecePalette').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));$('lessonBoardHelp').textContent=lessonPalettePiece==='erase'?'Tap a square to erase its piece.':'Tap a square to place '+b.getAttribute('aria-label')+'.';renderLessonEditorBoard()});
+ $('lessonEditorBoard')?.addEventListener('click',e=>{const b=e.target.closest('button[data-index]');if(b)lessonMoveOrPlace(Number(b.dataset.index))});
+ $('lessonEditorBoard')?.addEventListener('dragstart',e=>{const b=e.target.closest('button[data-index]');if(!b||!lessonBoard[Math.floor(Number(b.dataset.index)/8)][Number(b.dataset.index)%8]){e.preventDefault();return}lessonDragFrom=Number(b.dataset.index);e.dataTransfer?.setData('text/plain',String(lessonDragFrom));if(e.dataTransfer)e.dataTransfer.effectAllowed='move'});
+ $('lessonEditorBoard')?.addEventListener('dragover',e=>{if(e.target.closest('button[data-index]'))e.preventDefault()});
+ $('lessonEditorBoard')?.addEventListener('drop',e=>{const b=e.target.closest('button[data-index]');if(!b)return;e.preventDefault();const from=lessonDragFrom??Number(e.dataTransfer?.getData('text/plain'));const to=Number(b.dataset.index);if(Number.isInteger(from)&&from>=0&&from<64&&from!==to){const fr=Math.floor(from/8),fc=from%8,tr=Math.floor(to/8),tc=to%8;lessonBoard[tr][tc]=lessonBoard[fr][fc];lessonBoard[fr][fc]='';$('lessonBoardHelp').textContent='Piece moved.';renderLessonEditorBoard()}lessonDragFrom=null});
+ $('lessonBoardStart')?.addEventListener('click',()=>{lessonBoard=parseLessonFen(lessonStartFen);lessonPalettePiece=null;lessonPickedSquare=null;$('lessonBoardHelp').textContent='Starting position restored.';$('lessonPiecePalette').querySelectorAll('button').forEach(x=>x.classList.remove('active'));renderLessonEditorBoard()});
+ $('lessonBoardClear')?.addEventListener('click',()=>{lessonBoard=Array.from({length:8},()=>Array(8).fill(''));lessonPalettePiece=null;lessonPickedSquare=null;$('lessonBoardHelp').textContent='Board cleared. Choose pieces above to build a position.';$('lessonPiecePalette').querySelectorAll('button').forEach(x=>x.classList.remove('active'));renderLessonEditorBoard()});
+ function makeLessonBoardPreview(fen){
+  const cells=parseLessonFen(fen);if(!cells)return null;const el=document.createElement('div');el.className='lesson-board-preview';cells.forEach((row,r)=>row.forEach((p,c)=>{const cell=document.createElement('span');cell.className=(r+c)%2===0?'light':'dark';cell.textContent=lessonPieceGlyph[p]||'';el.append(cell)}));return el;
+ }
+ renderLessonEditorBoard();
  async function loadPublishedCommunityLessons(){
   const list=$('publishedCommunityLessons');if(!list)return;
   if(!authClient){list.textContent='Community lessons will load when the site connects to its database.';return;}
   list.textContent='Loading community lessons…';
-  const {data,error}=await authClient.from('team_lesson_drafts').select('id,title,topic,level,learning_goal,lesson_text,challenge,answer,created_at').eq('status','published').order('created_at',{ascending:false}).limit(50);
+  const {data,error}=await authClient.from('team_lesson_drafts').select('id,title,topic,level,learning_goal,lesson_text,challenge,answer,board_fen,created_at').eq('status','published').order('created_at',{ascending:false}).limit(50);
   if(error){list.textContent='Community lessons are temporarily unavailable.';return;}
   list.replaceChildren();
   if(!data?.length){list.textContent='No community lessons have been published yet. Check back soon!';return;}
@@ -1235,7 +1288,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
     const body=document.createElement('p');body.textContent=d.lesson_text;
     const challenge=document.createElement('p');challenge.textContent='Quick challenge: '+d.challenge;
     const answer=document.createElement('p');answer.textContent='Answer: '+d.answer;
-    target.append(badge,h,goal,body,challenge,answer);
+    target.append(badge,h,goal,body);const boardPreview=makeLessonBoardPreview(d.board_fen);if(boardPreview){const boardTitle=document.createElement('h4');boardTitle.textContent='Position on the board';target.append(boardTitle,boardPreview)}target.append(challenge,answer);
     document.querySelectorAll('[data-learnpage]').forEach(x=>x.classList.remove('chosen'));
     button.classList.add('chosen');
    });

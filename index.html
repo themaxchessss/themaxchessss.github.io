@@ -535,6 +535,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="analysis">Analysis board</button>
    <button class="navitem" data-page="gifs">GIFs &amp; flyers</button>
    <button class="navitem" data-page="community-comments">Comments &amp; questions</button>
+   <button class="navitem" data-page="team-hub" id="teamHubNav" hidden>♟ Approved Team Hub</button>
   </div></div>
   <button type="button" class="navtop navitem" data-page="business-cards">Cards</button>
  </nav>
@@ -828,6 +829,34 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 <div id="teamPrivateArea" class="puzzlebox" hidden style="margin-top:14px"><h3>MaxChess Team Area</h3><p class="muted">Your application was approved. This private area is available to your signed-in account.</p><h4>Your application answers</h4><p><b>Name:</b> <span id="teamAnswerName"></span></p><p><b>Role:</b> <span id="teamAnswerRole"></span></p><p><b>Chess profile:</b> <span id="teamAnswerLink"></span></p><p><b>Your answer:</b></p><p id="teamAnswerWhy" style="white-space:pre-wrap;overflow-wrap:anywhere"></p></div>
 </form>
 </div></section>
+<section class="pageview" id="page-team-hub">
+ <div class="simplepage" style="max-width:900px">
+  <h2>♟ MaxChess Team Hub</h2>
+  <p class="muted">A private-in-the-app workspace for approved MaxChess team members.</p>
+  <div class="puzzlebox">
+   <h3>Welcome to the team!</h3>
+   <p id="teamHubWelcome">Your approved application unlocks this area.</p>
+   <p><b>Your approved role:</b> <span id="teamHubRole">Team member</span></p>
+  </div>
+  <div class="puzzlebox" style="margin-top:14px">
+   <h3>Team workspace</h3>
+   <ul>
+    <li>Keep ideas friendly, original, and suitable for chess players of different ages.</li>
+    <li>Do not share passwords, API keys, private player information, or another person's account details.</li>
+    <li>Ask before publishing changes or contacting players on behalf of MaxChess.</li>
+    <li>Share lesson, puzzle, design, or testing suggestions with the project owner for review.</li>
+   </ul>
+   <p class="desc">This is an in-site team area, not a messaging system or permission to edit the website or repository.</p>
+  </div>
+  <div class="puzzlebox" style="margin-top:14px">
+   <h3>Send a team idea</h3>
+   <label for="teamHubIdea">Your idea or feedback</label>
+   <textarea id="teamHubIdea" rows="4" maxlength="1200" placeholder="Write a lesson idea, puzzle suggestion, design idea, or bug report…" style="display:block;width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:5px;background:var(--panel3);color:var(--strong)"></textarea>
+   <button class="greenbtn" id="teamHubCopyIdea" type="button">Copy idea to share with MaxChess</button>
+   <p id="teamHubIdeaStatus" class="desc" role="status" aria-live="polite">Your text stays on this device until you choose to copy it.</p>
+  </div>
+ </div>
+</section>
 <section class="pageview" id="page-watch">
  <div class="simplepage" style="max-width:1000px">
   <h2>MaxChess Watch</h2>
@@ -1259,15 +1288,19 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   const status=$('teamApplicationStatus'), area=$('teamPrivateArea');
   if(!status||!area)return;
   area.hidden=true;
+  const teamNav=$('teamHubNav');if(teamNav)teamNav.hidden=true;
   if(!authClient||!authUser){status.textContent='Sign in to apply and check your application status.';return}
   status.textContent='Checking your application…';
-  const {data,error}=await authClient.from('team_applications').select('id,applicant_name,role,chess_profile,motivation,status,ai_reason,created_at').order('created_at',{ascending:false}).limit(1);
+  const {data,error}=await authClient.from('team_applications').select('id,applicant_name,role,chess_profile,motivation,status,ai_reason,created_at').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(1);
   if(error){status.textContent='Could not load your application right now. Please try again later.';return}
   if(!data?.length){status.textContent='You have not submitted an application yet.';return}
   const app=data[0];
   const labels={pending_ai:'Waiting for AI review',approved:'Approved — welcome to the team!',declined:'Not approved',needs_review:'Needs another review'};
   status.textContent=(labels[app.status]||'Application status')+(app.ai_reason?' · '+app.ai_reason:'');
   if(app.status==='approved'){
+   if(teamNav)teamNav.hidden=false;
+   $('teamHubWelcome').textContent='Welcome, '+app.applicant_name+'! Your application has been approved.';
+   $('teamHubRole').textContent=app.role;
    $('teamAnswerName').textContent=app.applicant_name;
    $('teamAnswerRole').textContent=app.role;
    $('teamAnswerLink').textContent=app.chess_profile||'Not provided';
@@ -1275,6 +1308,12 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    area.hidden=false;
   }
  }
+ $('teamHubCopyIdea')?.addEventListener('click',async()=>{
+  const idea=$('teamHubIdea').value.trim(),out=$('teamHubIdeaStatus');
+  if(!idea){out.textContent='Write an idea first.';return}
+  try{await navigator.clipboard.writeText('MaxChess team idea from '+(authUser?.user_metadata?.username||'team member')+':\\n'+idea);out.textContent='Copied. Share it with the MaxChess project owner.'}
+  catch(e){out.textContent='Copy is unavailable here. Select your text and copy it manually.'}
+ });
  $('hireForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const submit=$('hireForm').querySelector('button[type="submit"]');

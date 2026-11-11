@@ -891,8 +891,8 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <p class="desc">This is an in-site team area, not a messaging system or permission to edit the website or repository.</p>
   </div>
   <div id="teamLessonCreator" class="puzzlebox" style="margin-top:14px" hidden>
-   <h3>📘 Create a lesson draft</h3>
-   <p class="muted">Write a chess lesson for the MaxChess Learn section. Your draft is saved privately for review; it does not go live automatically.</p>
+   <h3>📘 MaxChess Study Creator</h3>
+   <p class="muted">Build a study. The moves, chapters, diagrams and explanations ARE the lesson. Publish it to Learn when it is ready.</p>
    <form id="teamLessonForm">
     <label for="teamLessonTitle">Lesson title</label>
     <input id="teamLessonTitle" required minlength="3" maxlength="80" placeholder="Example: How to spot a knight fork" style="display:block;width:100%;margin:5px 0 12px;padding:10px;border:1px solid var(--line);border-radius:5px;background:var(--panel3);color:var(--strong)">
@@ -906,28 +906,31 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
     </select>
     <label for="teamLessonGoal">What will the learner understand?</label>
     <textarea id="teamLessonGoal" required minlength="10" maxlength="500" rows="2" placeholder="By the end, the learner will be able to…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
-    <label for="teamLessonText">Teach the idea step by step</label>
-    <textarea id="teamLessonText" required minlength="20" maxlength="5000" rows="6" placeholder="Explain the chess idea. Add a short example using moves or a position…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
-    <div class="lesson-board-editor">
-     <h4>♟ Set up the lesson board</h4>
-     <p class="muted">Choose a piece, then tap a square to place it. Or drag a piece to another square. Tap a piece on the board and then its destination to move it.</p>
-     <div class="lesson-piece-palette" id="lessonPiecePalette" aria-label="Choose a chess piece">
-      <button type="button" data-piece="wk" aria-label="White king">♔</button><button type="button" data-piece="wq" aria-label="White queen">♕</button><button type="button" data-piece="wr" aria-label="White rook">♖</button><button type="button" data-piece="wb" aria-label="White bishop">♗</button><button type="button" data-piece="wn" aria-label="White knight">♘</button><button type="button" data-piece="wp" aria-label="White pawn">♙</button>
-      <button type="button" data-piece="bk" aria-label="Black king">♚</button><button type="button" data-piece="bq" aria-label="Black queen">♛</button><button type="button" data-piece="br" aria-label="Black rook">♜</button><button type="button" data-piece="bb" aria-label="Black bishop">♝</button><button type="button" data-piece="bn" aria-label="Black knight">♞</button><button type="button" data-piece="bp" aria-label="Black pawn">♟</button>
-      <button type="button" data-piece="erase" aria-label="Erase a square">⌫ Erase</button>
-     </div>
-     <div class="lesson-editor-board" id="lessonEditorBoard" role="grid" aria-label="Editable lesson chessboard"></div>
-     <div class="lesson-board-actions"><button type="button" class="toolbtn" id="lessonBoardStart">Starting position</button><button type="button" class="toolbtn" id="lessonBoardClear">Clear board</button></div>
-     <p class="desc" id="lessonBoardHelp" aria-live="polite">Starting position loaded. You can move or add pieces.</p>
+    <label for="teamLessonText">Study introduction</label>
+    <textarea id="teamLessonText" required minlength="20" maxlength="5000" rows="3" placeholder="Explain what this study teaches and what students should look for…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
+    <div class="lesson-board-editor" id="studyBuilder" style="margin-top:16px">
+     <h4>♟ Study chapters</h4>
+     <p class="muted">This study IS the lesson. Play moves on the board, add notes to positions, and split your lesson into chapters.</p>
+     <label for="studyChapterTitle">Chapter name</label><input id="studyChapterTitle" value="Chapter 1" maxlength="80" style="display:block;width:100%;margin:6px 0 12px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel3);color:var(--strong)">
+     <div id="studyMoveBoard" class="lesson-editor-board" role="grid" aria-label="Study move board"></div>
+     <p id="studyTurnLabel" class="desc" aria-live="polite">White to move · Tap a piece, then a destination square.</p>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" class="toolbtn" id="studyUndo">↶ Undo move</button><button type="button" class="toolbtn" id="studyReset">Reset chapter</button><button type="button" class="toolbtn" id="studyFlip">Flip board</button></div>
+     <h5>Move list</h5><div id="studyMoveList" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0"></div>
+     <label for="studyMoveNote">Explanation for this position</label><textarea id="studyMoveNote" rows="3" maxlength="1500" placeholder="Explain why this move matters. Select a move above to add a note to that position." style="display:block;width:100%;margin:6px 0 12px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel3);color:var(--strong)"></textarea>
+     <label for="studyChapterQuiz">Chapter question (optional)</label><textarea id="studyChapterQuiz" rows="2" maxlength="600" placeholder="What should the student find or understand?" style="display:block;width:100%;margin:6px 0 12px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel3);color:var(--strong)"></textarea>
+     <label for="studyChapterAnswer">Answer and explanation (optional)</label><textarea id="studyChapterAnswer" rows="2" maxlength="1000" placeholder="Explain the answer." style="display:block;width:100%;margin:6px 0 12px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel3);color:var(--strong)"></textarea>
+     <button type="button" class="toolbtn" id="studyAddChapter">＋ Save chapter and start next chapter</button>
+     <div id="studyChapterList" style="margin-top:12px"></div>
+     <p class="desc">Tip: make a chapter for each part of your lesson. You can explain moves and add a question at the end of each chapter.</p>
     </div>
     <label for="teamLessonChallenge">Quick question or challenge</label>
     <textarea id="teamLessonChallenge" required minlength="5" maxlength="1000" rows="3" placeholder="Ask the learner to find a move or explain an idea…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
     <label for="teamLessonAnswer">Answer and explanation</label>
     <textarea id="teamLessonAnswer" required minlength="1" maxlength="1000" rows="3" placeholder="Give the correct answer and explain why…" style="display:block;width:100%;margin:5px 0 12px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:5px"></textarea>
-    <button class="greenbtn" id="teamLessonSubmit" type="submit">Publish lesson to Learn</button>
+    <button class="greenbtn" id="teamLessonSubmit" type="submit">Publish study to Learn</button>
     <p id="teamLessonStatus" class="desc" role="status" aria-live="polite"></p>
    </form>
-   <h4>Your published lessons</h4>
+   <h4>Your published studies</h4>
    <div id="teamLessonDraftList" aria-live="polite"><p class="muted">Your saved drafts will appear here.</p></div>
   </div>
   <div class="puzzlebox" style="margin-top:14px">
@@ -1324,7 +1327,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   const list=$('publishedCommunityLessons');if(!list)return;
   if(!authClient){list.textContent='Community lessons will load when the site connects to its database.';return;}
   list.textContent='Loading community lessons…';
-  const {data,error}=await authClient.from('team_lesson_drafts').select('id,title,topic,level,learning_goal,lesson_text,challenge,answer,board_fen,created_at').eq('status','published').order('created_at',{ascending:false}).limit(50);
+  const {data,error}=await authClient.from('team_lesson_drafts').select('id,title,topic,level,learning_goal,lesson_text,challenge,answer,board_fen,study_data,created_at').eq('status','published').order('created_at',{ascending:false}).limit(50);
   if(error){list.textContent='Community lessons are temporarily unavailable.';return;}
   list.replaceChildren();
   if(!data?.length){list.textContent='No community lessons have been published yet. Check back soon!';return;}
@@ -1341,13 +1344,29 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
     const body=document.createElement('p');body.textContent=d.lesson_text;
     const challenge=document.createElement('p');challenge.textContent='Quick challenge: '+d.challenge;
     const answer=document.createElement('p');answer.textContent='Answer: '+d.answer;
-    target.append(badge,h,goal,body);const boardPreview=makeLessonBoardPreview(d.board_fen);if(boardPreview){const boardTitle=document.createElement('h4');boardTitle.textContent='Position on the board';target.append(boardTitle,boardPreview)}target.append(challenge,answer);
+    target.append(badge,h,goal,body);if(d.study_data&&Array.isArray(d.study_data.chapters)&&d.study_data.chapters.length){renderPublishedStudy(target,d.study_data)}else{const boardPreview=makeLessonBoardPreview(d.board_fen);if(boardPreview){const boardTitle=document.createElement('h4');boardTitle.textContent='Position on the board';target.append(boardTitle,boardPreview)}target.append(challenge,answer)};
     document.querySelectorAll('[data-learnpage]').forEach(x=>x.classList.remove('chosen'));
     button.classList.add('chosen');
    });
    list.append(button);
   });
  }
+
+ const studyStartFen='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+ let studyGame=window.Chess?new Chess():null,studySelected=null,studyFlipped=false,studyPly=0,studyChapters=[],studyNotes={},studySavedChapter=[];
+ function studyReplay(chapter,ply){if(!studyGame||!chapter)return;studyGame.load(chapter.startFen||studyStartFen);(chapter.moves||[]).slice(0,ply).forEach(m=>studyGame.move({from:m.from,to:m.to,promotion:m.promotion||'q'}));studyPly=ply}
+ function renderStudyBoard(){const board=$('studyMoveBoard');if(!board||!studyGame)return;board.replaceChildren();const grid=studyGame.board();for(let ri=0;ri<8;ri++)for(let ci=0;ci<8;ci++){const r=studyFlipped?7-ri:ri,c=studyFlipped?7-ci:ci,p=grid[r][c],sq=document.createElement('button');sq.type='button';sq.className='lesson-editor-square '+((r+c)%2===0?'light':'dark');sq.dataset.square=String.fromCharCode(97+c)+(8-r);sq.textContent=p?({w:{p:'♙',n:'♘',b:'♗',r:'♖',q:'♕',k:'♔'},b:{p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'}}[p.color][p.type]):'';sq.setAttribute('aria-label',sq.dataset.square+(p?', '+p.color+' '+p.type:' empty'));if(studySelected===sq.dataset.square)sq.classList.add('picked');board.append(sq)}$('studyTurnLabel').textContent=(studyGame.turn()==='w'?'White':'Black')+' to move · Position '+studyPly+' of '+studyGame.history().length;renderStudyMoves()}
+ function renderStudyMoves(){const list=$('studyMoveList');if(!list||!studyGame)return;list.replaceChildren();const history=studyGame.history();const start=document.createElement('button');start.type='button';start.className='toolbtn';start.textContent='Start';start.onclick=()=>{const ch=studyCurrentChapter();studyReplay(ch,0);studySelected=null;renderStudyBoard();loadStudyNote()};list.append(start);history.forEach((san,i)=>{const b=document.createElement('button');b.type='button';b.className='toolbtn';b.textContent=(i%2===0?Math.floor(i/2)+1+'. ':'')+san;b.onclick=()=>{studyReplay(studyCurrentChapter(),i+1);studySelected=null;renderStudyBoard();loadStudyNote()};list.append(b)})}
+ function studyCurrentChapter(){return {title:$('studyChapterTitle')?.value||'Chapter',startFen:studyStartFen,moves:studyGame?studyGame.history({verbose:true}).map(m=>({from:m.from,to:m.to,promotion:m.promotion||null,san:m.san})):[],annotations:studyNotes,quiz:$('studyChapterQuiz')?.value||'',answer:$('studyChapterAnswer')?.value||''}}
+ function loadStudyNote(){const box=$('studyMoveNote');if(box)box.value=studyNotes[String(studyPly)]||''}
+ $('studyMoveBoard')?.addEventListener('click',e=>{const b=e.target.closest('button[data-square]');if(!b||!studyGame)return;const sq=b.dataset.square;if(studySelected){let move=null;try{move=studyGame.move({from:studySelected,to:sq,promotion:'q'})}catch(err){}if(move){studyPly=studyGame.history().length;studySelected=null;renderStudyBoard();loadStudyNote();return}if(studyGame.get(sq)){studySelected=sq;renderStudyBoard();return}studySelected=null;renderStudyBoard();return}if(studyGame.get(sq)){studySelected=sq;renderStudyBoard()}});
+ $('studyMoveNote')?.addEventListener('input',e=>{studyNotes[String(studyPly)]=e.target.value});
+ $('studyUndo')?.addEventListener('click',()=>{if(!studyGame)return;studyGame.undo();studyPly=studyGame.history().length;studySelected=null;renderStudyBoard();loadStudyNote()});
+ $('studyReset')?.addEventListener('click',()=>{if(!studyGame)return;studyGame.reset();studyNotes={};studyPly=0;studySelected=null;renderStudyBoard();loadStudyNote()});
+ $('studyFlip')?.addEventListener('click',()=>{studyFlipped=!studyFlipped;renderStudyBoard()});
+ function renderStudyChapterList(){const el=$('studyChapterList');if(!el)return;el.replaceChildren();studyChapters.forEach((ch,i)=>{const p=document.createElement('p');p.className='desc';p.textContent=(i+1)+'. '+ch.title+' · '+ch.moves.length+' moves';const del=document.createElement('button');del.type='button';del.className='toolbtn';del.textContent='Remove';del.onclick=()=>{studyChapters.splice(i,1);renderStudyChapterList()};p.append(' ',del);el.append(p)})}
+ $('studyAddChapter')?.addEventListener('click',()=>{if(!studyGame)return;const ch=studyCurrentChapter();if(!ch.moves.length&&!ch.quiz.trim()&&!ch.annotations['0']){$('studyTurnLabel').textContent='Add some moves or an explanation before saving this chapter.';return}studyChapters.push(ch);$('studyChapterTitle').value='Chapter '+(studyChapters.length+1);$('studyChapterQuiz').value='';$('studyChapterAnswer').value='';studyGame.reset();studyNotes={};studyPly=0;studySelected=null;renderStudyBoard();loadStudyNote();renderStudyChapterList()});
+ function renderPublishedStudy(target,data){const chapters=data.chapters||[];let ci=0,ply=0,g=window.Chess?new Chess():null;const wrap=document.createElement('section');wrap.className='lesson-board-editor';const head=document.createElement('h4');head.textContent='Study chapters';const chapterTitle=document.createElement('h5');const board=document.createElement('div');board.className='lesson-editor-board';const note=document.createElement('p');const moves=document.createElement('div');const controls=document.createElement('div');controls.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin:10px 0';const prev=document.createElement('button');prev.type='button';prev.className='toolbtn';prev.textContent='← Previous';const next=document.createElement('button');next.type='button';next.className='toolbtn';next.textContent='Next move →';const q=document.createElement('div');q.className='lesson-detail';const answer=document.createElement('button');answer.type='button';answer.className='toolbtn';answer.textContent='Show answer';const answerText=document.createElement('p');answerText.hidden=true;answer.onclick=()=>{answerText.hidden=!answerText.hidden};controls.append(prev,next);wrap.append(head,chapterTitle,board,moves,controls,note,q,answer,answerText);target.append(wrap);function draw(){const ch=chapters[ci];if(!ch||!g)return;g.load(ch.startFen||studyStartFen);(ch.moves||[]).slice(0,ply).forEach(m=>g.move({from:m.from,to:m.to,promotion:m.promotion||'q'}));chapterTitle.textContent=(ci+1)+'. '+ch.title+' · Move '+ply+' of '+(ch.moves||[]).length;board.replaceChildren();g.board().forEach((row,r)=>row.forEach((p,c)=>{const cell=document.createElement('span');cell.className='lesson-editor-square '+((r+c)%2===0?'light':'dark');cell.textContent=p?({w:{p:'♙',n:'♘',b:'♗',r:'♖',q:'♕',k:'♔'},b:{p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'}}[p.color][p.type]):'';board.append(cell)}));note.textContent=ch.annotations&&ch.annotations[String(ply)]||'Follow the moves and read the notes.';moves.textContent=(ch.moves||[]).map((m,i)=>(i%2===0?Math.floor(i/2)+1+'. ':'')+m.san).join(' ');q.textContent=ch.quiz?'Question: '+ch.quiz:'No question for this chapter.';answerText.textContent=ch.answer||'No answer provided.';answer.hidden=!ch.answer;prev.disabled=ply===0&&ci===0;next.textContent=ply<(ch.moves||[]).length?'Next move →':ci<chapters.length-1?'Next chapter →':'Study complete ✓'}prev.onclick=()=>{if(ply>0)ply--;else if(ci>0){ci--;ply=(chapters[ci].moves||[]).length}draw()};next.onclick=()=>{if(ply<(chapters[ci].moves||[]).length)ply++;else if(ci<chapters.length-1){ci++;ply=0}draw()};draw()}
  function setLesson(id,target){let x=lessons[id];if(!x)return;target.innerHTML='<h3>'+x[0]+'</h3><p>'+x[1]+'</p><div class="lesson-goal"><b>Remember:</b> '+x[2]+'</div><p><b>Try this:</b> '+x[3]+'</p><div class="lesson-quiz"><b>Quick check</b><p>'+x[4]+'</p>'+x[5].map((a,i)=>'<button type="button" data-lesson-answer="'+i+'">'+a+'</button>').join('')+'<div class="quiz-feedback" aria-live="polite"></div></div>';target.querySelectorAll('[data-lesson-answer]').forEach(b=>b.onclick=()=>{const ok=Number(b.dataset.lessonAnswer)===x[6],out=target.querySelector('.quiz-feedback');out.textContent=ok?'✅ Correct! '+x[7]:'Not quite — try again. Think about the lesson above.';out.style.color=ok?'var(--green2)':'var(--gold)';if(ok){b.style.outline='2px solid var(--green2)';target.querySelectorAll('[data-lesson-answer]').forEach(q=>q.disabled=true)}})}
  document.querySelectorAll('[data-lesson]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-lesson]').forEach(x=>x.classList.toggle('chosen',x===b));setLesson(b.dataset.lesson,$('lessonDetail'))});
  document.querySelectorAll('[data-learnpage]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-learnpage]').forEach(x=>x.classList.toggle('chosen',x===b));setLesson(b.dataset.learnpage,$('fullLesson'))});
@@ -1541,17 +1560,18 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    challenge:$('teamLessonChallenge').value.trim(),
    answer:$('teamLessonAnswer').value.trim(),
    board_fen:lessonBoardFen(),
+   study_data:{version:1,chapters:[...studyChapters,studyCurrentChapter()].filter(ch=>ch.moves.length||ch.quiz.trim()||Object.values(ch.annotations||{}).some(v=>String(v).trim()))]},
    status:'published'
   };
   button.disabled=true;button.textContent='Publishing…';status.textContent='';
   try{
    const {error}=await authClient.from('team_lesson_drafts').insert(payload);
    if(error)throw error;
-   $('teamLessonForm').reset();lessonBoard=parseLessonFen(lessonStartFen);lessonPalettePiece=null;lessonPickedSquare=null;renderLessonEditorBoard();
-   status.textContent='Published! Your lesson is now in Learn under MADE BY MAXCHESS USERS.';
+   $('teamLessonForm').reset();lessonBoard=parseLessonFen(lessonStartFen);lessonPalettePiece=null;lessonPickedSquare=null;renderLessonEditorBoard();studyChapters=[];studyNotes={};studyGame=window.Chess?new Chess():null;studyPly=0;studySelected=null;renderStudyBoard();renderStudyChapterList();
+   status.textContent='Study published! Your chapters and moves are now the lesson in Learn under MADE BY MAXCHESS USERS.';
    await loadTeamLessonDrafts();
   }catch(err){status.textContent=err.message||'Could not save your lesson draft.';}
-  finally{button.disabled=false;button.textContent='Publish lesson to Learn';}
+  finally{button.disabled=false;button.textContent='Publish study to Learn';}
  });
  $('teamHubCopyIdea')?.addEventListener('click',async()=>{
   const idea=$('teamHubIdea').value.trim(),out=$('teamHubIdeaStatus');

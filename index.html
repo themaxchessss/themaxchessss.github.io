@@ -1398,7 +1398,8 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    learning_goal:$('teamLessonGoal').value.trim(),
    lesson_text:$('teamLessonText').value.trim(),
    challenge:$('teamLessonChallenge').value.trim(),
-   answer:$('teamLessonAnswer').value.trim()
+   answer:$('teamLessonAnswer').value.trim(),
+   status:'published'
   };
   button.disabled=true;button.textContent='Publishing…';status.textContent='';
   try{

@@ -1794,7 +1794,7 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
     if(!allowed())return;
     const page=button.getAttribute('data-owner-page');
     const nav=document.querySelector('[data-page="'+page+'"]');
-    if(nav){nav.click();say('Opened '+button.textContent.replace(/^\\s*\\d+\\.\\s*/, '').trim()+'.');}
+    if(nav){nav.click();say('Opened '+button.textContent.replace(/^\s*\d+\.\s*/, '').trim()+'.');}
     else say('That section is not available in the current page version.');
    });
   });
@@ -1827,7 +1827,7 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
     ['Pending team applications',$('ownerStatApplications')?.textContent||'Not loaded'],
     ['Exported at',new Date().toISOString()]
    ];
-   const csv=rows.map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(',')).join('\\r\\n');
+   const csv=rows.map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(',')).join('\r\n');
    const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
    const a=document.createElement('a');a.href=url;a.download='maxchess-owner-overview.csv';document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
    say('Dashboard totals exported. Counts are profile/public-content totals, not visitor analytics.');

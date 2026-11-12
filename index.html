@@ -2437,8 +2437,13 @@ window.dispatchEvent(new Event("maxchess:ready"));
   <div aria-hidden="true" style="font-size:28px;color:#e8c765">♛</div>
   <h2 id="maxNewsletterTitle" style="margin:4px 0 6px;font-size:21px;color:#e8c765">The MaxChess Monthly Newsletter</h2>
   <p style="margin:0 auto 10px;max-width:520px;color:#c8c5bd">Monthly chess challenges, Mystery Masters, new lessons, puzzles and MaxChess news. Always free.</p>
-  <button type="button" disabled aria-disabled="true" style="padding:10px 18px;border-radius:4px;background:#514a38;color:#e8e8e8;font-weight:700;opacity:.85;cursor:not-allowed">Sign-up opening soon</button>
-  <p style="margin:10px 0 0;font-size:12px;color:#aaa69d">Email sign-up is not active yet. We’ll open it after the secure Supabase subscription and email-confirmation setup is approved.</p>
+  <form action="https://buttondown.com/api/emails/embed-subscribe/maxchess" method="post" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:460px;margin:14px auto 0">
+    <label for="maxNewsletterEmail" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">Email address</label>
+    <input id="maxNewsletterEmail" type="email" name="email" autocomplete="email" required placeholder="Your email address" style="flex:1 1 220px;min-width:0;padding:11px 12px;border:1px solid #625b4a;border-radius:4px;background:#1f1e1c;color:#fff">
+    <input type="hidden" name="embed" value="1">
+    <button type="submit" style="padding:11px 18px;border-radius:4px;background:#629924;color:#fff;font-weight:700">Subscribe free</button>
+  </form>
+  <p style="margin:10px 0 0;font-size:12px;color:#aaa69d">Buttondown will email you a confirmation link. You’ll only receive the newsletter after you confirm. You can unsubscribe at any time.</p>
 </section>
 <footer style="margin:18px auto;padding:18px 14px;max-width:1100px;text-align:center;color:#aeb8c8;font-size:13px;border-top:1px solid rgba(160,180,210,.2)">
   <strong style="color:inherit">© 2026 MaxChess™. All rights reserved.</strong>

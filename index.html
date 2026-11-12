@@ -1498,12 +1498,30 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   const notes=$('teamRoleNotes'),nk=key+'_notes';if(notes){try{notes.value=localStorage.getItem(nk)||'';}catch(_e){}notes.oninput=()=>{try{localStorage.setItem(nk,notes.value);}catch(_e){}};}
  }
 
+ const MAXCHESS_OWNER_USER_ID='f686e7f3-45ee-47bd-9279-c835b088744b';
+ function setTeamApplicationEligibility(){
+  const isOwner=authUser?.id===MAXCHESS_OWNER_USER_ID;
+  const form=$('hireForm');
+  if(!form)return isOwner;
+  ['hireName','hireRole','hireLink','hireWhy'].forEach(id=>{const field=$(id);if(field)field.disabled=isOwner;});
+  const submit=form.querySelector('button[type="submit"]');
+  if(submit){submit.hidden=isOwner;submit.disabled=isOwner;}
+  let notice=$('teamOwnerApplyNotice');
+  if(isOwner&&!notice){
+   notice=document.createElement('p');notice.id='teamOwnerApplyNotice';notice.className='muted';
+   notice.textContent='The MaxChess owner account cannot submit team applications. Other signed-in players can apply here.';
+   const status=$('teamApplicationStatus');
+   if(status)status.insertAdjacentElement('beforebegin',notice);else form.appendChild(notice);
+  }else if(!isOwner&&notice){notice.remove();}
+  return isOwner;
+ }
  async function loadTeamApplication(){
   const status=$('teamApplicationStatus'), area=$('teamPrivateArea');
   if(!status||!area)return;
   area.hidden=true;
   const teamNav=$('teamHubNav');if(teamNav)teamNav.hidden=true;
   const lessonCreator=$('teamLessonCreator');if(lessonCreator)lessonCreator.hidden=true;
+  setTeamApplicationEligibility();
   if(!authClient||!authUser){status.textContent='Sign in to apply and check your application status.';return}
   status.textContent='Checking your application…';
   const {data,error}=await authClient.from('team_applications').select('id,applicant_name,role,chess_profile,motivation,status,ai_reason,created_at').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(1);
@@ -1583,6 +1601,7 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   e.preventDefault();
   const submit=$('hireForm').querySelector('button[type="submit"]');
   if(!authClient||!authUser){note('Please sign in to submit your application.');openAccount('login');return}
+  if(authUser.id==='f686e7f3-45ee-47bd-9279-c835b088744b'){setTeamApplicationEligibility();$('teamApplicationStatus').textContent='The owner account cannot submit team applications. Other signed-in players can apply.';return}
   const applicant_name=$('hireName').value.trim(),role=$('hireRole').value,chess_profile=$('hireLink').value.trim(),motivation=$('hireWhy').value.trim();
   if(!applicant_name||motivation.length<10){note('Please complete your name and a little more detail about how you can help.');return}
   submit.disabled=true;submit.textContent='Submitting…';

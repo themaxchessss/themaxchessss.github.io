@@ -1160,6 +1160,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <button class="navitem" data-page="new-features">✨ New features</button>
    <button class="navitem" data-page="analysis">Analysis board</button>
    <button class="navitem" data-page="gifs">GIFs &amp; flyers</button>
+   <button class="navitem" data-page="clocks">⏱ Clock Room</button>
    <button class="navitem" data-page="community-comments">Comments &amp; questions</button>
   </div></div>
   <button type="button" class="navtop navitem" data-page="team-hub" id="teamHubNav" hidden>♟ Team</button>
@@ -1465,6 +1466,20 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
  <div class="puzzlebox gifcard gifwide"><img src="promo/ad-728x90.png" alt="MaxChess 728 by 90 banner ad" width="1456" height="180" loading="lazy"><b>Banner 728 × 90</b><p class="muted">A standard wide website banner.</p><a class="widebtn" href="promo/ad-728x90.png" download>Download picture</a></div>
 </div>
 </div></section>
+<section class="pageview" id="page-clocks">
+ <div class="simplepage" style="max-width:1000px">
+  <h2>⏱ MaxChess Clock Room</h2>
+  <p class="muted">Explore the clock appearances available in MaxChess. Choose one to use it in your games. The custom MaxChess skins are original designs; manufacturer names are used only for the corresponding model-inspired options.</p>
+  <div class="puzzlebox" style="margin:16px 0">
+   <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+    <div><b id="clockGalleryCount">Clock collection</b><p class="muted" style="margin:4px 0 0">Tap any clock to select its appearance.</p></div>
+    <input id="clockGallerySearch" type="search" placeholder="Search clock names…" aria-label="Search clock appearances" style="max-width:260px;width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--strong)">
+   </div>
+   <p id="clockGalleryStatus" class="muted" aria-live="polite" style="margin:12px 0 0">Choose a clock below.</p>
+  </div>
+  <div id="clockGalleryGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px"></div>
+ </div>
+</section>
 <section class="pageview" id="page-new-features"><div class="simplepage"><h2>✨ New MaxChess features</h2><p class="muted">New ways to play, customize, practise and connect. Free to use.</p>
 <div class="puzzlebox"><h3>♟ Chess960 random start</h3><p>Every game starts with a new back-rank arrangement. This practice mode uses legal chess moves; Chess960 castling is not supported by the current chess engine yet.</p><button class="greenbtn" id="start960">Start a random Chess960 game</button><p class="desc" id="chess960Status" aria-live="polite">Ready for a surprise starting position?</p></div>
 <div class="puzzlebox" style="margin-top:14px"><h3>🎨 Free piece shop</h3><p>Choose a free piece color set. Your choice is saved on this device.</p><div class="selectrow"><label for="pieceShopChoice">Piece set</label><select id="pieceShopChoice"><option value="friendly">Classic MaxChess</option><option value="ice">Ice crystals</option><option value="ruby">Ruby red</option><option value="gold">Golden royal</option><option value="classic">Classic symbols</option><option value="bold">Bold solid</option></select></div><button class="greenbtn" id="applyPieceShop">Use this piece set</button><p class="desc" id="pieceShopStatus" aria-live="polite">All piece sets are free.</p></div>
@@ -2900,6 +2915,34 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
  async function pressOnlineClock(){if(!onlineGameId||!authClient||!authUser||!clockPressPending||clockPressPlayer!==authUser.id){note('Move first. Your clock can only be pressed after your move.');return}const result=await authClient.functions.invoke('maxchess-game-action',{body:{game_id:onlineGameId,action:'press_clock'}});if(result.error||result.data?.error){note('Clock not pressed: '+(result.data?.error||result.error?.message||'try again'));return}clockPressPending=false;clockPressPlayer=null;paintClocks();note('Clock pressed.');}
  $('whiteClock').addEventListener('click',()=>{if(onlineColor==='w')pressOnlineClock()});$('blackClock').addEventListener('click',()=>{if(onlineColor==='b')pressOnlineClock()});['whiteClock','blackClock'].forEach(id=>$(id).addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&$(id).classList.contains('clock-press-ready')){e.preventDefault();pressOnlineClock()}}));
  const clockStyleSelect=$('clockStyle');if(clockStyleSelect){clockStyleSelect.value=clockStyle;clockStyleSelect.onchange=()=>{clockStyle=clockStyleSelect.value;try{localStorage.setItem('maxchess_clock_style',clockStyle)}catch(e){}paintClocks()}}
+ function buildClockGallery(){
+  const grid=$('clockGalleryGrid'),select=$('clockStyle');if(!grid||!select||grid.dataset.ready==='yes')return;
+  grid.dataset.ready='yes';
+  const entries=Array.from(select.options).filter(o=>o.value&&!o.parentElement?.disabled);
+  const draw=(query='')=>{
+   grid.innerHTML='';
+   const filtered=entries.filter(o=>o.textContent.toLowerCase().includes(query.toLowerCase()));
+   $('clockGalleryCount').textContent=filtered.length+' clock appearance'+(filtered.length===1?'':'s');
+   filtered.forEach(o=>{
+    const card=document.createElement('button');card.type='button';card.className='puzzlebox';card.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:132px;cursor:pointer;border:1px solid var(--line);color:var(--strong);width:100%';
+    const preview=document.createElement('div');preview.className='clock clock-style-'+o.value;preview.textContent='10:00';preview.style.cssText='pointer-events:none;max-width:100%';
+    const label=document.createElement('b');label.textContent=o.textContent;
+    const choose=document.createElement('span');choose.className='muted';choose.textContent=o.value===clockStyle?'✓ Currently selected':'Use this clock';
+    card.append(preview,label,choose);
+    card.addEventListener('click',()=>{
+     select.value=o.value;clockStyle=o.value;
+     try{localStorage.setItem('maxchess_clock_style',clockStyle)}catch(e){}
+     paintClocks();draw($('clockGallerySearch').value);
+     $('clockGalleryStatus').textContent=o.textContent+' selected. It will be used for your game clocks.';
+    });
+    grid.append(card);
+   });
+   if(!filtered.length){const empty=document.createElement('p');empty.className='muted';empty.textContent='No clocks match that search.';grid.append(empty)}
+  };
+  draw();
+  $('clockGallerySearch').addEventListener('input',e=>draw(e.target.value));
+ }
+ buildClockGallery();
  async function saveOnlinePosition(move,expectedFen){
   if(!authClient||!onlineGameId||!move)return;
   const {data,error}=await authClient.functions.invoke('maxchess-move',{body:{game_id:onlineGameId,from:move.from,to:move.to,promotion:move.promotion||null,expected_fen:expectedFen}});

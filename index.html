@@ -943,6 +943,46 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
     <p class="desc" id="ownerOverviewUpdated" aria-live="polite">Not refreshed yet.</p>
     <button id="ownerOverviewRefresh" class="toolbtn" type="button">Refresh overview</button>
    </div>
+    <div id="ownerToolbox" class="puzzlebox" style="margin-top:14px">
+     <h3>🧰 Owner Toolbox · 27 tools</h3>
+     <p class="muted">Quick access to MaxChess sections plus safe owner utilities. These tools do not change game moves, clocks, ratings, or results.</p>
+     <h4 style="margin:12px 0 8px">22 section launchers</h4>
+     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px">
+     <button type="button" class="toolbtn owner-launch" data-owner-page="home" style="text-align:left;min-height:44px"> 01. Home dashboard</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="play" style="text-align:left;min-height:44px"> 02. Play chess</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="computer" style="text-align:left;min-height:44px"> 03. Computer chess</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="puzzles" style="text-align:left;min-height:44px"> 04. Puzzles</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="watch" style="text-align:left;min-height:44px"> 05. Watch games</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="friends" style="text-align:left;min-height:44px"> 06. Play friends</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="learn" style="text-align:left;min-height:44px"> 07. Learn lessons</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="openings" style="text-align:left;min-height:44px"> 08. Openings</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="practice" style="text-align:left;min-height:44px"> 09. Practice</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="training" style="text-align:left;min-height:44px"> 10. Training</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="community" style="text-align:left;min-height:44px"> 11. Community</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="profile" style="text-align:left;min-height:44px"> 12. Player profiles</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="leagues" style="text-align:left;min-height:44px"> 13. Leagues</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="achievements" style="text-align:left;min-height:44px"> 14. Achievements</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="schools" style="text-align:left;min-height:44px"> 15. Schools</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="tournaments" style="text-align:left;min-height:44px"> 16. Tournaments</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="analysis" style="text-align:left;min-height:44px"> 17. Game analysis</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="gifs" style="text-align:left;min-height:44px"> 18. GIF gallery</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="community-comments" style="text-align:left;min-height:44px"> 19. Community comments</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="business-cards" style="text-align:left;min-height:44px"> 20. Business cards</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="card-cutter" style="text-align:left;min-height:44px"> 21. Card cutter</button>
+     <button type="button" class="toolbtn owner-launch" data-owner-page="new-features" style="text-align:left;min-height:44px"> 22. New features</button>
+     </div>
+     <h4 style="margin:16px 0 8px">5 owner utilities</h4>
+     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">
+      <button type="button" class="toolbtn" id="ownerRefreshAll" style="min-height:44px">23. Refresh all owner data</button>
+      <button type="button" class="toolbtn" id="ownerCopySite" style="min-height:44px">24. Copy MaxChess website link</button>
+      <button type="button" class="toolbtn" id="ownerCopyRepo" style="min-height:44px">25. Copy GitHub repository link</button>
+      <button type="button" class="toolbtn" id="ownerExportStats" style="min-height:44px">26. Export dashboard totals (CSV)</button>
+      <button type="button" class="toolbtn" id="ownerSaveNotes" style="min-height:44px">27. Download owner notes</button>
+     </div>
+     <label for="ownerPrivateNotes" style="display:block;margin-top:14px">Owner notes (saved only in this browser)</label>
+     <textarea id="ownerPrivateNotes" rows="4" maxlength="5000" placeholder="Keep private project reminders and ideas on this device…" style="display:block;width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel3);color:var(--strong)"></textarea>
+     <p class="desc" id="ownerToolboxStatus" role="status" aria-live="polite">The 27 tools are available only while signed in to the owner account. Notes stay on this device.</p>
+    </div>
    <div id="ownerSafetyAlerts" class="puzzlebox" hidden style="margin-top:14px;border:1px solid var(--gold,#c9a64a)">
     <h3>🚨 Player safety alerts <span id="ownerSafetyCount" class="desc">0 unreviewed</span></h3>
     <p class="muted">These alerts come from player reports of private messages. Review the details yourself; a report is not proof and does not automatically punish anyone.</p>
@@ -1732,6 +1772,75 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   },60000);
  }
  $('ownerOverviewRefresh')?.addEventListener('click',()=>loadOwnerOverview());
+
+ // Owner Toolbox: 22 existing section launchers + 5 owner utilities.
+ (function initOwnerToolbox(){
+  const ownerId=MAXCHESS_OWNER_USER_ID;
+  const allowed=()=>authUser?.id===ownerId;
+  const status=$('ownerToolboxStatus');
+  const say=message=>{if(status)status.textContent=message;};
+  const notes=$('ownerPrivateNotes');
+  const notesKey='maxchess_owner_private_notes_v1';
+  if(notes){
+   try{notes.value=localStorage.getItem(notesKey)||'';}catch(e){}
+   notes.addEventListener('input',()=>{
+    if(!allowed())return;
+    try{localStorage.setItem(notesKey,notes.value);say('Owner notes saved on this device only.');}
+    catch(e){say('This browser could not save notes. You can still copy them before leaving.');}
+   });
+  }
+  document.querySelectorAll('[data-owner-page]').forEach(button=>{
+   button.addEventListener('click',()=>{
+    if(!allowed())return;
+    const page=button.getAttribute('data-owner-page');
+    const nav=document.querySelector('[data-page="'+page+'"]');
+    if(nav){nav.click();say('Opened '+button.textContent.replace(/^\\s*\\d+\\.\\s*/, '').trim()+'.');}
+    else say('That section is not available in the current page version.');
+   });
+  });
+  $('ownerRefreshAll')?.addEventListener('click',async()=>{
+   if(!allowed())return;
+   say('Refreshing dashboard, team applications and safety reports…');
+   await Promise.allSettled([loadOwnerOverview(),loadOwnerTeamReviewQueue(),loadOwnerSafetyAlerts(true)]);
+   say('Refresh finished. Check each panel for any loading errors.');
+  });
+  async function copyText(value,label){
+   if(!allowed())return;
+   try{
+    if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(value);
+    else{
+     const field=document.createElement('textarea');field.value=value;field.style.position='fixed';field.style.opacity='0';document.body.append(field);field.select();
+     const copied=document.execCommand('copy');field.remove();if(!copied)throw new Error('Copy is unavailable');
+    }
+    say(label+' copied.');
+   }catch(e){say('Could not copy automatically. Link: '+value);}
+  }
+  $('ownerCopySite')?.addEventListener('click',()=>copyText('https://themaxchessss.github.io/','MaxChess website link'));
+  $('ownerCopyRepo')?.addEventListener('click',()=>copyText('https://github.com/themaxchessss/themaxchessss.github.io','GitHub repository link'));
+  $('ownerExportStats')?.addEventListener('click',()=>{
+   if(!allowed())return;
+   const rows=[
+    ['Metric','Count'],
+    ['Player profiles',$('ownerStatPlayers')?.textContent||'Not loaded'],
+    ['Public games',$('ownerStatGames')?.textContent||'Not loaded'],
+    ['Upcoming tournaments',$('ownerStatTournaments')?.textContent||'Not loaded'],
+    ['Pending team applications',$('ownerStatApplications')?.textContent||'Not loaded'],
+    ['Exported at',new Date().toISOString()]
+   ];
+   const csv=rows.map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(',')).join('\\r\\n');
+   const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
+   const a=document.createElement('a');a.href=url;a.download='maxchess-owner-overview.csv';document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
+   say('Dashboard totals exported. Counts are profile/public-content totals, not visitor analytics.');
+  });
+  $('ownerSaveNotes')?.addEventListener('click',()=>{
+   if(!allowed())return;
+   const value=notes?.value||'';
+   const blob=new Blob([value],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob);
+   const a=document.createElement('a');a.href=url;a.download='maxchess-owner-notes.txt';document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
+   say('Owner notes downloaded. They are stored locally, not sent to MaxChess servers.');
+  });
+ })();
+
  let ownerSafetyPollTimer=null,ownerSafetyAlertsInitialized=false;
  let ownerSafetySeenIds=new Set();
  async function loadOwnerSafetyAlerts(silent=false){

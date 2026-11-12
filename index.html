@@ -931,6 +931,12 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
     <button class="toolbtn" id="ownerShowAllTasks" type="button">Show all role workspaces</button>
    </div>
    <p class="desc" id="ownerControlStatus" role="status" aria-live="polite">All owner controls are restricted to the MaxChess owner account.</p>
+   <div id="ownerSafetyAlerts" class="puzzlebox" hidden style="margin-top:14px;border:1px solid var(--gold,#c9a64a)">
+    <h3>🚨 Player safety alerts <span id="ownerSafetyCount" class="desc">0 unreviewed</span></h3>
+    <p class="muted">These alerts come from player reports of private messages. Review the details yourself; a report is not proof and does not automatically punish anyone.</p>
+    <button id="ownerSafetyRefresh" class="toolbtn" type="button">Refresh safety reports</button>
+    <div id="ownerSafetyAlertList" aria-live="polite" style="margin-top:12px">No reports loaded yet.</div>
+   </div>
   </div>
   <div id="teamRoleWorkspace" class="puzzlebox" style="margin-top:14px">
    <h3>🧭 Your role workspace</h3><p class="muted">A task list matched to your approved role.</p>
@@ -1584,6 +1590,7 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   const lessonCreator=$('teamLessonCreator');if(lessonCreator)lessonCreator.hidden=true;
   setTeamApplicationEligibility();
   await loadOwnerTeamReviewQueue();
+  await loadOwnerSafetyAlerts();
   if(!authClient||!authUser){status.textContent='Sign in to apply and check your application status.';return}
   if(authUser.id===MAXCHESS_OWNER_USER_ID){
    if(teamNav)teamNav.hidden=false;
@@ -1667,6 +1674,80 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    });
   }catch(error){list.textContent=error.message||'Could not load the review queue.';}
  }
+ let ownerSafetyPollTimer=null,ownerSafetyAlertsInitialized=false;
+ let ownerSafetySeenIds=new Set();
+ async function loadOwnerSafetyAlerts(silent=false){
+  const panel=$('ownerSafetyAlerts'),list=$('ownerSafetyAlertList'),count=$('ownerSafetyCount');
+  const isOwner=authUser?.id==='f686e7f3-45ee-47bd-9279-c835b088744b';
+  if(panel)panel.hidden=!isOwner;
+  if(!isOwner||!authClient){
+   if(ownerSafetyPollTimer){clearInterval(ownerSafetyPollTimer);ownerSafetyPollTimer=null;}
+   ownerSafetyAlertsInitialized=false;ownerSafetySeenIds=new Set();return;
+  }
+  if(!ownerSafetyPollTimer)ownerSafetyPollTimer=setInterval(()=>{
+   if(authUser?.id==='f686e7f3-45ee-47bd-9279-c835b088744b'&&document.visibilityState!=='hidden')loadOwnerSafetyAlerts(true);
+  },30000);
+  if(!silent&&list)list.textContent='Checking player reports…';
+  try{
+   const {data:reports,error}=await authClient.from('message_reports')
+    .select('id,reporter_id,message_id,reason,created_at,reviewed_at')
+    .order('created_at',{ascending:false}).limit(50);
+   if(error)throw error;
+   const messageIds=[...new Set((reports||[]).map(r=>r.message_id))];
+   let messages=[];
+   if(messageIds.length){
+    const result=await authClient.from('direct_messages')
+     .select('id,sender_id,recipient_id,body,created_at').in('id',messageIds);
+    if(result.error)throw result.error;
+    messages=result.data||[];
+   }
+   const userIds=[...new Set([...(reports||[]).map(r=>r.reporter_id),...messages.flatMap(m=>[m.sender_id,m.recipient_id])])];
+   let profiles=[];
+   if(userIds.length){
+    const result=await authClient.from('profiles').select('id,username').in('id',userIds);
+    if(!result.error)profiles=result.data||[];
+   }
+   const names=Object.fromEntries(profiles.map(p=>[p.id,p.username]));
+   const messageById=new Map(messages.map(m=>[m.id,m]));
+   const open=(reports||[]).filter(r=>!r.reviewed_at);
+   if(count)count.textContent=open.length+' unreviewed';
+   const newReports=open.filter(r=>ownerSafetyAlertsInitialized&&!ownerSafetySeenIds.has(r.id));
+   (reports||[]).forEach(r=>ownerSafetySeenIds.add(r.id));
+   if(newReports.length&&typeof note==='function')note(newReports.length===1?'New player safety report received.':newReports.length+' new player safety reports received.');
+   ownerSafetyAlertsInitialized=true;
+   if(!list)return;
+   list.replaceChildren();
+   if(!reports?.length){const empty=document.createElement('p');empty.className='muted';empty.textContent='No player reports have been submitted.';list.append(empty);return;}
+   reports.forEach(report=>{
+    const message=messageById.get(report.message_id);
+    const reportedId=message?(message.sender_id===report.reporter_id?message.recipient_id:message.sender_id):null;
+    const card=document.createElement('article');card.className='lesson-detail';card.style.cssText='padding:12px 0;border-bottom:1px solid var(--line)';
+    const heading=document.createElement('h4');
+    heading.textContent='Report from @'+(names[report.reporter_id]||'player')+(reportedId?' · about @'+(names[reportedId]||'player'):'');
+    const meta=document.createElement('p');meta.className='desc';
+    meta.textContent=new Date(report.created_at).toLocaleString()+' · '+(report.reviewed_at?'Reviewed':'Needs review');
+    const reason=document.createElement('p');reason.textContent='Reason: '+report.reason;
+    const body=document.createElement('p');body.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;padding:9px;border-radius:7px;background:var(--panel2)';
+    body.textContent=message?'Reported message: “'+message.body+'”':'The reported message is no longer available.';
+    card.append(heading,meta,reason,body);
+    if(!report.reviewed_at){
+     const button=document.createElement('button');button.type='button';button.className='toolbtn';button.textContent='Mark reviewed';
+     button.addEventListener('click',async()=>{
+      button.disabled=true;button.textContent='Saving…';
+      const result=await authClient.from('message_reports').update({reviewed_at:new Date().toISOString()}).eq('id',report.id);
+      if(result.error){button.disabled=false;button.textContent='Mark reviewed';meta.textContent='Could not save review status: '+result.error.message;return;}
+      await loadOwnerSafetyAlerts(true);
+     });
+     card.append(button);
+    }
+    list.append(card);
+   });
+  }catch(error){
+   if(list)list.textContent='Could not load safety reports. '+(error?.message||'Please try again.');
+   if(count)count.textContent='Unavailable';
+  }
+ }
+ $('ownerSafetyRefresh')?.addEventListener('click',()=>loadOwnerSafetyAlerts());
  $('ownerTeamRefresh')?.addEventListener('click',loadOwnerTeamReviewQueue);
  $('ownerOpenRoleWorkspace')?.addEventListener('click',()=>{
   if(authUser?.id!==MAXCHESS_OWNER_USER_ID)return;

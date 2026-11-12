@@ -918,6 +918,20 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <p id="teamHubWelcome">Your approved application unlocks this area.</p>
    <p><b>Your approved role:</b> <span id="teamHubRole">Team member</span></p>
   </div>
+  <div id="ownerTeamControls" class="puzzlebox" hidden style="margin-top:14px;border:2px solid var(--gold,#c9a64a)">
+   <h3>♛ Owner Control Center</h3>
+   <p class="muted">Owner-only access to every team role workspace and the study creator. These controls manage the team area only; they never change an opponent's chess moves, board, clock, or game result.</p>
+   <label for="ownerTeamRoleSelect">Open any team role workspace</label>
+   <select id="ownerTeamRoleSelect" style="display:block;width:100%;margin:6px 0 10px;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:6px">
+    <option>Puzzle maker</option><option>Lesson writer or coach</option><option>Chess coach</option><option>Quiz maker</option><option>Opening researcher</option><option>Endgame specialist</option><option>Tournament organizer</option><option>Event host</option><option>Game broadcaster</option><option>Stream / video helper</option><option>Chess content creator</option><option>Community helper</option><option>Fair-play helper</option><option>Designer</option><option>Website tester</option><option>Bug reporter</option><option>Translator</option><option>Accessibility helper</option><option>Documentation writer</option><option>Website developer</option><option>Ambassador</option>
+   </select>
+   <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="toolbtn" id="ownerOpenRoleWorkspace" type="button">Open selected workspace</button>
+    <button class="toolbtn" id="ownerToggleStudyCreator" type="button">Hide study creator</button>
+    <button class="toolbtn" id="ownerShowAllTasks" type="button">Show all role workspaces</button>
+   </div>
+   <p class="desc" id="ownerControlStatus" role="status" aria-live="polite">All owner controls are restricted to the MaxChess owner account.</p>
+  </div>
   <div id="teamRoleWorkspace" class="puzzlebox" style="margin-top:14px">
    <h3>🧭 Your role workspace</h3><p class="muted">A task list matched to your approved role.</p>
    <div id="teamRoleTasks"></div>
@@ -1571,6 +1585,21 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   setTeamApplicationEligibility();
   await loadOwnerTeamReviewQueue();
   if(!authClient||!authUser){status.textContent='Sign in to apply and check your application status.';return}
+  if(authUser.id===MAXCHESS_OWNER_USER_ID){
+   if(teamNav)teamNav.hidden=false;
+   area.hidden=false;
+   status.textContent='Owner access enabled. You have access to every team role workspace and the study creator.';
+   $('teamHubWelcome').textContent='Welcome, MaxChess owner! Your owner controls are enabled.';
+   $('teamHubRole').textContent='Owner · All team roles';
+   $('teamAnswerName').textContent=authUser.user_metadata?.username||'MaxChess owner';
+   $('teamAnswerRole').textContent='Owner · Full team workspace access';
+   $('teamAnswerLink').textContent='Owner account';
+   $('teamAnswerWhy').textContent='Owner access is separate from team applications.';
+   const controls=$('ownerTeamControls');if(controls)controls.hidden=false;
+   if(lessonCreator){lessonCreator.hidden=false;loadTeamLessonDrafts();}
+   renderTeamRoleWorkspace('Lesson writer or coach');
+   return;
+  }
   status.textContent='Checking your application…';
   const {data,error}=await authClient.from('team_applications').select('id,applicant_name,role,chess_profile,motivation,status,ai_reason,created_at').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(1);
   if(error){status.textContent='Could not load your application right now. Please try again later.';return}
@@ -1639,6 +1668,34 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   }catch(error){list.textContent=error.message||'Could not load the review queue.';}
  }
  $('ownerTeamRefresh')?.addEventListener('click',loadOwnerTeamReviewQueue);
+ $('ownerOpenRoleWorkspace')?.addEventListener('click',()=>{
+  if(authUser?.id!==MAXCHESS_OWNER_USER_ID)return;
+  const role=$('ownerTeamRoleSelect').value;
+  renderTeamRoleWorkspace(role);
+  $('teamHubRole').textContent='Owner · '+role;
+  $('ownerControlStatus').textContent='Opened '+role+' workspace. Notes and checkmarks are saved locally on this device.';
+ });
+ $('ownerToggleStudyCreator')?.addEventListener('click',()=>{
+  if(authUser?.id!==MAXCHESS_OWNER_USER_ID)return;
+  const creator=$('teamLessonCreator');if(!creator)return;
+  creator.hidden=!creator.hidden;
+  $('ownerToggleStudyCreator').textContent=creator.hidden?'Show study creator':'Hide study creator';
+  if(!creator.hidden)loadTeamLessonDrafts();
+  $('ownerControlStatus').textContent=creator.hidden?'Study creator hidden.':'Study creator opened.';
+ });
+ $('ownerShowAllTasks')?.addEventListener('click',()=>{
+  if(authUser?.id!==MAXCHESS_OWNER_USER_ID)return;
+  const roles=[...$('ownerTeamRoleSelect').options].map(o=>o.value||o.textContent);
+  const host=$('teamRoleTasks');host.replaceChildren();
+  roles.forEach(role=>{
+   const section=document.createElement('section');section.className='lesson-detail';section.style.cssText='margin:10px 0;padding:10px;border:1px solid var(--line);border-radius:8px';
+   const heading=document.createElement('h4');heading.textContent=role;
+   const open=document.createElement('button');open.type='button';open.className='toolbtn';open.textContent='Open this workspace';
+   open.addEventListener('click',()=>{renderTeamRoleWorkspace(role);$('teamHubRole').textContent='Owner · '+role;$('ownerControlStatus').textContent='Opened '+role+' workspace.';});
+   section.append(heading,open);host.append(section);
+  });
+  $('ownerControlStatus').textContent='Showing shortcuts to every role workspace. Choose one to load its task list.';
+ });
  async function loadTeamLessonDrafts(){
   const list=$('teamLessonDraftList');
   if(!list||!authClient||!authUser)return;

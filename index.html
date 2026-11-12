@@ -101,6 +101,10 @@ select.toolbtn{background:var(--panel2);border:0}
 
 .clock.active-clock{background:var(--green);color:#fff}
 .clock.flagged{background:#a33;color:#fff}
+.clock.active-clock.clock-style-classic{background:#efe1c3;color:#332817;border-color:#629924;box-shadow:0 0 0 2px #629924}
+.clock.active-clock.clock-style-gold{background:linear-gradient(145deg,#ffe9a3,#c38a25);color:#211706;border-color:#629924;box-shadow:0 0 0 2px #629924,0 0 10px #e8c76566}
+.clock.active-clock.clock-style-digital{background:#315d27;color:#fff;border-color:#85b23d}
+
 .board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));box-shadow:0 5px 22px #0007;touch-action:manipulation;user-select:none}
 .sq{aspect-ratio:1;position:relative;display:grid;place-items:center;padding:0;border-radius:0;font-size:clamp(24px,4.6vw,56px);line-height:1;color:#161512}
 .sq.light{background:var(--boardlight)}
@@ -2024,7 +2028,7 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   const otherId=onlineColor==='w'?row.black_player:row.white_player;
   const prof=await authClient.from('profiles').select('username,rating').eq('id',otherId).maybeSingle();
   setOnlinePlayerLayout(onlineColor,prof.data?.username||'Online opponent',prof.data?.rating||1200);
-  $('onlineStatus').textContent='Game started! You are playing '+(onlineColor==='w'?'White':'Black')+'.';
+  $('onlineStatus').textContent='Game started! Tap your clock after your move. If your opponent moves first, they get 20 extra seconds.';
   note('Opponent found! Your online game is ready.');loadGameChat();
   onlinePoll=setInterval(async()=>{
    if(!onlineGameId)return;loadGameChat();

@@ -858,9 +858,10 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 <label for="hireRole">What would you like to do?</label><select id="hireRole"><option>Puzzle maker</option><option value="Lesson writer or coach">Lesson writer + Coach</option><option>Chess coach</option><option>Quiz maker</option><option>Opening researcher</option><option>Endgame specialist</option><option>Tournament organizer</option><option>Event host</option><option>Game broadcaster</option><option>Stream / video helper</option><option>Chess content creator</option><option>Community helper</option><option>Fair-play helper</option><option>Designer</option><option>Website tester</option><option>Bug reporter</option><option>Translator</option><option>Accessibility helper</option><option>Documentation writer</option><option>Website developer</option><option>Ambassador</option><option>Something else</option></select>
 <label for="hireLink">Chess profile or link (optional)</label><input id="hireLink" maxlength="160" placeholder="For example your Lichess or Chess.com name">
 <label for="hireWhy">Tell us about you</label><textarea id="hireWhy" rows="5" required maxlength="1200" placeholder="Why do you want to help, and what have you done before?"></textarea>
-<p class="muted">You must be signed in to apply. Under 18? Ask a parent or teacher before applying. Do not include your address, phone number, school name, passwords, or other private information. Applications are reviewed by MaxChess AI; unclear applications are held for a person to review.</p>
+<p class="muted">You must be signed in to apply. Under 18? Ask a parent or teacher before applying. Do not include your address, phone number, school name, passwords, or other private information. Applications are saved for the MaxChess owner to review. No paid AI service is used.</p>
 <button class="greenbtn" type="submit">Submit application</button>
 <p id="teamApplicationStatus" class="muted" role="status" aria-live="polite" style="margin-top:14px">Sign in to apply and check your application.</p>
+<div id="ownerTeamReviewPanel" class="puzzlebox" hidden style="margin-top:14px"><h3>Owner review queue</h3><p class="muted">Applications are reviewed here by the MaxChess owner. No paid AI service is used.</p><button id="ownerTeamRefresh" class="toolbtn" type="button">Refresh applications</button><div id="ownerTeamReviewList" style="margin-top:12px">Loading…</div></div>
 <div id="teamPrivateArea" class="puzzlebox" hidden style="margin-top:14px"><h3>MaxChess Team Area</h3><p class="muted">Your application was approved. This private area is available to your signed-in account.</p><h4>Your application answers</h4><p><b>Name:</b> <span id="teamAnswerName"></span></p><p><b>Role:</b> <span id="teamAnswerRole"></span></p><p><b>Chess profile:</b> <span id="teamAnswerLink"></span></p><p><b>Your answer:</b></p><p id="teamAnswerWhy" style="white-space:pre-wrap;overflow-wrap:anywhere"></p></div>
 </form>
 </div></section>
@@ -1553,13 +1554,14 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   const teamNav=$('teamHubNav');if(teamNav)teamNav.hidden=true;
   const lessonCreator=$('teamLessonCreator');if(lessonCreator)lessonCreator.hidden=true;
   setTeamApplicationEligibility();
+  await loadOwnerTeamReviewQueue();
   if(!authClient||!authUser){status.textContent='Sign in to apply and check your application status.';return}
   status.textContent='Checking your application…';
   const {data,error}=await authClient.from('team_applications').select('id,applicant_name,role,chess_profile,motivation,status,ai_reason,created_at').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(1);
   if(error){status.textContent='Could not load your application right now. Please try again later.';return}
   if(!data?.length){status.textContent='You have not submitted an application yet.';return}
   const app=data[0];
-  const labels={pending_ai:'Waiting for AI review',approved:'Approved — welcome to the team!',declined:'Not approved',needs_review:'Needs another review'};
+  const labels={pending_ai:'Waiting for owner review',approved:'Approved — welcome to the team!',declined:'Not approved',needs_review:'Waiting for owner review'};
   status.textContent=(labels[app.status]||'Application status')+(app.ai_reason?' · '+app.ai_reason:'');
   if(app.status==='approved'){
    if(teamNav)teamNav.hidden=false;
@@ -1574,6 +1576,54 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
    area.hidden=false;
   }
  }
+
+ async function loadOwnerTeamReviewQueue(){
+  const panel=$('ownerTeamReviewPanel'),list=$('ownerTeamReviewList');
+  if(!panel||!list)return;
+  const isOwner=authUser?.id==='f686e7f3-45ee-47bd-9279-c835b088744b';
+  panel.hidden=!isOwner;
+  if(!isOwner||!authClient)return;
+  list.textContent='Loading applications…';
+  try{
+   const {data:sessionData}=await authClient.auth.getSession();
+   const token=sessionData?.session?.access_token;
+   if(!token)throw new Error('Sign in again to review applications.');
+   const response=await fetch('https://bvukakfhkebpsviehirr.supabase.co/functions/v1/maxchess-team-review',{
+    method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG','Authorization':'Bearer '+token},
+    body:JSON.stringify({action:'list'})
+   });
+   const result=await response.json().catch(()=>({}));
+   if(!response.ok)throw new Error(result.error||'Could not load the review queue.');
+   list.replaceChildren();
+   if(!result.applications?.length){list.textContent='No applications are waiting for review.';return;}
+   result.applications.forEach(app=>{
+    const card=document.createElement('article');card.className='lesson-detail';card.style.cssText='padding:12px 0;border-bottom:1px solid var(--line)';
+    const heading=document.createElement('h4');heading.textContent=app.applicant_name+' · '+app.role;
+    const meta=document.createElement('p');meta.className='desc';meta.textContent='Status: '+app.status+' · Submitted '+new Date(app.created_at).toLocaleString();
+    const profile=document.createElement('p');profile.textContent='Chess profile: '+(app.chess_profile||'Not provided');
+    const answer=document.createElement('p');answer.style.whiteSpace='pre-wrap';answer.textContent=app.motivation;
+    const actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin-top:8px';
+    for(const [decision,label] of [['approved','Approve'],['declined','Decline']]){
+     const button=document.createElement('button');button.type='button';button.className='toolbtn';button.textContent=label;
+     button.addEventListener('click',async()=>{
+      button.disabled=true;meta.textContent='Saving decision…';
+      try{
+       const {data:sd}=await authClient.auth.getSession();const t=sd?.session?.access_token;
+       const r=await fetch('https://bvukakfhkebpsviehirr.supabase.co/functions/v1/maxchess-team-review',{
+        method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG','Authorization':'Bearer '+t},
+        body:JSON.stringify({action:'decide',applicationId:app.id,decision})
+       });
+       const out=await r.json().catch(()=>({}));if(!r.ok)throw new Error(out.error||'Could not save the decision.');
+       await loadOwnerTeamReviewQueue();
+      }catch(error){meta.textContent=error.message||'Could not save decision.';button.disabled=false;}
+     });
+     actions.append(button);
+    }
+    card.append(heading,meta,profile,answer,actions);list.append(card);
+   });
+  }catch(error){list.textContent=error.message||'Could not load the review queue.';}
+ }
+ $('ownerTeamRefresh')?.addEventListener('click',loadOwnerTeamReviewQueue);
  async function loadTeamLessonDrafts(){
   const list=$('teamLessonDraftList');
   if(!list||!authClient||!authUser)return;
@@ -1639,17 +1689,15 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
   try{
    const {data,error}=await authClient.from('team_applications').insert({user_id:authUser.id,applicant_name,role,chess_profile,motivation}).select('id').single();
    if(error)throw error;
-   $('teamApplicationStatus').textContent='Application saved. Asking the AI reviewer to assess it…';
+   $('teamApplicationStatus').textContent='Application saved. Sending it to the owner review queue…';
    const {data:sessionData}=await authClient.auth.getSession();
    const token=sessionData?.session?.access_token;
    if(!token)throw new Error('Your sign-in session expired. Please sign in again.');
    const response=await fetch('https://bvukakfhkebpsviehirr.supabase.co/functions/v1/maxchess-team-review',{method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG','Authorization':'Bearer '+token},body:JSON.stringify({applicationId:data.id})});
    const result=await response.json().catch(()=>({}));
-   if(!response.ok&&result.status!=='pending_ai')throw new Error(result.error||'The application was saved, but the review could not finish.');
+   if(!response.ok)throw new Error(result.error||'The application was saved, but the owner queue could not be updated.');
    await loadTeamApplication();
-   if(result.status==='approved')note('Your MaxChess team application was approved!');
-   else if(result.status==='declined')note('Your application was reviewed.');
-   else note('Your application is saved. '+(result.reason||'It is waiting for review.'));
+   note('Your application is saved for the MaxChess owner to review.');
   }catch(err){$('teamApplicationStatus').textContent=err.message||'Your application could not be submitted.'}
   finally{submit.disabled=false;submit.textContent='Submit application'}
  });

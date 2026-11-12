@@ -931,6 +931,18 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
     <button class="toolbtn" id="ownerShowAllTasks" type="button">Show all role workspaces</button>
    </div>
    <p class="desc" id="ownerControlStatus" role="status" aria-live="polite">All owner controls are restricted to the MaxChess owner account.</p>
+   <div id="ownerOverview" class="puzzlebox" style="margin-top:14px">
+    <h3>📊 MaxChess overview</h3>
+    <p class="muted">Live totals from the MaxChess database. These are profile and public-content counts, not visitor or traffic estimates.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:9px">
+     <div class="lesson-detail"><b>Player profiles</b><div id="ownerStatPlayers" style="font-size:1.5rem;font-weight:800">—</div></div>
+     <div class="lesson-detail"><b>Public games</b><div id="ownerStatGames" style="font-size:1.5rem;font-weight:800">—</div></div>
+     <div class="lesson-detail"><b>Upcoming tournaments</b><div id="ownerStatTournaments" style="font-size:1.5rem;font-weight:800">—</div></div>
+     <div class="lesson-detail"><b>Team applications</b><div id="ownerStatApplications" style="font-size:1.5rem;font-weight:800">—</div></div>
+    </div>
+    <p class="desc" id="ownerOverviewUpdated" aria-live="polite">Not refreshed yet.</p>
+    <button id="ownerOverviewRefresh" class="toolbtn" type="button">Refresh overview</button>
+   </div>
    <div id="ownerSafetyAlerts" class="puzzlebox" hidden style="margin-top:14px;border:1px solid var(--gold,#c9a64a)">
     <h3>🚨 Player safety alerts <span id="ownerSafetyCount" class="desc">0 unreviewed</span></h3>
     <p class="muted">These alerts come from player reports of private messages. Review the details yourself; a report is not proof and does not automatically punish anyone.</p>
@@ -1598,6 +1610,7 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    status.textContent='Owner access enabled. You have access to every team role workspace and the study creator.';
    $('teamHubWelcome').textContent='Welcome, MaxChess owner! Your owner controls are enabled.';
    $('teamHubRole').textContent='Owner · All team roles';
+   await loadOwnerOverview();
    $('teamAnswerName').textContent=authUser.user_metadata?.username||'MaxChess owner';
    $('teamAnswerRole').textContent='Owner · Full team workspace access';
    $('teamAnswerLink').textContent='Owner account';
@@ -1674,6 +1687,51 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    });
   }catch(error){list.textContent=error.message||'Could not load the review queue.';}
  }
+ let ownerOverviewTimer=null;
+ async function loadOwnerOverview(){
+  if(authUser?.id!==MAXCHESS_OWNER_USER_ID||!authClient)return;
+  const ids=['ownerStatPlayers','ownerStatGames','ownerStatTournaments','ownerStatApplications'];
+  ids.forEach(id=>{const el=$(id);if(el)el.textContent='…';});
+  const updated=$('ownerOverviewUpdated');
+  try{
+   const [players,games,tournaments,team]=await Promise.all([
+    authClient.from('profiles').select('id',{count:'exact',head:true}),
+    authClient.from('games').select('id',{count:'exact',head:true}).eq('is_public',true),
+    authClient.from('tournaments').select('id',{count:'exact',head:true}).eq('status','upcoming'),
+    (async()=>{
+     const {data}=await authClient.auth.getSession();const token=data?.session?.access_token;
+     if(!token)throw new Error('Sign in again to count applications.');
+     const response=await fetch('https://bvukakfhkebpsviehirr.supabase.co/functions/v1/maxchess-team-review',{
+      method:'POST',headers:{'Content-Type':'application/json','apikey':'sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2r','Authorization':'Bearer '+token},
+      body:JSON.stringify({action:'list'})
+     });
+     const result=await response.json().catch(()=>({}));
+     if(!response.ok)throw new Error(result.error||'Could not count team applications.');
+     return {count:(result.applications||[]).filter(a=>a.status==='pending').length};
+    })()
+   ]);
+   const values=[
+    {id:'ownerStatPlayers',count:players.count,error:players.error},
+    {id:'ownerStatGames',count:games.count,error:games.error},
+    {id:'ownerStatTournaments',count:tournaments.count,error:tournaments.error},
+    {id:'ownerStatApplications',count:team.count,error:null}
+   ];
+   const failed=[];
+   values.forEach(item=>{
+    const el=$(item.id);if(!el)return;
+    if(item.error){el.textContent='—';failed.push(item.error.message);}
+    else el.textContent=Number(item.count||0).toLocaleString();
+   });
+   if(updated)updated.textContent='Updated '+new Date().toLocaleTimeString()+(failed.length?' · Some totals could not load.':'');
+  }catch(error){
+   if(updated)updated.textContent='Overview could not fully refresh: '+(error?.message||'Try again.');
+   ['ownerStatPlayers','ownerStatGames','ownerStatTournaments','ownerStatApplications'].forEach(id=>{const el=$(id);if(el&&el.textContent==='…')el.textContent='—';});
+  }
+  if(!ownerOverviewTimer)ownerOverviewTimer=setInterval(()=>{
+   if(authUser?.id===MAXCHESS_OWNER_USER_ID&&document.visibilityState!=='hidden')loadOwnerOverview();
+  },60000);
+ }
+ $('ownerOverviewRefresh')?.addEventListener('click',()=>loadOwnerOverview());
  let ownerSafetyPollTimer=null,ownerSafetyAlertsInitialized=false;
  let ownerSafetySeenIds=new Set();
  async function loadOwnerSafetyAlerts(silent=false){

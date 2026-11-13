@@ -905,6 +905,14 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 .piece.depth-marble{filter:drop-shadow(1px 3px 1px #0009);text-shadow:0 1px 0 #fff9,0 2px 1px #777,0 4px 2px #0008;transform:translateY(-2px)}
 .piece.depth-metal{filter:drop-shadow(1px 3px 1px #000b);text-shadow:0 1px 0 #fff,0 2px 1px #777,0 4px 2px #000b;transform:translateY(-2px) scale(1.05)}
 @media(prefers-reduced-motion:reduce){.board,.piece{transition:none!important;transform:none!important}}
+/* Physical 3D chess clock gallery, inspired by the user's reference photo */
+.maxchess-physical-clock{width:min(100%,300px);padding:10px 10px 12px;background:linear-gradient(165deg,#243044 0%,#111a2a 48%,#080d16 100%);border:1px solid #536071;border-radius:9px 9px 14px 14px;box-shadow:inset 0 2px 2px #ffffff35,0 5px 0 #070b12,0 9px 13px #0009;transform:perspective(520px) rotateX(8deg);transform-origin:center bottom;position:relative}
+.maxchess-physical-clock:before{content:"";position:absolute;left:12%;right:12%;top:-7px;height:10px;background:linear-gradient(#334155,#172235);border:1px solid #536071;border-bottom:0;transform:skewX(-28deg);border-radius:5px 5px 0 0}
+.maxchess-physical-screen{height:70px;display:flex;align-items:center;justify-content:center;margin:0 0 8px;padding:7px 12px;background:linear-gradient(145deg,#aeb6a5,#7f897e);border:5px solid #080d16;border-radius:5px;box-shadow:inset 0 2px 8px #0005,0 1px 0 #ffffff22}
+.maxchess-physical-buttons{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}
+.maxchess-physical-buttons span{min-height:27px;display:grid;place-items:center;background:linear-gradient(#e65b55,#a91f25);color:#fff4df;border:1px solid #8e2025;border-radius:3px;font-size:clamp(12px,2.5vw,17px);font-weight:900;box-shadow:inset 0 1px 0 #ffffff45,0 2px 0 #68151a}
+.maxchess-physical-clock:after{content:"";position:absolute;left:4%;right:4%;bottom:-10px;height:9px;background:#080d16;border-radius:0 0 8px 8px;transform:skewX(-10deg);z-index:-1}
+@media(max-width:480px){.maxchess-physical-screen{height:58px}.maxchess-physical-clock{padding:8px 8px 10px}}
 </style>
 
 /* 218 additional MaxChess custom clock appearances. These are original skins, not claims of real-world clock models. */
@@ -3039,10 +3047,16 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    $('clockGalleryCount').textContent=filtered.length+' clock appearance'+(filtered.length===1?'':'s');
    filtered.forEach(o=>{
     const card=document.createElement('button');card.type='button';card.className='puzzlebox';card.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:132px;cursor:pointer;border:1px solid var(--line);color:var(--strong);width:100%';
-    const preview=document.createElement('div');preview.className='clock clock-style-'+o.value;preview.textContent='10:00';preview.style.cssText='pointer-events:none;max-width:100%';
+    const housing=document.createElement('div');housing.className='maxchess-physical-clock';
+    const screen=document.createElement('div');screen.className='maxchess-physical-screen';
+    const preview=document.createElement('div');preview.className='clock clock-style-'+o.value;preview.textContent='10:00';preview.style.cssText='pointer-events:none;max-width:100%;min-width:0;margin:0 auto;background:transparent;border:0;box-shadow:none;color:#20251d;font-family:ui-monospace,monospace;font-size:clamp(20px,4vw,28px);font-weight:800;text-align:center';
+    screen.append(preview);
+    const buttons=document.createElement('div');buttons.className='maxchess-physical-buttons';
+    ['◀','−','▶Ⅱ','＋','▶'].forEach(symbol=>{const key=document.createElement('span');key.textContent=symbol;buttons.append(key)});
+    housing.append(screen,buttons);
     const label=document.createElement('b');label.textContent=o.textContent;
     const choose=document.createElement('span');choose.className='muted';choose.textContent=o.value===clockStyle?'✓ Currently selected':'Use this clock';
-    card.append(preview,label,choose);
+    card.append(housing,label,choose);
     card.addEventListener('click',()=>{
      select.value=o.value;clockStyle=o.value;
      try{localStorage.setItem('maxchess_clock_style',clockStyle)}catch(e){}

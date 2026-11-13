@@ -61,8 +61,7 @@ const $=id=>document.getElementById(id);
 let supabaseClient=null;
 const fields=['edition','headline','intro','featureTitle','featureBody','tipTitle','tipBody','eventTitle','eventBody','ctaText','ctaUrl','imageUrl','imageAlt'];
 const escapeHtml=value=>String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-const textBlock=value=>escapeHtml(value).replace(/
-/g,'<br>');
+const textBlock=value=>escapeHtml(value).replace(/\n/g,'<br>');
 function values(){const out={};fields.forEach(id=>out[id]=$(id).value.trim());return out}
 function build(data){
  let url='https://themaxchessss.github.io';

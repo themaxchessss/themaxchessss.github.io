@@ -41,7 +41,22 @@ small{color:var(--muted)}footer{margin-top:48px;color:var(--muted);font-size:.9r
 <a class="cta" href="https://buttondown.com/maxchess" target="_blank" rel="noopener noreferrer">Subscribe to the newsletter</a>
 <p><small>Subscription is handled by Buttondown. You can unsubscribe using the link in any newsletter email.</small></p>
 </section>
-<footer>© MaxChess • Free online chess</footer>
+<section class="panel" id="latestEdition"><h2>Latest newsletter edition</h2><p id="editionStatus" class="lead">Checking for the latest published edition…</p><iframe id="editionFrame" title="Latest published MaxChess newsletter" style="display:none;width:100%;height:900px;border:1px solid #34445b;border-radius:14px;background:#fff"></iframe></section>\n<footer>© MaxChess • Free online chess</footer>
 </main>
+<script>
+(async function(){
+ const status=document.getElementById('editionStatus');
+ const frame=document.getElementById('editionFrame');
+ try{
+  const response=await fetch('./latest-newsletter.html',{cache:'no-store'});
+  if(!response.ok)throw new Error('No edition has been published yet.');
+  frame.src='./latest-newsletter.html';
+  frame.style.display='block';
+  status.textContent='Read the latest published MaxChess edition below.';
+ }catch(_error){
+  status.textContent='No newsletter edition has been published yet. Check back soon!';
+ }
+})();
+</script>
 </body>
 </html>

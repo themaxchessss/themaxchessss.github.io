@@ -1625,6 +1625,21 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
       <button type="button" class="toolbtn" id="ownerExportStats" style="min-height:44px">26. Export dashboard totals (CSV)</button>
       <button type="button" class="toolbtn" id="ownerSaveNotes" style="min-height:44px">27. Download owner notes</button>
       <a class="toolbtn" href="newsletter-maker.html" style="display:flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box;text-decoration:none">28. 📰 Make a Newsletter</a>
+     <section id="ownerQuickNewsletter" class="puzzlebox" style="margin-top:12px;border:1px solid var(--gold,#c9a64a)">
+      <h3>📰 Type Your Newsletter Booklet</h3>
+      <p class="muted">Write or paste the whole newsletter below. Your draft saves on this device while you type. Create a booklet to preview, print, or save as a file.</p>
+      <label for="ownerNewsletterTitle">Booklet title</label>
+      <input id="ownerNewsletterTitle" type="text" maxlength="120" placeholder="MaxChess Weekly Newsletter" style="display:block;width:100%;padding:10px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:6px">
+      <label for="ownerNewsletterText">Your newsletter</label>
+      <textarea id="ownerNewsletterText" rows="12" placeholder="Type your newsletter here...&#10;&#10;Add chess news, puzzles, tournament updates, tips, and announcements." style="display:block;width:100%;min-height:260px;padding:12px;background:var(--panel3);color:var(--strong);border:1px solid var(--line);border-radius:6px;resize:vertical"></textarea>
+      <p class="desc" id="ownerNewsletterDraftStatus" aria-live="polite">Draft not saved yet.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+       <button type="button" class="toolbtn" id="ownerNewsletterMakeBooklet">📖 Create booklet preview</button>
+       <button type="button" class="toolbtn" id="ownerNewsletterDownloadBooklet">⬇ Download booklet</button>
+       <button type="button" class="toolbtn" id="ownerNewsletterClearDraft">Clear draft</button>
+      </div>
+      <p class="desc">Creating or downloading a booklet does not publish it to the public newsletter page. Publishing needs a connected public-page save feature.</p>
+     </section>
      </div>
      <div id="ownerHelperStudio" class="puzzlebox" style="margin-top:16px">
       <h3>🧰 Owner Helper Studio · 1,000 more tools</h3>
@@ -3849,5 +3864,29 @@ window.dispatchEvent(new Event("maxchess:ready"));
 #page-learn .lesson.lesson-complete{position:relative;padding-right:38px;border-left-color:var(--green2)}
 #page-learn .lesson.lesson-complete::after{content:'✓';position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--green2);font-size:16px;font-weight:900}
 </style>
+
+<script>
+(function(){
+ const title=document.getElementById('ownerNewsletterTitle');
+ const body=document.getElementById('ownerNewsletterText');
+ const status=document.getElementById('ownerNewsletterDraftStatus');
+ if(!title||!body||!status)return;
+ const key='maxchess_owner_newsletter_booklet_draft_v1';
+ try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved){title.value=saved.title||'';body.value=saved.body||'';status.textContent='Draft restored from this device.';}}catch(e){}
+ function save(){try{localStorage.setItem(key,JSON.stringify({title:title.value,body:body.value,updatedAt:new Date().toISOString()}));status.textContent='Draft saved on this device.';}catch(e){status.textContent='Could not save draft on this device.';}}
+ title.addEventListener('input',save);body.addEventListener('input',save);
+ function booklet(){
+  const safeTitle=title.value.trim()||'MaxChess Newsletter';
+  const text=body.value.trim();
+  if(!text){status.textContent='Type your newsletter first.';body.focus();return null;}
+  const escaped=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const paragraphs=escaped.split(/\n\s*\n/).map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>').join('');
+  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+safeTitle.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</title><style>*{box-sizing:border-box}body{margin:0;background:#eee;color:#202020;font:17px/1.7 Georgia,serif}.page{max-width:780px;min-height:100vh;margin:24px auto;padding:56px clamp(22px,7vw,72px);background:white;box-shadow:0 4px 24px #0002}header{text-align:center;border-bottom:3px double #b28a2e;padding-bottom:24px;margin-bottom:30px}h1{font:800 clamp(30px,6vw,48px)/1.1 system-ui;color:#9a7421}header p{color:#666;font:14px system-ui}p{white-space:normal;margin:0 0 1.2em}footer{border-top:1px solid #ddd;margin-top:42px;padding-top:16px;color:#777;font:12px system-ui}@media print{body{background:white}.page{margin:0;box-shadow:none;max-width:none;min-height:auto;page-break-after:always}}</style></head><body><main class="page"><header><h1>'+safeTitle.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</h1><p>MAXCHESS · THINK FAST. PLAY SMART.</p></header><article>'+paragraphs+'</article><footer>MaxChess · Free online chess</footer></main></body></html>';
+ }
+ document.getElementById('ownerNewsletterMakeBooklet').addEventListener('click',function(){const doc=booklet();if(!doc)return;const url=URL.createObjectURL(new Blob([doc],{type:'text/html'}));const win=window.open(url,'_blank');if(!win){const a=document.createElement('a');a.href=url;a.download='maxchess-newsletter-booklet.html';a.click();}status.textContent='Booklet preview created.';setTimeout(()=>URL.revokeObjectURL(url),60000);});
+ document.getElementById('ownerNewsletterDownloadBooklet').addEventListener('click',function(){const doc=booklet();if(!doc)return;const url=URL.createObjectURL(new Blob([doc],{type:'text/html'}));const a=document.createElement('a');a.href=url;a.download='maxchess-newsletter-booklet.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='Booklet download started.';});
+ document.getElementById('ownerNewsletterClearDraft').addEventListener('click',function(){if(!confirm('Clear the saved newsletter draft on this device?'))return;title.value='';body.value='';localStorage.removeItem(key);status.textContent='Draft cleared.';});
+})();
+</script>
 </body>
 </html>

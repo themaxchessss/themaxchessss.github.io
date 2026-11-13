@@ -21,6 +21,7 @@ h2{color:#fff;margin-top:0}.topics{display:grid;grid-template-columns:repeat(aut
 .cta{display:inline-block;margin-top:20px;padding:13px 20px;border-radius:12px;background:var(--gold);color:#111827;font-weight:900}
 small{color:var(--muted)}footer{margin-top:48px;color:var(--muted);font-size:.9rem}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <main>
@@ -48,14 +49,14 @@ small{color:var(--muted)}footer{margin-top:48px;color:var(--muted);font-size:.9r
  const status=document.getElementById('editionStatus');
  const frame=document.getElementById('editionFrame');
  try{
-  const response=await fetch('./latest-newsletter.html',{cache:'no-store'});
-  if(!response.ok)throw new Error('No edition has been published yet.');
-  frame.src='./latest-newsletter.html';
+  const client=window.supabase.createClient('https://bvukakfhkebpsviehirr.supabase.co','sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG');
+  const {data,error}=await client.from('maxchess_newsletter').select('edition,html,published_at').eq('id','latest').maybeSingle();
+  if(error)throw error;
+  if(!data){status.textContent='No newsletter edition has been published yet. Check back soon!';return;}
+  frame.srcdoc=data.html;
   frame.style.display='block';
-  status.textContent='Read the latest published MaxChess edition below.';
- }catch(_error){
-  status.textContent='No newsletter edition has been published yet. Check back soon!';
- }
+  status.textContent='Latest edition: '+data.edition+' · Published '+new Date(data.published_at).toLocaleString();
+ }catch(_error){status.textContent='The latest newsletter could not be loaded right now. Please try again later.';}
 })();
 </script>
 </body>

@@ -1571,7 +1571,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
     <button id="ownerOverviewRefresh" class="toolbtn" type="button">Refresh overview</button>
    </div>
     <div id="ownerToolbox" class="puzzlebox" style="margin-top:14px">
-     <h3>🧰 Owner Toolbox · 27 tools</h3>
+     <h3>🧰 Owner Toolbox · 1,027 tools</h3>
      <p class="muted">Quick access to MaxChess sections plus safe owner utilities. These tools do not change game moves, clocks, ratings, or results.</p>
      <h4 style="margin:12px 0 8px">22 section launchers</h4>
      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px">
@@ -1606,9 +1606,29 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
       <button type="button" class="toolbtn" id="ownerExportStats" style="min-height:44px">26. Export dashboard totals (CSV)</button>
       <button type="button" class="toolbtn" id="ownerSaveNotes" style="min-height:44px">27. Download owner notes</button>
      </div>
+     <div id="ownerHelperStudio" class="puzzlebox" style="margin-top:16px">
+      <h3>🧰 Owner Helper Studio · 1,000 more tools</h3>
+      <p class="muted">A searchable library of 1,000 local project helpers. Each tool creates a useful checklist, plan, draft or worksheet for the selected MaxChess topic. They do not secretly change player accounts, moderate users, send messages, or access private data.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:8px;margin:12px 0">
+       <label>Search tools<input id="ownerHelperSearch" type="search" placeholder="Search 1,000 tools…" autocomplete="off" style="display:block;width:100%;box-sizing:border-box;margin-top:5px;padding:10px;border:1px solid var(--line);border-radius:7px;background:var(--panel3);color:var(--strong)"></label>
+       <label>Tool category<select id="ownerHelperCategory" style="display:block;width:100%;margin-top:5px;padding:10px;border:1px solid var(--line);border-radius:7px;background:var(--panel3);color:var(--strong)"><option value="all">All 20 categories</option></select></label>
+      </div>
+      <p id="ownerHelperPageInfo" class="desc" aria-live="polite">Showing tools 1–24 of 1,000.</p>
+      <div id="ownerHelperCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:8px"></div>
+      <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:12px">
+       <button type="button" class="toolbtn" id="ownerHelperPrev" disabled>← Previous</button>
+       <button type="button" class="toolbtn" id="ownerHelperNext">Next →</button>
+      </div>
+      <div id="ownerHelperOutputPanel" class="puzzlebox" style="margin-top:14px" hidden>
+       <h4 id="ownerHelperOutputTitle">Your helper output</h4>
+       <textarea id="ownerHelperOutput" rows="12" readonly aria-label="Generated owner helper worksheet" style="display:block;width:100%;box-sizing:border-box;margin:8px 0;padding:10px;border:1px solid var(--line);border-radius:7px;background:var(--panel3);color:var(--strong);font:14px/1.5 ui-monospace,monospace"></textarea>
+       <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="toolbtn" id="ownerHelperCopy">Copy worksheet</button><button type="button" class="toolbtn" id="ownerHelperDownload">Download worksheet</button></div>
+       <p id="ownerHelperOutputStatus" class="desc" role="status" aria-live="polite">Generated locally in this browser.</p>
+      </div>
+     </div>
      <label for="ownerPrivateNotes" style="display:block;margin-top:14px">Owner notes (saved only in this browser)</label>
      <textarea id="ownerPrivateNotes" rows="4" maxlength="5000" placeholder="Keep private project reminders and ideas on this device…" style="display:block;width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--panel3);color:var(--strong)"></textarea>
-     <p class="desc" id="ownerToolboxStatus" role="status" aria-live="polite">The 27 tools are available only while signed in to the owner account. Notes stay on this device.</p>
+     <p class="desc" id="ownerToolboxStatus" role="status" aria-live="polite">The 1,027 tools are available only while signed in to the owner account. Notes stay on this device.</p>
     </div>
    <div id="ownerSafetyAlerts" class="puzzlebox" hidden style="margin-top:14px;border:1px solid var(--gold,#c9a64a)">
     <h3>🚨 Player safety alerts <span id="ownerSafetyCount" class="desc">0 unreviewed</span></h3>
@@ -2466,6 +2486,87 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    const a=document.createElement('a');a.href=url;a.download='maxchess-owner-notes.txt';document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
    say('Owner notes downloaded. They are stored locally, not sent to MaxChess servers.');
   });
+
+  // 20 helper actions × 50 MaxChess work areas = exactly 1,000 useful local tools.
+  const helperActions=[
+   ['checklist','Checklist builder','Planning'],['testplan','Test-plan builder','Testing'],['bugreport','Bug-report builder','Testing'],['feature','Feature brief builder','Product'],['release','Release-notes builder','Product'],
+   ['weekly','Weekly review builder','Planning'],['lesson','Lesson outline builder','Chess content'],['puzzle','Puzzle quality reviewer','Chess content'],['tournament','Tournament planner','Events'],['safety','Player-safety review checklist','Safety'],
+   ['accessibility','Accessibility test sheet','Testing'],['mobile','Mobile-device test sheet','Testing'],['calendar','Content calendar builder','Marketing'],['announcement','Community announcement draft','Community'],['risk','Risk review worksheet','Safety'],
+   ['backup','Backup and recovery checklist','Operations'],['launch','Launch-readiness checklist','Operations'],['support','Player-support reply draft','Community'],['decision','Decision log builder','Planning'],['metrics','Metric definition worksheet','Analytics']
+  ];
+  const helperTopics=[
+   'Home page','Navigation','Sign-in','Player accounts','Player profiles','Avatars','Ratings','Leaderboards','Friend challenges','Online matchmaking',
+   'Computer opponent','Chess clocks','Custom time controls','DGT-style clocks','Game results','Resigning and draws','Reconnect flow','Puzzles','Puzzle Rush','Puzzle categories',
+   'Chess lessons','Study chapters','Opening explorer','Game analysis','Stockfish review','Tournaments','Pairings','Tournament standings','Leagues','School chess',
+   'Team workspace','Owner panel','Safety reports','Private messages','Community comments','Player feedback','Watch games','GIF gallery','Business cards','Newsletter',
+   'Mobile layout','iPad compatibility','Accessibility','Performance','Broken links','404 page','Search visibility','Website security','Supabase data','Release publishing'
+  ];
+  const helperTemplates={
+   checklist:'PURPOSE\nDefine the outcome and owner.\n\nTASKS\n[ ] Confirm the current behavior\n[ ] List the expected behavior\n[ ] Check desktop and touch use\n[ ] Check keyboard and screen-reader basics\n[ ] Record evidence and blockers\n[ ] Review before publishing\n\nDONE WHEN\nThe result is checked, documented and approved.',
+   testplan:'TEST GOAL\nWhat must be proven?\n\nTEST CASES\n1. Normal use: [steps]\n2. Empty or missing data: [steps]\n3. Slow connection: [steps]\n4. Small-screen and iPad: [steps]\n5. Keyboard/touch: [steps]\n6. Error recovery: [steps]\n\nRecord device, browser, expected result, actual result and evidence. Do not mark untested cases as passed.',
+   bugreport:'BUG TITLE\n[Short description]\n\nDEVICE / BROWSER\n[Device and browser]\n\nSTEPS TO REPRODUCE\n1. [Step]\n2. [Step]\n3. [Step]\n\nEXPECTED\n[What should happen]\n\nACTUAL\n[What happened]\n\nEVIDENCE\n[Safe screenshot or error text; remove personal data]\n\nSEVERITY\n[Low / Medium / High] · Reproduction: [Always / Sometimes / Once]',
+   feature:'PROBLEM\n[What is difficult for players?]\n\nPROPOSED CHANGE\n[Describe the smallest useful improvement]\n\nPLAYER BENEFIT\n[Who benefits and how?]\n\nACCEPTANCE CHECKS\n[ ] Works on touch screens\n[ ] Keeps MaxChess free\n[ ] Does not replace the homepage\n[ ] Does not alter chess rules, clocks or ratings unless explicitly intended\n[ ] Has an error state and a way back',
+   release:'MAXCHESS RELEASE NOTES\nVersion/date: [fill in]\n\nNEW\n- [Verified change]\n\nIMPROVED\n- [Verified improvement]\n\nFIXED\n- [Verified bug fix]\n\nKNOWN LIMITATIONS\n- [Untested or unfinished item]\n\nDo not claim a feature is live until the deployed site has been checked.',
+   weekly:'WEEKLY REVIEW\n1. Site loads: [Verified / Not tested]\n2. Navigation: [Verified / Not tested]\n3. Chess play: [Verified / Not tested]\n4. Computer play: [Verified / Not tested]\n5. Mobile/iPad: [Verified / Not tested]\n6. Broken links/errors: [Evidence]\n7. Homepage clarity: [Finding]\n\nTOP THREE NEXT ACTIONS\n1. [Action]\n2. [Action]\n3. [Action]\n\nUse public evidence only. Never invent traffic or player counts.',
+   lesson:'LESSON TITLE\n[Title]\n\nLEARNING GOAL\nBy the end, a learner can…\n\nCHAPTERS\n1. Explain the idea\n2. Show a model position (FEN/PGN if available)\n3. Ask the learner to find a move\n4. Explain why the move works\n5. Give a practice position\n\nCheck that every position and move is legal before publishing.',
+   puzzle:'PUZZLE QUALITY REVIEW\n[ ] Position is legal and reachable\n[ ] Side to move is correct\n[ ] There is a clear winning or drawing solution\n[ ] Best move is verified with analysis\n[ ] Alternate good moves are considered\n[ ] Hint helps without revealing the answer\n[ ] Explanation teaches the tactic\n[ ] Difficulty label is reasonable',
+   tournament:'EVENT PLAN\nName/date/time zone: [fill in]\nFormat: [Swiss / Round robin / Other]\nTime control: [fill in]\nExpected players: [estimate, not actual count]\n\nBEFORE\n[ ] Publish rules and fair-play expectations\n[ ] Test pairings and byes\n[ ] Confirm clock settings\n[ ] Prepare tie-break rules\n\nDURING\n[ ] Monitor rounds and reported issues\n\nAFTER\n[ ] Verify standings and results before publishing',
+   safety:'SAFETY REVIEW\n[ ] Review the report carefully\n[ ] Treat allegations as unverified until checked\n[ ] Do not expose private messages publicly\n[ ] Preserve only necessary evidence\n[ ] Apply published rules consistently\n[ ] Escalate urgent threats to a trusted adult / appropriate authority\n[ ] Record the decision and reason\n\nThis checklist does not automatically judge or punish players.',
+   accessibility:'ACCESSIBILITY CHECK\n[ ] Controls have clear labels\n[ ] Keyboard focus is visible\n[ ] Text contrast is readable\n[ ] Buttons have comfortable touch targets\n[ ] Status changes are announced\n[ ] Board squares have useful labels\n[ ] Zoom does not hide controls\n[ ] Reduced-motion preference is respected',
+   mobile:'MOBILE TEST\nDevice/model: [fill in]\nOS/browser: [fill in]\nOrientation: [portrait / landscape]\n\n[ ] Page fits without sideways scrolling\n[ ] Buttons respond to touch\n[ ] Menus open and close\n[ ] Board squares are tappable\n[ ] Clock buttons are reachable\n[ ] Keyboard does not cover fields\n[ ] Reload/reconnect works\n[ ] No blank or clipped panels\n\nOnly mark tests passed after trying them on the device.',
+   calendar:'CONTENT CALENDAR\nWeek of: [date]\n\nMON: [topic / channel]\nTUE: [topic / channel]\nWED: [topic / channel]\nTHU: [topic / channel]\nFRI: [topic / channel]\nSAT: [topic / channel]\nSUN: [topic / channel]\n\nFor each post: audience, helpful takeaway, image rights, review status and link. No paid promotion assumed.',
+   announcement:'COMMUNITY DRAFT\nHeadline: [short and clear]\n\nWhat is new? [Verified fact]\nWhy it matters: [Player benefit]\nHow to try it: [Steps]\nKnown limits: [Honest note]\n\nKeep it friendly. Do not include private player information or promise unfinished features.',
+   risk:'RISK REGISTER\nRisk: [What could go wrong?]\nLikelihood: [Low / Medium / High]\nImpact: [Low / Medium / High]\nEarly warning: [Signal]\nPrevention: [Action]\nRecovery: [Action]\nOwner: [Role]\nReview date: [Date]\n\nDo not store passwords, API keys or sensitive player data here.',
+   backup:'BACKUP CHECKLIST\n[ ] Identify the source of truth\n[ ] Confirm a recent backup exists\n[ ] Keep secrets out of exported files\n[ ] Record backup date and scope\n[ ] Test restoration in a safe environment\n[ ] Verify restored data\n[ ] Document rollback steps\n\nA backup is not proven until a restore test succeeds.',
+   launch:'LAUNCH READINESS\n[ ] Change reviewed\n[ ] Existing features preserved\n[ ] Mobile/touch test completed\n[ ] Error and empty states checked\n[ ] Accessibility pass completed\n[ ] No secrets or private data exposed\n[ ] Rollback plan ready\n[ ] Public site checked after deployment\n\nLaunch decision: [Go / Hold] · Reviewer: [role]',
+   support:'PLAYER SUPPORT REPLY\nHi! Thanks for letting MaxChess know.\n\nI understand that [briefly restate the issue].\n\nPlease try: [safe troubleshooting step].\nIf it still happens, share the device/browser and the steps that led to it. Please do not send your password or private account details.\n\nThanks for helping improve MaxChess!',
+   decision:'DECISION LOG\nDecision: [What was decided?]\nDate: [Date]\nContext: [Why is a decision needed?]\nOptions considered: [List]\nReason: [Evidence and trade-offs]\nImpact: [Players / maintenance / cost]\nRevisit when: [Trigger or date]',
+   metrics:'METRIC DEFINITION\nMetric name: [Name]\nQuestion it answers: [Question]\nExact definition: [Formula / source]\nTime window: [Window]\nKnown limitations: [Limitations]\nPrivacy check: [Does it expose personal data?]\n\nNever invent values. Separate actual measurements from estimates.'
+  };
+  const helperCards=$('ownerHelperCards'),helperSearch=$('ownerHelperSearch'),helperCategory=$('ownerHelperCategory');
+  const helperPageInfo=$('ownerHelperPageInfo'),helperOutputPanel=$('ownerHelperOutputPanel'),helperOutput=$('ownerHelperOutput');
+  let helperPage=0,helperCurrentTitle='MaxChess owner worksheet';
+  const helperItems=helperActions.flatMap((action,ai)=>helperTopics.map((topic,ti)=>({id:ai*helperTopics.length+ti,action,topic,title:action[1]+' · '+topic})));
+  helperActions.forEach(action=>{const option=document.createElement('option');option.value=action[0];option.textContent=action[2]+' — '+action[1];helperCategory?.append(option);});
+  const filteredHelpers=()=>helperItems.filter(item=>(helperCategory?.value==='all'||item.action[0]===helperCategory?.value)&&(!helperSearch?.value||item.title.toLowerCase().includes(helperSearch.value.toLowerCase())||item.topic.toLowerCase().includes(helperSearch.value.toLowerCase())));
+  function renderHelperPage(){
+   if(!helperCards)return;
+   const all=filteredHelpers(),pages=Math.max(1,Math.ceil(all.length/24));helperPage=Math.min(helperPage,pages-1);
+   helperCards.replaceChildren();
+   all.slice(helperPage*24,helperPage*24+24).forEach(item=>{
+    const card=document.createElement('div');card.className='lesson-detail';card.style.cssText='padding:10px;display:flex;flex-direction:column;gap:7px;min-width:0';
+    const title=document.createElement('strong');title.textContent=item.title;
+    const meta=document.createElement('span');meta.className='desc';meta.textContent=item.action[2]+' · Local worksheet';
+    const run=document.createElement('button');run.type='button';run.className='toolbtn';run.textContent='Open tool';run.dataset.ownerHelperId=String(item.id);run.style.minHeight='42px';
+    card.append(title,meta,run);helperCards.append(card);
+   });
+   const first=all.length?helperPage*24+1:0,last=Math.min((helperPage+1)*24,all.length);
+   if(helperPageInfo)helperPageInfo.textContent='Showing '+first+'–'+last+' of '+all.length+' matching tools · '+helperItems.length+' total tools';
+   const prev=$('ownerHelperPrev'),next=$('ownerHelperNext');if(prev)prev.disabled=helperPage===0;if(next)next.disabled=helperPage>=pages-1;
+  }
+  helperSearch?.addEventListener('input',()=>{helperPage=0;renderHelperPage();});
+  helperCategory?.addEventListener('change',()=>{helperPage=0;renderHelperPage();});
+  $('ownerHelperPrev')?.addEventListener('click',()=>{if(!allowed())return;helperPage=Math.max(0,helperPage-1);renderHelperPage();});
+  $('ownerHelperNext')?.addEventListener('click',()=>{if(!allowed())return;helperPage++;renderHelperPage();});
+  helperCards?.addEventListener('click',event=>{
+   const button=event.target.closest('[data-owner-helper-id]');if(!button||!allowed())return;
+   const item=helperItems[Number(button.dataset.ownerHelperId)];if(!item)return;
+   helperCurrentTitle='MaxChess — '+item.title;
+   const text=[helperCurrentTitle,'Generated: '+new Date().toLocaleString(),'','WORK AREA: '+item.topic,'TOOL: '+item.action[1],'',''+(helperTemplates[item.action[0]]||'Start by defining the goal, steps, evidence and review owner.'),'','TOPIC-SPECIFIC NOTES','What is true today? [Record verified facts.]','What should happen? [Describe the expected result.]','Evidence or links: [Add public, non-sensitive references.]','Next action: [One small, testable step.]','Reviewer: [Role]'].join('\n');
+   if(helperOutput)helperOutput.value=text;
+   const panel=$('ownerHelperOutputPanel');if(panel)panel.hidden=false;
+   const heading=$('ownerHelperOutputTitle');if(heading)heading.textContent=item.title;
+   const outStatus=$('ownerHelperOutputStatus');if(outStatus)outStatus.textContent='Created locally. Review it, then copy or download it; nothing has been sent or published.';
+   panel?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  $('ownerHelperCopy')?.addEventListener('click',()=>{if(!allowed()||!helperOutput)return;copyText(helperOutput.value,'Worksheet');});
+  $('ownerHelperDownload')?.addEventListener('click',()=>{
+   if(!allowed()||!helperOutput)return;
+   const blob=new Blob([helperOutput.value],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob);
+   const a=document.createElement('a');a.href=url;a.download='maxchess-owner-helper-'+helperCurrentTitle.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.txt';document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
+   const outStatus=$('ownerHelperOutputStatus');if(outStatus)outStatus.textContent='Worksheet downloaded to this device.';
+  });
+  renderHelperPage();
  })();
 
  let ownerSafetyPollTimer=null,ownerSafetyAlertsInitialized=false;

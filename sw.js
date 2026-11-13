@@ -1,5 +1,14 @@
-const CACHE_NAME = "maxchess-shell-v26";
-const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./404.html"];
+const CACHE_NAME = "maxchess-shell-v27";
+const SHELL = [
+  "./",
+  "./index.html",
+  "./manifest.webmanifest",
+  "./icon.svg",
+  "./404.html",
+  "./newsletter.html",
+  "./newsletter-maker.html",
+  "./owner-control.html"
+];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -14,7 +23,7 @@ self.addEventListener("fetch", event => {
     event.respondWith(fetch(request).then(response => {
       if (response.ok) { const copy = response.clone(); caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy)); }
       return response;
-    }).catch(() => caches.match("./index.html")));
+    }).catch(() => caches.match(request).then(cachedPage => cachedPage || caches.match("./index.html"))));
     return;
   }
   const staticExternal = url.hostname === "cdn.jsdelivr.net" || url.hostname === "cdnjs.cloudflare.com" || url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";

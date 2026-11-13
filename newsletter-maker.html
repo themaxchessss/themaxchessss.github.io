@@ -15,20 +15,28 @@ header{margin:24px 0}h1{font-size:clamp(2rem,6vw,3.8rem);line-height:1.05;color:
 label{display:block;font-weight:700;margin:13px 0 5px}input,textarea{width:100%;padding:12px;border:1px solid #40516a;border-radius:9px;background:#091321;color:#fff;font:inherit}textarea{min-height:105px;resize:vertical}
 button,.button{display:inline-block;border:0;border-radius:10px;padding:12px 16px;background:var(--gold);color:#111827;font-weight:850;font:inherit;cursor:pointer;margin:8px 6px 0 0}button.secondary{background:#24364d;color:#fff;border:1px solid #50617a}
 #preview{width:100%;height:680px;border:1px solid #40516a;border-radius:12px;background:#fff}
-.status{min-height:1.5em;color:var(--blue)}.hidden{display:none!important}
+.status{min-height:1.5em;color:var(--blue)}.hidden{display:none!important}.template-row{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.template-row button{margin:0;flex:1 1 145px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <main>
-<nav><a href="./">← Back to MaxChess</a> · <a href="newsletter.html">Public newsletter page</a></nav>
-<header><div class="muted">OWNER-ONLY WORKSPACE</div><h1>📰 Make a Newsletter</h1><p class="muted">Create a MaxChess newsletter draft, preview it, then copy or download the HTML. Nothing is emailed or published automatically.</p></header>
+<nav><a href="./">← Back to MaxChess</a> · <a href="newsletter.html">Public newsletter page</a> · <a href="owner-control.html">Owner Control Center</a></nav>
+<header><div class="muted">OWNER-ONLY WORKSPACE</div><h1>📰 Make a Newsletter</h1><p class="muted">Start with a ready-made edition, edit the words, add an optional picture, preview it, then save or export. Nothing is emailed or published automatically.</p></header>
 <section class="panel" id="gate"><h2>Checking owner access…</h2><p class="status" id="gateStatus">Verifying your signed-in MaxChess account.</p><p class="muted">If you are not signed in, return to MaxChess, sign in with the owner account, and open this tool again.</p></section>
 <div id="workspace" class="hidden">
 <div class="layout">
 <section class="panel">
 <h2>Newsletter editor</h2>
+<div class="template-row" aria-label="Newsletter starter templates">
+<button type="button" class="secondary" data-template="weekly">Weekly update</button>
+<button type="button" class="secondary" data-template="tournament">Tournament edition</button>
+<button type="button" class="secondary" data-template="learning">Learn &amp; play</button>
+</div>
+<p class="muted">Choose a starter, then edit any field. These are editable drafts, not automatically verified news.</p>
 <label for="edition">Edition</label><input id="edition" maxlength="80" value="MaxChess Weekly — November 12, 2026">
+<label for="imageUrl">Optional newsletter picture URL</label><input id="imageUrl" type="url" placeholder="https://example.com/chess-picture.jpg" inputmode="url">
+<label for="imageAlt">Picture description</label><input id="imageAlt" maxlength="120" placeholder="Describe the picture for readers using screen readers">
 <label for="headline">Main headline</label><input id="headline" maxlength="120" value="Think Fast. Play Smart. Win Big.">
 <label for="intro">Introduction</label><textarea id="intro" maxlength="1200">Welcome to this week’s MaxChess update! We’re working to make chess more exciting, accessible, and fun for everyone. Here are some ideas and improvements being explored.</textarea>
 <label for="featureTitle">Feature title</label><input id="featureTitle" maxlength="120" value="More Ways to Enjoy Chess">
@@ -50,7 +58,7 @@ button,.button{display:inline-block;border:0;border-radius:10px;padding:12px 16p
 (function(){
 const OWNER_ID='f686e7f3-45ee-47bd-9279-c835b088744b';
 const $=id=>document.getElementById(id);
-const fields=['edition','headline','intro','featureTitle','featureBody','tipTitle','tipBody','eventTitle','eventBody','ctaText','ctaUrl'];
+const fields=['edition','headline','intro','featureTitle','featureBody','tipTitle','tipBody','eventTitle','eventBody','ctaText','ctaUrl','imageUrl','imageAlt'];
 const escapeHtml=value=>String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const textBlock=value=>escapeHtml(value).replace(/\n/g,'<br>');
 function values(){const out={};fields.forEach(id=>out[id]=$(id).value.trim());return out}
@@ -58,12 +66,18 @@ function build(data){
  let url='https://themaxchessss.github.io';
  try{const parsed=new URL(data.ctaUrl||url);if(parsed.protocol==='https:')url=parsed.href}catch(_e){}
  const section=(title,body)=>body?'<section style="padding:22px 0;border-top:1px solid #dbe2ea"><h2 style="color:#15243a;margin:0 0 10px">'+escapeHtml(title)+'</h2><p style="line-height:1.7;color:#35445a;margin:0">'+textBlock(body)+'</p></section>':'';
- return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(data.edition)+'</title></head><body style="margin:0;background:#eef2f7;padding:24px;font-family:Arial,sans-serif;color:#15243a"><main style="max-width:680px;margin:auto;background:#fff;border-radius:16px;padding:clamp(20px,5vw,38px);border:1px solid #dbe2ea"><p style="color:#167fc1;font-weight:bold;letter-spacing:2px;text-transform:uppercase">MAXCHESS NEWSLETTER</p><h1 style="font-size:38px;line-height:1.1;color:#bd8c19;margin:12px 0">'+escapeHtml(data.headline)+'</h1><p style="font-size:17px;line-height:1.7;color:#35445a">'+textBlock(data.intro)+'</p>'+section(data.featureTitle,data.featureBody)+section(data.tipTitle,data.tipBody)+section(data.eventTitle,data.eventBody)+'<p style="margin:26px 0"><a href="'+escapeHtml(url)+'" style="display:inline-block;background:#f4c95d;color:#111827;text-decoration:none;font-weight:bold;padding:14px 20px;border-radius:9px">'+escapeHtml(data.ctaText||'Play free chess on MaxChess')+'</a></p><p style="border-top:1px solid #dbe2ea;padding-top:16px;color:#64748b;font-size:12px">MaxChess · Free online chess<br><a href="https://themaxchessss.github.io/newsletter.html">Newsletter information</a></p></main></body></html>';
+ let picture='';try{const parsedImage=new URL(data.imageUrl||'');if(parsedImage.protocol==='https:'&&data.imageUrl){picture='<img src="'+escapeHtml(parsedImage.href)+'" alt="'+escapeHtml(data.imageAlt||'MaxChess newsletter image')+'" style="display:block;width:100%;height:auto;max-height:360px;object-fit:cover;border-radius:12px;margin:18px 0">'}}catch(_e){}\n return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(data.edition)+'</title></head><body style="margin:0;background:#eef2f7;padding:24px;font-family:Arial,sans-serif;color:#15243a"><main style="max-width:680px;margin:auto;background:#fff;border-radius:16px;padding:clamp(20px,5vw,38px);border:1px solid #dbe2ea"><p style="color:#167fc1;font-weight:bold;letter-spacing:2px;text-transform:uppercase">MAXCHESS NEWSLETTER</p>'+picture+'<h1 style="font-size:38px;line-height:1.1;color:#bd8c19;margin:12px 0">'+escapeHtml(data.headline)+'</h1><p style="font-size:17px;line-height:1.7;color:#35445a">'+textBlock(data.intro)+'</p>'+section(data.featureTitle,data.featureBody)+section(data.tipTitle,data.tipBody)+section(data.eventTitle,data.eventBody)+'<p style="margin:26px 0"><a href="'+escapeHtml(url)+'" style="display:inline-block;background:#f4c95d;color:#111827;text-decoration:none;font-weight:bold;padding:14px 20px;border-radius:9px">'+escapeHtml(data.ctaText||'Play free chess on MaxChess')+'</a></p><p style="border-top:1px solid #dbe2ea;padding-top:16px;color:#64748b;font-size:12px">MaxChess · Free online chess<br><a href="https://themaxchessss.github.io/newsletter.html">Newsletter information</a></p></main></body></html>';
 }
 function updatePreview(){const data=values();$('preview').srcdoc=build(data)}
 function setStatus(message){$('status').textContent=message}
 function restore(){try{const saved=JSON.parse(localStorage.getItem('maxchess_newsletter_draft')||'null');if(saved)fields.forEach(id=>{if(typeof saved[id]==='string')$(id).value=saved[id]})}catch(_e){}}
+const templates={
+weekly:{edition:'MaxChess Weekly',headline:'This Week at MaxChess',intro:'Welcome to this week’s MaxChess update! Here are the latest verified improvements and what the community can try next.',featureTitle:'What’s new',featureBody:'Add only features that have been checked on the live website. Include what changed and where readers can find it.',tipTitle:'Chess tip of the week',tipBody:'Before every move, ask: what is my opponent threatening, and what will my move leave undefended?',eventTitle:'Community corner',eventBody:'Add a confirmed event, challenge, or community announcement. If there is no event this week, remove this section.',ctaText:'Play free chess on MaxChess',ctaUrl:'https://themaxchessss.github.io'},
+tournament:{edition:'MaxChess Tournament Edition',headline:'Your Next Chess Challenge',intro:'Welcome! This edition is about chess challenges and friendly competition. Check the details below before sharing.',featureTitle:'Tournament details',featureBody:'Add the confirmed date, time zone, time control, format, entry instructions, and link. Do not publish until the event is confirmed.',tipTitle:'Tournament preparation tip',tipBody:'Play a few slow practice games, check your pieces are protected, and manage your clock.',eventTitle:'How to take part',eventBody:'Add accurate registration steps and eligibility details, or remove this section if no tournament is open.',ctaText:'Visit MaxChess',ctaUrl:'https://themaxchessss.github.io'},
+learning:{edition:'MaxChess Learn Edition',headline:'Learn a New Chess Skill',intro:'This edition shares one useful chess idea and a short practice challenge. Try it on the board and explain why the move works.',featureTitle:'Skill of the week',featureBody:'Explain one chess idea in simple steps. Add a position or diagram link if available, and check the line before publishing.',tipTitle:'Try this challenge',tipBody:'Write a beginner-friendly question with one clear correct answer. Include a hint, then explain the solution.',eventTitle:'Keep learning',eventBody:'Point readers to the relevant MaxChess Learn lesson and say what they will practice there.',ctaText:'Learn and play free chess',ctaUrl:'https://themaxchessss.github.io'}};
+document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>{const data=templates[button.dataset.template];if(!data)return;Object.keys(data).forEach(id=>{if($(id))$(id).value=data[id]});$('imageUrl').value='';$('imageAlt').value='';updatePreview();setStatus('Starter loaded. Edit it, then save or export your newsletter.');}));
 $('previewBtn').addEventListener('click',updatePreview);
+fields.forEach(id=>$(id).addEventListener('input',updatePreview));
 $('saveBtn').addEventListener('click',()=>{try{localStorage.setItem('maxchess_newsletter_draft',JSON.stringify(values()));setStatus('Draft saved in this browser on this device.')}catch(_e){setStatus('Could not save locally. You can still copy or download the HTML.')}});
 $('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(build(values()));setStatus('Newsletter HTML copied. Paste it into your email newsletter editor.')}catch(_e){setStatus('Clipboard access was blocked. Use Download HTML instead.')}});
 $('downloadBtn').addEventListener('click',()=>{const blob=new Blob([build(values())],{type:'text/html;charset=utf-8'});const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='maxchess-newsletter.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Newsletter HTML downloaded. It has not been published or emailed.')});

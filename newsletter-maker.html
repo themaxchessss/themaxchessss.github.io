@@ -22,7 +22,7 @@ button,.button{display:inline-block;border:0;border-radius:10px;padding:12px 16p
 <body>
 <main>
 <nav><a href="./">← Back to MaxChess</a> · <a href="newsletter.html">Public newsletter page</a> · <a href="owner-control.html">Owner Control Center</a></nav>
-<header><div class="muted">OWNER-ONLY WORKSPACE</div><h1>📰 Make a Newsletter</h1><p class="muted">Start with a ready-made edition, edit the words, add an optional picture, preview it, then save or export. Nothing is emailed or published automatically.</p></header>
+<header><div class="muted">OWNER-ONLY WORKSPACE</div><h1>📰 Make a Newsletter</h1><p class="muted">Start with a ready-made edition, edit the words, add an optional picture, preview it, then save or export. Publish a finished edition directly to the public MaxChess Newsletter page.</p></header>
 <section class="panel" id="gate"><h2>Checking owner access…</h2><p class="status" id="gateStatus">Verifying your signed-in MaxChess account.</p><p class="muted">If you are not signed in, return to MaxChess, sign in with the owner account, and open this tool again.</p></section>
 <div id="workspace" class="hidden">
 <div class="layout">
@@ -47,8 +47,8 @@ button,.button{display:inline-block;border:0;border-radius:10px;padding:12px 16p
 <label for="eventBody">Tournament or community details</label><textarea id="eventBody" maxlength="1200">MaxChess is a free chess website. Everyone should have the opportunity to play, learn, and improve. We’re also working toward a better experience on phones and tablets.</textarea>
 <label for="ctaText">Website link text</label><input id="ctaText" maxlength="80" value="Play free chess on MaxChess">
 <label for="ctaUrl">Website link URL</label><input id="ctaUrl" type="url" value="https://themaxchessss.github.io">
-<div><button id="previewBtn" type="button">Update preview</button><button id="saveBtn" class="secondary" type="button">Save draft on this device</button><button id="archiveBtn" class="secondary" type="button">Save to Newsletter History</button><button id="copyBtn" class="secondary" type="button">Copy newsletter HTML</button><button id="downloadBtn" class="secondary" type="button">Download HTML</button><button id="preparePublishBtn" class="secondary" type="button">Prepare Publish File</button></div>
-<p id="status" class="status" role="status" aria-live="polite">Draft is not published or sent.</p><p class="muted">To publish: tap <strong>Prepare Publish File</strong>. Then open the MaxChess GitHub repository, choose Add file → Upload files, upload <strong>latest-newsletter.html</strong> to the repository root, and commit the change. After GitHub Pages finishes publishing, everyone can read it on the public Newsletter page. Preparing the file alone does not publish it.</p>
+<div><button id="previewBtn" type="button">Update preview</button><button id="saveBtn" class="secondary" type="button">Save draft on this device</button><button id="archiveBtn" class="secondary" type="button">Save to Newsletter History</button><button id="copyBtn" class="secondary" type="button">Copy newsletter HTML</button><button id="downloadBtn" class="secondary" type="button">Download HTML</button><button id="publishBtn" type="button">Publish to Public Newsletter</button><button id="preparePublishBtn" class="secondary" type="button">Download Publish File</button></div>
+<p id="status" class="status" role="status" aria-live="polite">Draft is not published or sent.</p><p class="muted">Tap <strong>Publish to Public Newsletter</strong> to publish directly. Only the signed-in MaxChess owner can do this. The download option is a backup/manual method.</p>
 </section>
 <section class="panel"><h2>Live preview</h2><p class="muted">Check every detail before copying it into your newsletter email provider.</p><iframe id="preview" title="Newsletter preview" sandbox=""></iframe></section>
 </div>
@@ -58,6 +58,7 @@ button,.button{display:inline-block;border:0;border-radius:10px;padding:12px 16p
 (function(){
 const OWNER_ID='f686e7f3-45ee-47bd-9279-c835b088744b';
 const $=id=>document.getElementById(id);
+let supabaseClient=null;
 const fields=['edition','headline','intro','featureTitle','featureBody','tipTitle','tipBody','eventTitle','eventBody','ctaText','ctaUrl','imageUrl','imageAlt'];
 const escapeHtml=value=>String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const textBlock=value=>escapeHtml(value).replace(/\n/g,'<br>');
@@ -84,7 +85,7 @@ $('archiveBtn').addEventListener('click',()=>{try{const items=JSON.parse(localSt
 $('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(build(values()));setStatus('Newsletter HTML copied. Paste it into your email newsletter editor.')}catch(_e){setStatus('Clipboard access was blocked. Use Download HTML instead.')}});
 $('preparePublishBtn').addEventListener('click',()=>{const blob=new Blob([build(values())],{type:'text/html;charset=utf-8'});const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='latest-newsletter.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Publish file prepared. Upload latest-newsletter.html to the root of the MaxChess GitHub repository and commit the change. It will then appear on the public Newsletter page. Preparing the file alone does not publish it.');});
 $('downloadBtn').addEventListener('click',()=>{const blob=new Blob([build(values())],{type:'text/html;charset=utf-8'});const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='maxchess-newsletter.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Newsletter HTML downloaded. It has not been published or emailed.')});
-async function init(){
+$('publishBtn').addEventListener('click',async()=>{\n const button=$('publishBtn');button.disabled=true;button.textContent='Publishing…';setStatus('Sending your newsletter to the public MaxChess page…');\n try{if(!supabaseClient)throw new Error('Owner sign-in is not ready. Reload this page after signing in.');const {data,error}=await supabaseClient.auth.getSession();if(error)throw error;const session=data?.session;if(!session?.access_token)throw new Error('Your sign-in session expired. Sign in again.');const cfg=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null');const response=await fetch(cfg.url+'/functions/v1/maxchess-publish-newsletter',{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.key,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({html:build(values())})});const result=await response.json();if(!response.ok)throw new Error(result.error||'The newsletter could not be published.');setStatus('Published successfully! Readers can see it at https://themaxchessss.github.io/newsletter.html after the page refreshes.');button.textContent='Published ✓';}catch(error){setStatus(error.message||'Publish failed. Your draft is still here.');button.textContent='Publish to Public Newsletter';}finally{button.disabled=false;}\n});\nasync function init(){
  try{
   const config=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null');
   if(!config?.url||!config?.key||!window.supabase?.createClient)throw new Error('Sign in to MaxChess first so this browser has its account connection.');

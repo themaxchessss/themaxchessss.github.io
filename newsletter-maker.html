@@ -92,8 +92,9 @@ $('publishBtn').addEventListener('click',async()=>{
   const {data,error}=await supabaseClient.auth.getUser();if(error)throw error;
   if(!data.user)throw new Error('Please sign in again.');
   const edition=values().edition||'MaxChess Newsletter';
-  const {error:publishError}=await supabaseClient.from('maxchess_newsletter').upsert({id:'latest',edition,html:build(values()),published_by:data.user.id,published_at:new Date().toISOString()},{onConflict:'id'});
+  const {data:result,error:publishError}=await supabaseClient.functions.invoke('maxchess-publish-newsletter',{body:{edition,html:build(values())}});
   if(publishError)throw publishError;
+  if(!result?.published)throw new Error(result?.error||'The newsletter was not published.');
   setStatus('Published! Everyone can now read it on the public MaxChess Newsletter page.');
   button.textContent='Published ✓';
  }catch(error){setStatus(error.message||'Publishing failed. Your draft is still saved on this device.');button.textContent='Publish to Public Newsletter';}

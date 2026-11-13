@@ -47,7 +47,7 @@ button,.button{display:inline-block;border:0;border-radius:10px;padding:12px 16p
 <label for="eventBody">Tournament or community details</label><textarea id="eventBody" maxlength="1200">MaxChess is a free chess website. Everyone should have the opportunity to play, learn, and improve. We’re also working toward a better experience on phones and tablets.</textarea>
 <label for="ctaText">Website link text</label><input id="ctaText" maxlength="80" value="Play free chess on MaxChess">
 <label for="ctaUrl">Website link URL</label><input id="ctaUrl" type="url" value="https://themaxchessss.github.io">
-<div><button id="previewBtn" type="button">Update preview</button><button id="saveBtn" class="secondary" type="button">Save draft on this device</button><button id="copyBtn" class="secondary" type="button">Copy newsletter HTML</button><button id="downloadBtn" class="secondary" type="button">Download HTML</button></div>
+<div><button id="previewBtn" type="button">Update preview</button><button id="saveBtn" class="secondary" type="button">Save draft on this device</button><button id="archiveBtn" class="secondary" type="button">Save to Newsletter History</button><button id="copyBtn" class="secondary" type="button">Copy newsletter HTML</button><button id="downloadBtn" class="secondary" type="button">Download HTML</button></div>
 <p id="status" class="status" role="status" aria-live="polite">Draft is not published or sent.</p>
 </section>
 <section class="panel"><h2>Live preview</h2><p class="muted">Check every detail before copying it into your newsletter email provider.</p><iframe id="preview" title="Newsletter preview" sandbox=""></iframe></section>
@@ -80,6 +80,7 @@ document.querySelectorAll('[data-template]').forEach(button=>button.addEventList
 $('previewBtn').addEventListener('click',updatePreview);
 fields.forEach(id=>$(id).addEventListener('input',updatePreview));
 $('saveBtn').addEventListener('click',()=>{try{localStorage.setItem('maxchess_newsletter_draft',JSON.stringify(values()));setStatus('Draft saved in this browser on this device.')}catch(_e){setStatus('Could not save locally. You can still copy or download the HTML.')}});
+$('archiveBtn').addEventListener('click',()=>{try{const items=JSON.parse(localStorage.getItem('maxchess_newsletter_archive_v1')||'[]');items.unshift({savedAt:new Date().toISOString(),data:values()});localStorage.setItem('maxchess_newsletter_archive_v1',JSON.stringify(items.slice(0,30)));setStatus('Edition added to Newsletter History on this device.')}catch(_e){setStatus('Could not save the edition history in this browser.')}});
 $('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(build(values()));setStatus('Newsletter HTML copied. Paste it into your email newsletter editor.')}catch(_e){setStatus('Clipboard access was blocked. Use Download HTML instead.')}});
 $('downloadBtn').addEventListener('click',()=>{const blob=new Blob([build(values())],{type:'text/html;charset=utf-8'});const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='maxchess-newsletter.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Newsletter HTML downloaded. It has not been published or emailed.')});
 async function init(){

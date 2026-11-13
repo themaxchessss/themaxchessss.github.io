@@ -61,7 +61,8 @@ const $=id=>document.getElementById(id);
 let supabaseClient=null;
 const fields=['edition','headline','intro','featureTitle','featureBody','tipTitle','tipBody','eventTitle','eventBody','ctaText','ctaUrl','imageUrl','imageAlt'];
 const escapeHtml=value=>String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-const textBlock=value=>escapeHtml(value).replace(/\n/g,'<br>');
+const textBlock=value=>escapeHtml(value).replace(/
+/g,'<br>');
 function values(){const out={};fields.forEach(id=>out[id]=$(id).value.trim());return out}
 function build(data){
  let url='https://themaxchessss.github.io';
@@ -85,12 +86,16 @@ $('archiveBtn').addEventListener('click',()=>{try{const items=JSON.parse(localSt
 $('copyBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(build(values()));setStatus('Newsletter HTML copied. Paste it into your email newsletter editor.')}catch(_e){setStatus('Clipboard access was blocked. Use Download HTML instead.')}});
 $('preparePublishBtn').addEventListener('click',()=>{const blob=new Blob([build(values())],{type:'text/html;charset=utf-8'});const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='latest-newsletter.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Publish file prepared. Upload latest-newsletter.html to the root of the MaxChess GitHub repository and commit the change. It will then appear on the public Newsletter page. Preparing the file alone does not publish it.');});
 $('downloadBtn').addEventListener('click',()=>{const blob=new Blob([build(values())],{type:'text/html;charset=utf-8'});const link=document.createElement('a');const url=URL.createObjectURL(blob);link.href=url;link.download='maxchess-newsletter.html';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);setStatus('Newsletter HTML downloaded. It has not been published or emailed.')});
-$('publishBtn').addEventListener('click',async()=>{\n const button=$('publishBtn');button.disabled=true;button.textContent='Publishing…';setStatus('Sending your newsletter to the public MaxChess page…');\n try{if(!supabaseClient)throw new Error('Owner sign-in is not ready. Reload this page after signing in.');const {data,error}=await supabaseClient.auth.getSession();if(error)throw error;const session=data?.session;if(!session?.access_token)throw new Error('Your sign-in session expired. Sign in again.');const cfg=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null');const response=await fetch(cfg.url+'/functions/v1/maxchess-publish-newsletter',{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.key,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({html:build(values())})});const result=await response.json();if(!response.ok)throw new Error(result.error||'The newsletter could not be published.');setStatus('Published successfully! Readers can see it at https://themaxchessss.github.io/newsletter.html after the page refreshes.');button.textContent='Published ✓';}catch(error){setStatus(error.message||'Publish failed. Your draft is still here.');button.textContent='Publish to Public Newsletter';}finally{button.disabled=false;}\n});\nasync function init(){
+$('publishBtn').addEventListener('click',async()=>{
+ const button=$('publishBtn');button.disabled=true;button.textContent='Publishing…';setStatus('Sending your newsletter to the public MaxChess page…');
+ try{if(!supabaseClient)throw new Error('Owner sign-in is not ready. Reload this page after signing in.');const {data,error}=await supabaseClient.auth.getSession();if(error)throw error;const session=data?.session;if(!session?.access_token)throw new Error('Your sign-in session expired. Sign in again.');const cfg=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null');const response=await fetch(cfg.url+'/functions/v1/maxchess-publish-newsletter',{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.key,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({html:build(values())})});const result=await response.json();if(!response.ok)throw new Error(result.error||'The newsletter could not be published.');setStatus('Published successfully! Readers can see it at https://themaxchessss.github.io/newsletter.html after the page refreshes.');button.textContent='Published ✓';}catch(error){setStatus(error.message||'Publish failed. Your draft is still here.');button.textContent='Publish to Public Newsletter';}finally{button.disabled=false;}
+});
+async function init(){
  try{
   const config=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null');
   if(!config?.url||!config?.key||!window.supabase?.createClient)throw new Error('Sign in to MaxChess first so this browser has its account connection.');
-  const client=window.supabase.createClient(config.url,config.key);
-  const {data,error}=await client.auth.getUser();if(error)throw error;
+  supabaseClient=window.supabase.createClient(config.url,config.key);
+  const {data,error}=await supabaseClient.auth.getUser();if(error)throw error;
   if(!data.user)throw new Error('No signed-in account found. Sign in to MaxChess and reopen this page.');
   if(data.user.id!==OWNER_ID)throw new Error('Access denied. This workspace is only for the MaxChess owner account.');
   $('gate').classList.add('hidden');$('workspace').classList.remove('hidden');restore();updatePreview();

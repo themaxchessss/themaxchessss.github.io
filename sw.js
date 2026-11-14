@@ -11,6 +11,7 @@ const SHELL = [
   "./homepage-designs.html",
   "./team.html",
   "./team-workspace.html",
+  "./training-planner.html",
   "./chess-clock.html",
   "./maxchess-clock-bridge.js"
 ];

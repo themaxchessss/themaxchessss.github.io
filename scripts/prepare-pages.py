@@ -4,39 +4,53 @@ import subprocess
 page = Path("index.html")
 html = page.read_text(encoding="utf-8")
 
-# The owner-console booklet is assembled as a single-quoted JavaScript string.
-# Escape every source newline inside that returned HTML document so the
-# embedded script and markup remain one valid JavaScript string.
-start_marker = "  return '<!doctype html>"
-end_marker = "</body></html>';"
-start = html.find(start_marker)
-end = html.find(end_marker, start + len(start_marker)) if start >= 0 else -1
+# The owner-console booklet is returned from a single-quoted JavaScript
+# string, but its embedded HTML/JavaScript contains literal newlines and
+# unescaped single quotes. Escape both without changing the generated HTML.
+prefix = "  return '"
+suffix = "</body></html>';"
+start = html.find(prefix)
+content_start = start + len(prefix) if start >= 0 else -1
+end = html.find(suffix, content_start) if content_start >= 0 else -1
 if start < 0 or end < 0:
-    raise SystemExit("Could not locate the MaxChess newsletter booklet HTML string.")
-end += len("</body></html>")
-segment = html[start:end]
-newline_count = segment.count("\n")
-if newline_count:
-    html = html[:start] + segment.replace("\n", "\\n") + html[end:]
-    page.write_text(html, encoding="utf-8")
-print(f"MaxChess booklet string repair: escaped {newline_count} newline(s).")
+    raise SystemExit("Could not locate the MaxChess newsletter booklet string.")
+inner = html[content_start:end]
+out = []
+slash_run = 0
+newline_count = 0
+quote_count = 0
+for ch in inner:
+    if ch == "\n":
+        out.append("\\n")
+        newline_count += 1
+        slash_run = 0
+    elif ch == "'" and slash_run % 2 == 0:
+        out.append("\\'")
+        quote_count += 1
+        slash_run = 0
+    else:
+        out.append(ch)
+        slash_run = slash_run + 1 if ch == "\\\\" else 0
+html = html[:content_start] + "".join(out) + html[end:]
+page.write_text(html, encoding="utf-8")
+print(f"MaxChess booklet string repair: escaped {newline_count} newline(s) and {quote_count} quote(s).")
 
 pos = 0
 number = 0
 errors = []
 while True:
-    start = html.lower().find("<script", pos)
-    if start < 0:
+    tag_start = html.lower().find("<script", pos)
+    if tag_start < 0:
         break
-    tag_end = html.find(">", start)
+    tag_end = html.find(">", tag_start)
     if tag_end < 0:
         break
-    end = html.lower().find("</script>", tag_end + 1)
-    if end < 0:
+    close = html.lower().find("</script>", tag_end + 1)
+    if close < 0:
         errors.append("A script element has no closing </script> tag.")
         break
-    tag = html[start:tag_end + 1]
-    code = html[tag_end + 1:end]
+    tag = html[tag_start:tag_end + 1]
+    code = html[tag_end + 1:close]
     is_json = "application/ld+json" in tag.lower() or "application/json" in tag.lower()
     if "src=" not in tag.lower() and not is_json and code.strip():
         number += 1
@@ -45,7 +59,7 @@ while True:
             errors.append(f"Inline script {number}: {result.stderr.strip()}")
         else:
             print(f"Inline script {number}: syntax OK")
-    pos = end + len("</script>")
+    pos = close + len("</script>")
 
 if errors:
     for error in errors:

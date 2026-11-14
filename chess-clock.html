@@ -56,7 +56,7 @@ button{cursor:pointer;touch-action:manipulation}
 <div class="controls"><button class="control primary" id="start" type="button">Start</button><button class="control" id="pause" type="button">Pause</button><button class="control" id="reset" type="button">Reset</button></div>
 <p id="clockStatus" class="status" role="status" aria-live="polite">Choose a time control and press Start. White moves first.</p>
 </section>
-<p class="instructions">Press the matching player's move button after they move. Their clock stops, their increment is added, and the opponent's clock starts. This is a standalone clock; it does not yet read moves from a live MaxChess game.</p>
+<p class="instructions">Press the matching player's move button after they move. Their clock stops, their increment is added, and the opponent's clock starts. The live-clock bridge is prepared; the main game still needs its confirmed-move hook.</p>
 </main>
 <script>
 (function(){
@@ -81,6 +81,7 @@ $('reset').onclick=()=>{stop();const p=$('preset').value.split('|').map(Number);
 $('preset').onchange=()=>$('reset').click();
 $('whitePress').onclick=()=>press(0);$('blackPress').onclick=()=>press(1);
 increment=0;draw();
+try{if("BroadcastChannel" in window){const liveChannel=new BroadcastChannel("maxchess-live-clock-v1");liveChannel.onmessage=event=>{const data=event.data;if(!data||data.type!=="legal-move"||!["white","black"].includes(data.moved)||flagged!==-1)return;const side=data.moved==="white"?0:1;if(!running){if(active<0)active=side;running=true;last=performance.now();raf=requestAnimationFrame(tick)}if(active===side)press(side);else{$("clockStatus").textContent="Move signal received out of turn. Check the game integration.";draw()}}}}catch(_e){}
 })();
 </script>
 </body></html>

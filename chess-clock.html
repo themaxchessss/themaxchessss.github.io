@@ -41,22 +41,44 @@ button{cursor:pointer;touch-action:manipulation}
 .badge{display:inline-block;padding:4px 9px;border:1px solid #65717d;border-radius:999px;color:#cbd4de;font-size:.72rem;letter-spacing:.08em}
 @media(max-width:620px){main{padding-top:16px}.machine{padding:12px;border-radius:20px;transform:none}.machine:before{inset:4px;border-radius:16px}.displays{gap:8px}.side{padding:8px;border-radius:12px}.lcd{min-height:92px;font-size:clamp(1.75rem,8vw,3.2rem);border-width:5px}.side-head{font-size:.65rem;padding-bottom:7px}.side-foot{font-size:.58rem;letter-spacing:.04em}.press{font-size:.72rem;padding:11px 5px}.brand{font-size:.62rem}.brand strong{font-size:.82rem}}
 @media(max-width:370px){.lcd{font-size:1.6rem}.side{padding:6px}.displays{gap:6px}}
+/* Real-world tournament clock finish: sculpted case, recessed LCDs and raised paddles. */
+body{background:radial-gradient(ellipse at 50% -15%,#59636b 0,#242b31 35%,#11161b 78%,#090c10 100%)}
+main{width:min(1080px,95vw)}
+.machine{padding:clamp(18px,3vw,34px);border:2px solid #879099;border-radius:38px;background:linear-gradient(165deg,#aeb5bb 0%,#646d75 5%,#343b42 12%,#252b31 44%,#11161b 100%);box-shadow:0 34px 75px #000c,inset 0 3px 3px #ffffffb0,inset 0 -8px 14px #000e;transform:perspective(1400px) rotateX(1.5deg)}
+.machine:before{inset:8px;border-radius:29px;border-color:#ffffff24}
+.brand{padding:0 8px 20px;color:#e2e6e9;letter-spacing:.22em}.brand strong{font-size:1.15rem;text-shadow:0 1px 0 #000}
+.top-controls{padding:0 0 22px}.top-controls select{min-width:210px;border:1px solid #f3f4f5;border-radius:7px;background:linear-gradient(#f9fafb,#aeb5bb);box-shadow:0 3px 0 #555d64,0 5px 8px #0008}
+.displays{gap:clamp(12px,2.2vw,25px)}
+.side{padding:clamp(12px,2vw,20px);border-radius:21px;border:2px solid #8d969e;background:linear-gradient(150deg,#c5cbd0 0%,#69727a 7%,#353d45 10%,#20272e 100%);box-shadow:inset 0 2px 3px #fff9,inset 0 -7px 10px #000c,0 13px 19px #000a}
+.side.active{border-color:#f4d36e;box-shadow:0 0 0 2px #f4d36e55,inset 0 2px 3px #fff9,inset 0 -7px 10px #000c,0 13px 19px #000a}
+.side-head{font-size:.82rem;color:#f4f5f6;letter-spacing:.18em;padding:0 7px 12px}
+.lamp{width:11px;height:11px;border:1px solid #161a1d;background:#343a3f}.active .lamp{background:#6cf29b;box-shadow:0 0 13px #70ff9c,0 0 3px 2px #70ff9c55}
+.lcd{min-height:clamp(120px,19vw,185px);border:9px solid #6b747b;border-radius:8px;background:linear-gradient(180deg,#18261c,#0a120d 100%);box-shadow:inset 0 8px 20px #000,inset 0 0 0 2px #080d09,0 2px 0 #d4d8da;color:#b9d6a8;font-size:clamp(3rem,9vw,7rem);font-weight:650;letter-spacing:.015em;text-shadow:0 0 7px #a5d99555}
+.active .lcd{color:#e5ffc6;text-shadow:0 0 15px #c6ff8d99}
+.side-foot{padding:13px 7px 8px;font-size:.7rem;color:#d4d9dd;letter-spacing:.12em}
+.press{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:68px;margin-top:8px;padding:10px;border:1px solid #f3f4f4;border-radius:8px;background:linear-gradient(180deg,#f1f3f4 0%,#c3c9ce 48%,#8b949b 100%);color:#22282d;box-shadow:0 5px 0 #515a62,0 9px 12px #0009,inset 0 1px 0 #fff;text-transform:uppercase;letter-spacing:.09em;font-size:.68rem;font-weight:950;transition:transform .08s,box-shadow .08s}
+.press:not(:disabled):active{transform:translateY(4px);box-shadow:0 1px 0 #515a62,0 3px 6px #0009}.press:disabled{opacity:.5;filter:saturate(.5)}
+.paddle-mark{display:block;width:54px;height:7px;border-radius:99px;background:linear-gradient(#69727a,#dce0e3 45%,#a2aab0);box-shadow:0 2px 2px #333,inset 0 1px 0 #fff}
+.controls{margin:27px 0 14px}.control{min-width:108px;border-radius:7px;background:linear-gradient(#68737d,#303942);border-color:#929ba2;box-shadow:0 4px 0 #0b0e11,0 7px 12px #0008}.control.primary{background:linear-gradient(#ffe9a8,#d2a33c);border-color:#fff0bf;box-shadow:0 4px 0 #74551c,0 7px 12px #0008}
+.status{color:#d2e4f6}.badge{border-color:#909aa2;color:#e6ebef}
+@media(max-width:620px){.machine{padding:13px;border-radius:24px}.machine:before{inset:5px;border-radius:18px}.side{padding:9px;border-radius:14px}.lcd{min-height:98px;border-width:6px;font-size:clamp(1.85rem,8vw,3.5rem)}.press{min-height:57px;font-size:.55rem;letter-spacing:.05em}.paddle-mark{width:38px;height:6px}.side-foot{font-size:.55rem}.brand{padding-bottom:15px}.brand strong{font-size:.88rem}}
+@media(max-width:370px){.lcd{font-size:1.55rem}.press{font-size:.5rem;padding:8px 3px}}
 </style>
 </head>
 <body><main>
 <nav><a href="workbench.html">← Workbench</a> · <a href="index.html">Play MaxChess</a></nav>
 <header><div class="eyebrow">MAXCHESS · OFFICIAL GAME TOOLS</div><h1>Tournament Chess Clock</h1><p class="muted">A two-sided digital game timer with a physical tournament-clock look, clear active-player display, and move buttons.</p></header>
 <section class="machine" aria-label="Digital chess clock">
-<div class="brand"><strong>MAXCHESS</strong><span>Digital Game Timer <span class="badge">2 PLAYER</span></span></div>
+<div class="brand"><strong>MAXCHESS</strong><span>TOURNAMENT TIMER <span class="badge">2 PLAYER</span></span></div>
 <div class="top-controls"><label class="preset-label" for="preset">Time control</label><select id="preset"><option value="300|0">5 + 0 · Blitz</option><option value="180|2">3 + 2 · Blitz</option><option value="600|0" selected>10 + 0 · Rapid</option><option value="900|10">15 + 10 · Rapid</option><option value="1800|0">30 + 0 · Classical</option></select></div>
 <div class="displays">
-<div class="side" id="whiteClock"><div class="side-head"><span>White</span><span class="lamp" aria-hidden="true"></span></div><div class="lcd" id="whiteTime" aria-label="White time">10:00</div><div class="side-foot"><span>Player 1</span><span id="whiteState">Ready</span></div><button class="press" id="whitePress" type="button">White move finished</button></div>
-<div class="side" id="blackClock"><div class="side-head"><span>Black</span><span class="lamp" aria-hidden="true"></span></div><div class="lcd" id="blackTime" aria-label="Black time">10:00</div><div class="side-foot"><span>Player 2</span><span id="blackState">Ready</span></div><button class="press" id="blackPress" type="button">Black move finished</button></div>
+<div class="side" id="whiteClock"><div class="side-head"><span>White</span><span class="lamp" aria-hidden="true"></span></div><div class="lcd" id="whiteTime" aria-label="White time">10:00</div><div class="side-foot"><span>Player 1</span><span id="whiteState">Ready</span></div><button class="press" id="whitePress" type="button"><span class="paddle-mark"></span><span>WHITE · PRESS AFTER MOVE</span></button></div>
+<div class="side" id="blackClock"><div class="side-head"><span>Black</span><span class="lamp" aria-hidden="true"></span></div><div class="lcd" id="blackTime" aria-label="Black time">10:00</div><div class="side-foot"><span>Player 2</span><span id="blackState">Ready</span></div><button class="press" id="blackPress" type="button"><span class="paddle-mark"></span><span>BLACK · PRESS AFTER MOVE</span></button></div>
 </div>
 <div class="controls"><button class="control primary" id="start" type="button">Start</button><button class="control" id="pause" type="button">Pause</button><button class="control" id="reset" type="button">Reset</button></div>
 <p id="clockStatus" class="status" role="status" aria-live="polite">Choose a time control and press Start. White moves first.</p>
 </section>
-<p class="instructions">Press the matching player's move button after they move. Their clock stops, their increment is added, and the opponent's clock starts. The live-clock bridge is prepared; the main game still needs its confirmed-move hook.</p>
+<p class="instructions">Press the matching player's move button after they move. Their clock stops, their increment is added, and the opponent's clock starts. When opened beside a supported MaxChess game, legal moves can switch the clock automatically.</p>
 </main>
 <script>
 (function(){

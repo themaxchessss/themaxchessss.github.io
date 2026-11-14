@@ -1,4 +1,5 @@
 from pathlib import Path
+from html.parser import HTMLParser
 import subprocess
 
 page = Path("index.html")
@@ -6,7 +7,7 @@ html = page.read_text(encoding="utf-8")
 
 # The owner-console booklet is returned from a single-quoted JavaScript
 # string, but its embedded HTML/JavaScript contains literal newlines and
-# unescaped single quotes. Escape both without changing the generated HTML.
+# unescaped single quotes. Escape both without changing generated HTML.
 prefix = "  return '"
 suffix = "</body></html>';"
 start = html.find(prefix)
@@ -30,39 +31,48 @@ for ch in inner:
         slash_run = 0
     else:
         out.append(ch)
-        slash_run = slash_run + 1 if ch == "\\" else 0
+        slash_run = slash_run + 1 if ch == "\\\\" else 0
 html = html[:content_start] + "".join(out) + html[end:]
 page.write_text(html, encoding="utf-8")
 print(f"MaxChess booklet string repair: escaped {newline_count} newline(s) and {quote_count} quote(s).")
 
-pos = 0
-number = 0
-errors = []
-while True:
-    tag_start = html.lower().find("<script", pos)
-    if tag_start < 0:
-        break
-    tag_end = html.find(">", tag_start)
-    if tag_end < 0:
-        break
-    close = html.lower().find("</script>", tag_end + 1)
-    if close < 0:
-        errors.append("A script element has no closing </script> tag.")
-        break
-    tag = html[tag_start:tag_end + 1]
-    code = html[tag_end + 1:close]
-    is_json = "application/ld+json" in tag.lower() or "application/json" in tag.lower()
-    if "src=" not in tag.lower() and not is_json and code.strip():
-        number += 1
-        result = subprocess.run(["node", "--check", "-"], input=code, text=True, capture_output=True)
-        if result.returncode:
-            errors.append(f"Inline script {number}: {result.stderr.strip()}")
-        else:
-            print(f"Inline script {number}: syntax OK")
-    pos = close + len("</script>")
+class ScriptCollector(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=False)
+        self.in_script = False
+        self.skip = False
+        self.current = []
+        self.scripts = []
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == "script":
+            self.in_script = True
+            attrs = dict(attrs)
+            self.skip = "src" in attrs or attrs.get("type", "").lower() in ("application/ld+json", "application/json")
+            self.current = []
+    def handle_data(self, data):
+        if self.in_script:
+            self.current.append(data)
+    def handle_endtag(self, tag):
+        if tag.lower() == "script" and self.in_script:
+            if not self.skip:
+                self.scripts.append("".join(self.current))
+            self.in_script = False
+            self.skip = False
+            self.current = []
 
+collector = ScriptCollector()
+collector.feed(html)
+errors = []
+for number, code in enumerate(collector.scripts, 1):
+    if not code.strip():
+        continue
+    result = subprocess.run(["node", "--check", "-"], input=code, text=True, capture_output=True)
+    if result.returncode:
+        errors.append(f"Inline script {number}: {result.stderr.strip()}")
+    else:
+        print(f"Inline script {number}: syntax OK")
 if errors:
     for error in errors:
         print(error)
     raise SystemExit("MaxChess homepage JavaScript validation failed.")
-print(f"Validated {number} inline JavaScript blocks.")
+print(f"Validated {len(collector.scripts)} inline JavaScript blocks.")

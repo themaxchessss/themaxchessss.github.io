@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090d16"><title>MaxChess Daily Training Planner</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#203956,#080d16 68%);color:#f5f7fb;font:16px/1.55 system-ui,sans-serif}
+main{width:min(980px,94vw);margin:auto;padding:22px 0 56px}a{color:#f4c95d;text-decoration:none}h1{font-size:clamp(2.2rem,7vw,4rem);line-height:1.03;color:#f4c95d;margin:.2em 0}.muted{color:#b9c5d6}
+.hero,.panel,.mission{border:1px solid #405571;border-radius:18px;background:linear-gradient(145deg,#203651,#111d2e 58%,#0a1320);padding:20px;margin:14px 0;box-shadow:0 16px 35px #0006}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
+.metric{background:#081321;border:1px solid #405571;border-radius:14px;padding:14px}.metric b{display:block;font-size:2rem;color:#f4c95d}
+.mission{margin:0;padding:16px}.mission label{display:flex;gap:12px;align-items:flex-start;font-weight:800}.mission input{width:22px;height:22px;accent-color:#e8c765;flex:0 0 auto}
+button,select{font:inherit;border-radius:10px;padding:11px 15px;border:1px solid #6e5c30;background:#f4c95d;color:#15120b;font-weight:850;cursor:pointer;margin:5px 6px 0 0}
+button.secondary{background:#263b54;border-color:#536b86;color:white}
+select{background:#081321;color:white;border-color:#506781}
+.timer{text-align:center;font-size:clamp(3rem,12vw,5.5rem);font-weight:900;color:#f4c95d;font-variant-numeric:tabular-nums;line-height:1.1;margin:18px 0}
+.status{min-height:1.5em;color:#72caff}.progress{height:12px;border-radius:20px;background:#081321;overflow:hidden;margin:12px 0}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#e2b84f,#ffe28a);transition:width .2s}
+@media(max-width:600px){.hero,.panel{padding:15px}.mission{padding:13px}button{min-height:44px}}
+</style>
+</head>
+<body><main>
+<nav><a href="./">← Back to MaxChess</a> · <a href="./homepage-designs.html">Homepage designs</a></nav>
+<header class="hero"><div class="muted">FREE DAILY CHESS PRACTICE</div><h1>♛ Daily Training Planner</h1><p class="muted">A simple plan to help you improve a little every day. Your checklist and streak stay on this device; no private details are collected.</p></header>
+<section class="grid">
+<div class="metric"><b id="streak">0</b><span>Day streak 🔥</span></div>
+<div class="metric"><b id="done">0 / 4</b><span>Today's missions</span></div>
+<div class="metric"><b id="minutes">0</b><span>Minutes trained today</span></div>
+</section>
+<section class="panel"><h2>Today's missions</h2><p class="muted" id="today"></p>
+<div class="grid">
+<article class="mission"><label><input type="checkbox" data-mission="puzzles"><span>♟ Solve 5 puzzles</span></label><p class="muted">Look for checks, captures, and threats before moving.</p></article>
+<article class="mission"><label><input type="checkbox" data-mission="lesson"><span>📘 Learn one chess idea</span></label><p class="muted">Study a lesson or opening principle.</p></article>
+<article class="mission"><label><input type="checkbox" data-mission="game"><span>♜ Review one game</span></label><p class="muted">Find one good move and one move to improve.</p></article>
+<article class="mission"><label><input type="checkbox" data-mission="endgame"><span>🏁 Practise an endgame</span></label><p class="muted">Try king and pawn basics or checkmate patterns.</p></article>
+</div>
+<div class="progress"><span id="progressBar"></span></div><p class="status" id="missionStatus" role="status" aria-live="polite"></p>
+<button id="completeDay">Finish today's plan</button><button class="secondary" id="resetDay">Reset today's checklist</button>
+</section>
+<section class="panel"><h2>⏱ Training session timer</h2><p class="muted">Choose how long you want to focus. The timer runs while this page stays open.</p>
+<label for="duration">Session length</label> <select id="duration"><option value="5">5 minutes</option><option value="10" selected>10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option></select>
+<div class="timer" id="timer">10:00</div><div style="text-align:center"><button id="start">Start</button><button class="secondary" id="pause">Pause</button><button class="secondary" id="resetTimer">Reset timer</button></div><p class="status" id="timerStatus" role="status" aria-live="polite"></p>
+</section>
+<section class="panel"><h2>Useful MaxChess places</h2><div class="grid">
+<div><b>♟ Puzzles</b><p class="muted">Practise tactics and calculation.</p><a href="./">Open MaxChess</a></div>
+<div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="./">Open learning center</a></div>
+<div><b>🏆 Play</b><p class="muted">Put your practice into a real game.</p><a href="./">Play chess</a></div>
+</div><button class="secondary" id="export">Download my training summary</button></section>
+<footer class="muted">MaxChess is free. Progress is stored only in this browser unless you choose to download it.</footer>
+</main>
+<script>
+(function(){
+const KEY='maxchess_daily_training_v1',today=new Date().toLocaleDateString('en-CA');
+const $=id=>document.getElementById(id);
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
+let data=load();if(data.date!==today){data={date:today,missions:{},minutes:0,completed:false,streak:data.streak||0,lastCompleted:data.lastCompleted||''};save()}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+$('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+function paint(){const boxes=[...document.querySelectorAll('[data-mission]')];boxes.forEach(b=>b.checked=!!data.missions[b.dataset.mission]);const n=boxes.filter(b=>b.checked).length;$('done').textContent=n+' / 4';$('minutes').textContent=String(data.minutes||0);$('streak').textContent=String(data.streak||0);$('progressBar').style.width=(n/4*100)+'%';$('missionStatus').textContent=data.completed?'Plan complete! Great work. Your streak is saved.':n===4?'All missions checked. Press Finish today’s plan to record your streak.':n+' of 4 missions completed.'}
+document.querySelectorAll('[data-mission]').forEach(b=>b.addEventListener('change',()=>{data.missions[b.dataset.mission]=b.checked;save();paint()}));
+$('completeDay').addEventListener('click',()=>{if(Object.values(data.missions).filter(Boolean).length<4){$('missionStatus').textContent='Complete all four missions first.';return}if(!data.completed){const d=new Date();d.setDate(d.getDate()-1);const yesterday=d.toLocaleDateString('en-CA');data.streak=data.lastCompleted===yesterday?(data.streak||0)+1:Math.max(1,data.streak||0);data.lastCompleted=today;data.completed=true;save()}paint()});
+$('resetDay').addEventListener('click',()=>{if(!confirm('Reset today’s checklist?'))return;data.missions={};data.completed=false;save();paint()});
+let remaining=600,interval=null;function showTime(){$('timer').textContent=Math.floor(remaining/60).toString().padStart(2,'0')+':'+(remaining%60).toString().padStart(2,'0')}
+function stop(){if(interval){clearInterval(interval);interval=null}}
+$('duration').addEventListener('change',()=>{stop();remaining=Number($('duration').value)*60;showTime();$('timerStatus').textContent='Ready for a new session.'});
+$('start').addEventListener('click',()=>{if(interval)return;if(remaining<=0)remaining=Number($('duration').value)*60;interval=setInterval(()=>{remaining--;showTime();if(remaining<=0){stop();data.minutes=(data.minutes||0)+Number($('duration').value);save();paint();$('timerStatus').textContent='Session complete! Take a short break. ♟'}},1000);$('timerStatus').textContent='Focus time — you’ve got this!'});
+$('pause').addEventListener('click',()=>{stop();$('timerStatus').textContent='Timer paused.'});
+$('resetTimer').addEventListener('click',()=>{stop();remaining=Number($('duration').value)*60;showTime();$('timerStatus').textContent='Timer reset.'});
+$('export').addEventListener('click',()=>{const report=['MaxChess Daily Training Summary','Date: '+today,'Streak: '+(data.streak||0),'Minutes trained today: '+(data.minutes||0),'Completed plan: '+(data.completed?'Yes':'Not yet'),'',...Object.entries(data.missions||{}).map(([k,v])=>k+': '+(v?'Done':'Not done'))].join('\n');const blob=new Blob([report],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='maxchess-training-summary.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+paint();showTime();
+})();
+</script></body></html>

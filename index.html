@@ -3946,48 +3946,7 @@ window.dispatchEvent(new Event("maxchess:ready"));
 #page-learn .lesson.lesson-complete::after{content:'✓';position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--green2);font-size:16px;font-weight:900}
 </style>
 
-<script>
-(function(){
- const title=document.getElementById('ownerNewsletterTitle');
- const body=document.getElementById('ownerNewsletterText');
- const status=document.getElementById('ownerNewsletterDraftStatus');
- if(!title||!body||!status)return;
- const key='maxchess_owner_newsletter_booklet_draft_v1';
- try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved){title.value=saved.title||'';body.value=saved.body||'';status.textContent='Draft restored from this device.';}}catch(e){}
- function save(){try{localStorage.setItem(key,JSON.stringify({title:title.value,body:body.value,updatedAt:new Date().toISOString()}));status.textContent='Draft saved on this device.';}catch(e){status.textContent='Could not save draft on this device.';}}
- title.addEventListener('input',save);body.addEventListener('input',save);
- function booklet(){
-  const safeTitle=title.value.trim()||'MaxChess Newsletter';
-  const text=body.value.trim();
-  if(!text){status.textContent='Type your newsletter first.';body.focus();return null;}
-  const escaped=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const paragraphs=escaped.split(/\n\s*\n/).map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>').join('');
-  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+safeTitle.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</title><style>*{box-sizing:border-box}body{margin:0;background:#eee;color:#202020;font:17px/1.7 Georgia,serif}.page{max-width:780px;min-height:100vh;margin:24px auto;padding:56px clamp(22px,7vw,72px);background:white;box-shadow:0 4px 24px #0002}header{text-align:center;border-bottom:3px double #b28a2e;padding-bottom:24px;margin-bottom:30px}h1{font:800 clamp(30px,6vw,48px)/1.1 system-ui;color:#9a7421}header p{color:#666;font:14px system-ui}p{white-space:normal;margin:0 0 1.2em}footer{border-top:1px solid #ddd;margin-top:42px;padding-top:16px;color:#777;font:12px system-ui}@media print{body{background:white}.page{margin:0;box-shadow:none;max-width:none;min-height:auto;page-break-after:always}}</style></head><body><main class="page"><header><h1>'+safeTitle.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</h1><p>MAXCHESS · THINK FAST. PLAY SMART.</p></header><article>'+paragraphs+'</article><footer>MaxChess · Free online chess</footer></main>
-<script id="maxHomeStyleChoicesScript">
-(function(){
- const page=document.getElementById('page-home');if(!page)return;
- const key='maxchess_homepage_style';
- const buttons=[...document.querySelectorAll('#maxHomeStyleChooser [data-home-style]')];
- function apply(style){const allowed=['original','goldblue','neon','royal','clean'];const chosen=allowed.includes(style)?style:'original';['goldblue','neon','royal','clean'].forEach(name=>page.classList.toggle('max-home-'+name,chosen===name));buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.homeStyle===chosen)));try{localStorage.setItem(key,chosen)}catch(e){}}
- let saved='original';try{saved=localStorage.getItem(key)||'original'}catch(e){}apply(saved);
- buttons.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.homeStyle)));
- const play=document.getElementById('maxAltPlay'),computer=document.getElementById('maxAltComputer');
- if(play)play.addEventListener('click',()=>document.getElementById('homePlay')?.click());
- if(computer)computer.addEventListener('click',()=>document.getElementById('homeComputer')?.click());
+<script src="./owner-newsletter-booklet.js?v=1"></script>
 
- document.querySelectorAll('#maxNeonHome [data-page],#maxRoyalHome [data-page],#maxCleanHome [data-page]').forEach(b=>b.addEventListener('click',()=>{const target=document.querySelector('.navitem[data-page="'+b.dataset.page+'"]');if(target)target.click();}));
- document.querySelectorAll('.max-extra-home [data-home-action="play"]').forEach(b=>b.addEventListener('click',()=>document.getElementById('homePlay')?.click()));
- document.querySelectorAll('.max-extra-home [data-home-action="computer"]').forEach(b=>b.addEventListener('click',()=>document.getElementById('homeComputer')?.click()));
- document.querySelectorAll('#maxGoldBlueHome [data-page]').forEach(b=>b.addEventListener('click',()=>{const target=document.querySelector('.navitem[data-page="'+b.dataset.page+'"]');if(target)target.click();}));
-})();
-<\/script>
-
-</body></html>';
- }
- document.getElementById('ownerNewsletterMakeBooklet').addEventListener('click',function(){const doc=booklet();if(!doc)return;const url=URL.createObjectURL(new Blob([doc],{type:'text/html'}));const win=window.open(url,'_blank');if(!win){const a=document.createElement('a');a.href=url;a.download='maxchess-newsletter-booklet.html';a.click();}status.textContent='Booklet preview created.';setTimeout(()=>URL.revokeObjectURL(url),60000);});
- document.getElementById('ownerNewsletterDownloadBooklet').addEventListener('click',function(){const doc=booklet();if(!doc)return;const url=URL.createObjectURL(new Blob([doc],{type:'text/html'}));const a=document.createElement('a');a.href=url;a.download='maxchess-newsletter-booklet.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='Booklet download started.';});
- document.getElementById('ownerNewsletterClearDraft').addEventListener('click',function(){if(!confirm('Clear the saved newsletter draft on this device?'))return;title.value='';body.value='';localStorage.removeItem(key);status.textContent='Draft cleared.';});
-})();
-</script>
 </body>
 </html>

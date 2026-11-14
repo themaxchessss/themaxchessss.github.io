@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090d16"><title>MaxChess Workbench</title>
+<style>
+:root{color-scheme:dark;--gold:#f4c95d;--blue:#39a9ff;--line:#405571;--muted:#b9c5d6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#1c3657,#080d16 65%);color:#f7f8fb;font:16px/1.55 system-ui,sans-serif}
+main{width:min(1120px,94vw);margin:auto;padding:26px 0 60px}a{color:var(--gold);text-decoration:none}h1{font-size:clamp(2.2rem,7vw,4rem);color:var(--gold);margin:.2em 0}.muted{color:var(--muted)}
+.hero,.panel,.tile{border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#203651,#111d2e 55%,#0a1320);box-shadow:0 24px 50px #0008,inset 0 1px 0 #ffffff22;transform:perspective(1100px) rotateX(1deg);transition:transform .2s ease,box-shadow .2s ease}
+.hero{padding:24px;margin:20px 0}.panel{padding:20px;margin:16px 0}.tile{padding:18px}.hero:hover,.panel:hover,.tile:hover{transform:perspective(1100px) translateY(-4px);box-shadow:0 30px 58px #000a,inset 0 1px 0 #ffffff26}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px}
+label{display:block;font-weight:800;margin:10px 0 5px}input,select,textarea{width:100%;padding:12px;border:1px solid #506781;border-radius:10px;background:#081321;color:#fff;font:inherit}textarea{min-height:90px}
+button,.button{display:inline-block;border:0;border-radius:11px;padding:12px 16px;background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;font:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 #805b16,0 10px 18px #0007;margin:8px 6px 0 0}button.secondary{background:linear-gradient(145deg,#344a65,#1b2b40);color:white;border:1px solid #58708b;box-shadow:0 5px 0 #0a111b}
+button:active{transform:translateY(3px);box-shadow:none}.status{color:var(--blue);min-height:1.4em}.task{padding:14px;border:1px solid #526984;border-radius:14px;background:linear-gradient(145deg,#1b304a,#0b1625);box-shadow:0 10px 20px #0006}.task.done{opacity:.62}.task h3{margin:5px 0;color:var(--gold)}.task small{color:var(--muted)}.actions{display:flex;gap:7px;flex-wrap:wrap}
+@media(max-width:650px){.hero,.panel,.tile{transform:none}.hero{padding:18px}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><main>
+<nav><a href="owner-control.html">← Owner Control Center</a> · <a href="./">MaxChess home</a> · <a href="newsletter.html">Newsletter</a></nav>
+<header class="hero"><div class="muted">PRIVATE MAXCHESS WORKSPACE</div><h1>♛ Your Workbench</h1><p class="muted">A place to organize MaxChess work, decide what to do next, and use the tools to do it. This workspace does not publish changes by itself.</p><div class="tiles">
+<a class="tile" href="newsletter-maker.html"><h3>📰 Newsletter Studio</h3><p class="muted">Write and preview editions.</p></a>
+<a class="tile" href="chess-clock.html"><h3>⏱ 3D Chess Clock</h3><p class="muted">Run a two-sided digital timer.</p></a>
+<a class="tile" href="owner-control.html"><h3>🛠 Owner Tools</h3><p class="muted">Health checks, content, backups, and bugs.</p></a>
+<a class="tile" href="newsletter.html"><h3>📬 Public Newsletter</h3><p class="muted">Read the public MaxChess editions.</p></a>
+</div></header>
+<section class="panel" id="gate"><h2>Checking owner access…</h2><p id="gateStatus" class="status">Sign in to MaxChess with the owner account to open this workspace.</p></section>
+<div id="workspace" hidden>
+<section class="panel"><h2>Task board</h2><p class="muted">Add any MaxChess job or project. Tasks save in this browser and can be marked complete or reopened.</p>
+<label for="taskName">Task name</label><input id="taskName" maxlength="140" placeholder="e.g. Make the chess clock look more realistic">
+<label for="taskType">Work category</label><select id="taskType"><option>Website improvement</option><option>Chess clock</option><option>Newsletter</option><option>Chess lesson or puzzle</option><option>Bug fix</option><option>Tournament</option><option>Promotion</option><option>Other</option></select>
+<label for="taskPriority">Priority</label><select id="taskPriority"><option>High</option><option selected>Medium</option><option>Low</option></select>
+<label for="taskNotes">Notes and finish criteria</label><textarea id="taskNotes" maxlength="1000" placeholder="What needs to happen for this job to be finished?"></textarea>
+<button id="addTask">Add task</button><p id="status" class="status" role="status" aria-live="polite"></p><div id="tasks" class="grid"><p class="muted">No tasks yet.</p></div>
+</section></div></main>
+<script>
+(function(){const OWNER_ID='f686e7f3-45ee-47bd-9279-c835b088744b',KEY='maxchess_owner_tasks_v1', $=id=>document.getElementById(id);
+function read(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_e){return []}}
+function save(items){try{localStorage.setItem(KEY,JSON.stringify(items));return true}catch(_e){return false}}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){const items=read();$('tasks').innerHTML=items.length?items.map(t=>'<article class="task '+(t.done?'done':'')+'"><small>'+esc(t.type)+' · '+esc(t.priority)+'</small><h3>'+esc(t.name)+'</h3><p>'+esc(t.notes||'No extra notes')+'</p><small>'+(t.done?'Completed':'In progress')+' · '+new Date(t.created).toLocaleString()+'</small><div class="actions"><button class="secondary" data-toggle="'+t.id+'">'+(t.done?'Reopen':'Mark done')+'</button><button class="secondary" data-delete="'+t.id+'">Delete</button></div></article>').join(''):'<p class="muted">No tasks yet. Add your first MaxChess job above.</p>';
+document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const a=read(),t=a.find(x=>x.id===b.dataset.toggle);if(t)t.done=!t.done;save(a);render()});
+document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{save(read().filter(x=>x.id!==b.dataset.delete));render()})}
+$('addTask').onclick=()=>{const name=$('taskName').value.trim();if(!name){$('status').textContent='Enter a task name first.';return}const a=read();a.unshift({id:'job-'+Date.now(),name,type:$('taskType').value,priority:$('taskPriority').value,notes:$('taskNotes').value.trim(),done:false,created:new Date().toISOString()});if(!save(a)){$('status').textContent='Could not save this task in this browser.';return}$('taskName').value='';$('taskNotes').value='';$('status').textContent='Task saved.';render()};
+async function init(){try{const config=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null');if(!config?.url||!config?.key||!window.supabase?.createClient)throw new Error('Sign in to MaxChess first, then reopen the workbench.');const client=window.supabase.createClient(config.url,config.key);const {data,error}=await client.auth.getUser();if(error)throw error;if(!data.user)throw new Error('No signed-in MaxChess account found.');if(data.user.id!==OWNER_ID)throw new Error('This workspace is restricted to the MaxChess owner account.');$('gate').hidden=true;$('workspace').hidden=false;render()}catch(e){$('gateStatus').textContent=e.message||'Could not verify owner access.'}}
+init()})();
+</script></body></html>

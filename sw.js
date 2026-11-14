@@ -1,4 +1,4 @@
-const CACHE_NAME = "maxchess-shell-v32";
+const CACHE_NAME = "maxchess-shell-v33";
 const SHELL = [
   "./",
   "./index.html",
@@ -13,7 +13,8 @@ const SHELL = [
   "./team-workspace.html",
   "./training-planner.html",
   "./chess-clock.html",
-  "./maxchess-clock-bridge.js"
+  "./maxchess-clock-bridge.js",
+  "./owner-newsletter-booklet.js"
 ];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));

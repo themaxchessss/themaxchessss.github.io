@@ -2,6 +2,7 @@ from pathlib import Path
 
 page = Path("index.html")
 html = page.read_text(encoding="utf-8")
+html = html.replace("sw.js?v=31", "sw.js?v=32")
 
 # The owner-console booklet is returned from a single-quoted JavaScript
 # string, but its embedded HTML/JavaScript contains literal newlines and

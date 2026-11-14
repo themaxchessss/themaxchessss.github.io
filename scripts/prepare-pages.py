@@ -1,7 +1,5 @@
 from pathlib import Path
-import re
-html = Path("index.html").read_text(encoding="utf-8")
-positions = [m.start() for m in re.finditer(re.escape("</script>"), html, re.IGNORECASE)]
-for n in (9, 10):
-    pos=positions[n]
-    print(f"TAG_{n+1}_LONG={html[max(0,pos-4500):pos+80]!r}")
+html=Path("index.html").read_text(encoding="utf-8")
+for needle in ("function booklet()", "ownerNewsletterMakeBooklet"):
+    p=html.find(needle)
+    print(f"NEEDLE_{needle!r}_AT_{p}_CONTEXT={html[max(0,p-2500):p+500]!r}")

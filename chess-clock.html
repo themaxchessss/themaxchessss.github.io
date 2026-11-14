@@ -81,7 +81,7 @@ $('reset').onclick=()=>{stop();const p=$('preset').value.split('|').map(Number);
 $('preset').onchange=()=>$('reset').click();
 $('whitePress').onclick=()=>press(0);$('blackPress').onclick=()=>press(1);
 increment=0;draw();
-try{if("BroadcastChannel" in window){const liveChannel=new BroadcastChannel("maxchess-live-clock-v1");liveChannel.onmessage=event=>{const data=event.data;if(!data||data.type!=="legal-move"||!["white","black"].includes(data.moved)||flagged!==-1)return;const side=data.moved==="white"?0:1;if(!running){if(active<0)active=side;running=true;last=performance.now();raf=requestAnimationFrame(tick)}if(active===side)press(side);else{$("clockStatus").textContent="Move signal received out of turn. Check the game integration.";draw()}}}}catch(_e){}
+try{if("BroadcastChannel" in window){const liveChannel=new BroadcastChannel("maxchess-live-clock-v1");liveChannel.onmessage=event=>{const data=event.data;if(!data||flagged!==-1)return;if(data.type==="game-start"){stop();remaining=[base,base];active=0;running=true;last=performance.now();$("clockStatus").textContent="Live MaxChess game started. White to move.";draw();raf=requestAnimationFrame(tick);return}if(data.type!=="legal-move"||!["white","black"].includes(data.moved))return;const side=data.moved==="white"?0:1;if(!running){if(active<0)active=side;running=true;last=performance.now();raf=requestAnimationFrame(tick)}if(active===side)press(side);else{$("clockStatus").textContent="Move signal received out of turn. Check the game integration.";draw()}}}}catch(_e){}
 })();
 </script>
 </body></html>

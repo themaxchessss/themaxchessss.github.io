@@ -2,7 +2,7 @@
 (function(){
   const name="maxchess-live-clock-v1";let channel=null;
   try{if("BroadcastChannel" in window)channel=new BroadcastChannel(name)}catch(_e){}
-  function send(message){try{if(channel){channel.postMessage(message);return true}localStorage.setItem(name,JSON.stringify(message));return true}catch(_e){return false}}
+  function send(message){let sent=false;try{if(channel){channel.postMessage(message);sent=true}}catch(_e){}try{localStorage.setItem(name,JSON.stringify(message));sent=true}catch(_e){}return sent}
   window.MaxChessClockBridge={
     gameStarted:function(seconds,bonus){return send({type:"game-start",seconds:Number(seconds)||600,bonus:Number(bonus)||0,at:Date.now()})},
     moveMade:function(color){

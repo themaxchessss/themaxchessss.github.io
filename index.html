@@ -1137,6 +1137,13 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 .clock.clock-style-extra308{position:relative;min-width:142px;min-height:64px;padding:13px 9px 24px;border:5px solid hsl(319.2 38% 24%);border-radius:10px;background:linear-gradient(180deg,hsl(319.2 36% 86%) 0 15%,hsl(319.2 36% 86%) 15% 78%,hsl(353.2360000000008 72% 52%) 78% 100%);color:hsl(319.2 40% 14%);font:700 20px/1.1 ui-monospace,monospace;letter-spacing:1px;text-align:center;box-shadow:inset 0 1px 3px #ffffff66,0 3px 5px #0007}.clock.clock-style-extra308:after{content:"◀    ▪    ▪    ▶";position:absolute;left:7px;right:7px;bottom:3px;height:13px;border-radius:3px;background:hsl(319.2 38% 24%);color:hsl(353.2360000000008 72% 52%);font:bold 9px/13px Arial;text-align:center}.clock.active-clock.clock-style-extra308{box-shadow:0 0 0 2px #629924,0 3px 5px #0007}.clock.flagged.clock-style-extra308{color:#fff;background:linear-gradient(180deg,hsl(319.2 36% 86%) 0 15%,#7a2525 15% 78%,hsl(353.2360000000008 72% 52%) 78% 100%)}
 </style>
 
+<style id="maxHomeSelectorRepair">
+#maxHomeStyleChooser{position:relative;z-index:2}
+#maxHomeStyleChooser .style-choice-buttons button{appearance:none!important;-webkit-appearance:none!important;background:#242424!important;color:#fff!important;border:2px solid #8b8b8b!important;min-height:42px;padding:10px 15px!important;opacity:1!important;text-shadow:none!important;box-shadow:0 2px 5px #0003!important}
+#maxHomeStyleChooser .style-choice-buttons button:hover{background:#393939!important;border-color:#e6c35e!important;color:#fff!important}
+#maxHomeStyleChooser .style-choice-buttons button[aria-pressed="true"]{background:#e4bd55!important;color:#17120a!important;border:2px solid #fff0b5!important;box-shadow:0 0 0 2px #b58a2e,0 0 14px #d7ad4877!important}
+#maxHomeStyleChooser .style-choice-buttons button:focus-visible{outline:3px solid #48b9ff!important;outline-offset:3px}
+</style>
 <style id="maxHomeStyleChoices">
 #maxHomeStyleChooser{max-width:1080px;margin:12px auto 18px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 #maxHomeStyleChooser .style-choice-buttons{display:flex;gap:8px;flex-wrap:wrap}
@@ -3946,5 +3953,36 @@ window.dispatchEvent(new Event("maxchess:ready"));
 
 <script src="./owner-newsletter-booklet.js?v=1"></script>
 
+<script id="maxHomeStyleSelectorFix">
+(function(){
+ const home=document.getElementById('page-home');
+ const chooser=document.getElementById('maxHomeStyleChooser');
+ if(!home||!chooser||chooser.dataset.wired==='1')return;
+ chooser.dataset.wired='1';
+ const classes=['max-home-goldblue','max-home-neon','max-home-royal','max-home-clean'];
+ const keys=['original','goldblue','neon','royal','clean'];
+ function apply(key){
+  if(!keys.includes(key))key='original';
+  home.classList.remove(...classes);
+  const classMap={goldblue:'max-home-goldblue',neon:'max-home-neon',royal:'max-home-royal',clean:'max-home-clean'};
+  if(classMap[key])home.classList.add(classMap[key]);
+  chooser.querySelectorAll('[data-home-style]').forEach(btn=>{
+   const selected=btn.getAttribute('data-home-style')===key;
+   btn.setAttribute('aria-pressed',selected?'true':'false');
+  });
+  try{localStorage.setItem('maxchess_homepage_design',key)}catch(e){}
+  window.dispatchEvent(new CustomEvent('maxchess:homepage-design-changed',{detail:{design:key}}));
+ }
+ chooser.addEventListener('click',function(event){
+  const btn=event.target.closest('button[data-home-style]');
+  if(!btn||!chooser.contains(btn))return;
+  event.preventDefault();
+  apply(btn.getAttribute('data-home-style'));
+ });
+ let saved='original';
+ try{saved=localStorage.getItem('maxchess_homepage_design')||'original'}catch(e){}
+ apply(saved);
+})();
+</script>
 </body>
 </html>

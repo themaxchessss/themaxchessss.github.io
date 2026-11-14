@@ -28,6 +28,7 @@ button.secondary{background:linear-gradient(145deg,#344a65,#1b2b40);color:white;
 <div class="metrics"><div class="metric"><b id="openCount">0</b><span>Open tasks</span></div><div class="metric"><b id="reviewCount">0</b><span>Needs review</span></div><div class="metric"><b id="doneCount">0</b><span>Completed</span></div></div>
 <p id="dashboardStatus" class="status" role="status" aria-live="polite"></p></section>
 <section class="panel" id="ownerApplications" hidden><div class="tag">Owner only</div><h2>📨 Application review</h2><p class="muted">Review applications here. Approving someone gives them access to the private task board. Declining does not send an email.</p><button id="refreshApplications" class="secondary">Refresh applications</button><div id="applicationList" class="grid"><p class="muted">Loading…</p></div></section>
+<section class="panel" id="ownerWorkDrafts" hidden><div class="tag">Owner only</div><h2>📥 Team work submissions</h2><p class="muted">Review role-specific drafts submitted by approved team members.</p><button id="refreshWorkDrafts" class="secondary">Refresh submissions</button><div id="workDraftList" class="grid">Loading…</div></section>
 <section class="panel" id="createTaskPanel" hidden><div class="tag">Owner only</div><h2>➕ Create and assign a job</h2>
 <form id="taskForm">
 <label for="taskTitle">Task title</label><input id="taskTitle" required minlength="3" maxlength="120" placeholder="Example: Test the new puzzle page on iPad">
@@ -68,8 +69,8 @@ async function init(){
   $('app').hidden=false;$('gate').hidden=true;
   if(isOwner){
    $('welcome').textContent='Welcome, MaxChess Owner';$('roleLabel').textContent='Owner controls · application review · task assignments · all work areas';
-   $('ownerApplications').hidden=false;$('createTaskPanel').hidden=false;
-   await loadApplications();
+   $('ownerApplications').hidden=false;$('ownerWorkDrafts').hidden=false;$('createTaskPanel').hidden=false;
+   await loadApplications();await loadWorkDrafts();
   }else{
    const {data,error}=await db.from('team_applications').select('applicant_name,role,status').eq('user_id',user.id).order('created_at',{ascending:false}).limit(1);
    if(error)throw error;
@@ -165,22 +166,34 @@ function setupRoleStudio(){
  $('studioFields').innerHTML=studioFields.map((f,i)=>'<label for="studioField'+i+'">'+esc(f[0])+'</label><textarea id="studioField'+i+'" maxlength="4000" required placeholder="'+esc(f[1])+'"></textarea>').join('');
  renderStudioDrafts();
 }
-function studioKey(){return 'maxchess_team_studio_'+user.id+'_'+ownRole.replace(/[^a-z0-9]/gi,'_')}
 function getStudioDraft(){return {title:$('studioProject').value.trim(),role:ownRole,fields:studioFields.map((f,i)=>({label:f[0],value:$('studioField'+i).value.trim()})),savedAt:new Date().toISOString()}}
-function renderStudioDrafts(){
- const drafts=JSON.parse(localStorage.getItem(studioKey())||'[]');
- $('studioDrafts').innerHTML=drafts.length?drafts.map((d,i)=>'<p><b>'+esc(d.title)+'</b> · '+new Date(d.savedAt).toLocaleString()+' <button type="button" class="secondary" data-studio-load="'+i+'">Load</button></p>').join(''):'No saved drafts yet on this device.';
- $('studioDrafts').querySelectorAll('[data-studio-load]').forEach(b=>b.addEventListener('click',()=>{const d=drafts[Number(b.dataset.studioLoad)];$('studioProject').value=d.title;d.fields.forEach((f,i)=>{const el=$('studioField'+i);if(el)el.value=f.value});$('studioStatus').textContent='Draft loaded.';}));
+async function renderStudioDrafts(){
+ const {data,error}=await db.from('team_work_drafts').select('id,title,content,status,created_at').eq('author_id',user.id).order('created_at',{ascending:false}).limit(30);
+ if(error){$('studioDrafts').textContent='Could not load shared drafts: '+error.message;return}
+ const drafts=data||[];
+ $('studioDrafts').innerHTML=drafts.length?drafts.map((d,i)=>'<p><b>'+esc(d.title)+'</b> · '+esc(d.status)+' · '+new Date(d.created_at).toLocaleString()+' <button type="button" class="secondary" data-studio-load="'+i+'">Load</button></p>').join(''):'No shared drafts yet.';
+ $('studioDrafts').querySelectorAll('[data-studio-load]').forEach(b=>b.addEventListener('click',()=>{const d=drafts[Number(b.dataset.studioLoad)];$('studioProject').value=d.title;(d.content?.fields||[]).forEach((f,i)=>{const el=$('studioField'+i);if(el)el.value=f.value});$('studioStatus').textContent='Shared draft loaded.';}));
 }
-$('studioForm').addEventListener('submit',e=>{
+$('studioForm').addEventListener('submit',async e=>{
  e.preventDefault();if(!user||!ownRole)return;
- const draft=getStudioDraft();const drafts=JSON.parse(localStorage.getItem(studioKey())||'[]');drafts.unshift(draft);
- localStorage.setItem(studioKey(),JSON.stringify(drafts.slice(0,30)));$('studioStatus').textContent='Draft saved on this device. Download it to share with the owner for review.';renderStudioDrafts();
+ const button=$('studioForm').querySelector('button[type="submit"]');button.disabled=true;
+ try{const draft=getStudioDraft();const {error}=await db.from('team_work_drafts').insert({author_id:user.id,role:ownRole,title:draft.title,content:{fields:draft.fields,savedAt:draft.savedAt},status:'submitted'});
+ if(error)throw error;$('studioStatus').textContent='Submitted to the shared MaxChess team workspace for owner review.';$('studioForm').reset();await renderStudioDrafts();
+ }catch(err){$('studioStatus').textContent='Could not submit shared draft: '+(err.message||'Try again.')}
+ finally{button.disabled=false}
 });
 $('studioDownload').addEventListener('click',()=>{
  if(!user||!ownRole)return;const d=getStudioDraft();const content=[d.title,'Role: '+d.role,'Saved: '+d.savedAt,'',...d.fields.flatMap(f=>[f.label,f.value,''])].join('\n');
  const blob=new Blob([content],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='maxchess-'+ownRole.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-draft.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('studioStatus').textContent='Draft download started.';
 });
+async function loadWorkDrafts(){
+ const list=$('workDraftList');if(!list)return;list.textContent='Loading submissions…';
+ const {data,error}=await db.from('team_work_drafts').select('id,author_id,role,title,content,status,created_at').order('created_at',{ascending:false}).limit(100);
+ if(error){list.textContent='Could not load submissions: '+error.message;return}
+ list.innerHTML=data?.length?data.map(d=>'<article class="application"><div class="tag">'+esc(d.role)+'</div><h3>'+esc(d.title)+'</h3><p><span class="pill">'+esc(d.status)+'</span> · '+new Date(d.created_at).toLocaleString()+'</p>'+(d.content?.fields||[]).map(f=>'<p><b>'+esc(f.label)+'</b><br>'+esc(f.value)+'</p>').join('')+'<label for="draft-status-'+esc(d.id)+'">Review status</label><select id="draft-status-'+esc(d.id)+'" data-work-status="'+esc(d.id)+'"><option '+(d.status==='submitted'?'selected':'')+'>submitted</option><option '+(d.status==='approved'?'selected':'')+'>approved</option><option '+(d.status==='needs_changes'?'selected':'')+'>needs_changes</option></select></article>').join(''):'<p class="muted">No role work has been submitted yet.</p>';
+ list.querySelectorAll('[data-work-status]').forEach(sel=>sel.addEventListener('change',async()=>{const {error}=await db.from('team_work_drafts').update({status:sel.value,reviewed_at:new Date().toISOString()}).eq('id',sel.dataset.workStatus);if(error){$('dashboardStatus').textContent='Could not update review status: '+error.message;await loadWorkDrafts();return}$('dashboardStatus').textContent='Submission marked '+sel.value+'.';await loadWorkDrafts();}));
+}
+$('refreshWorkDrafts').addEventListener('click',loadWorkDrafts);
 async function loadLessonDrafts(){
  const list=$('lessonDraftList');if(!db||!user)return;
  const {data,error}=await db.from('team_lesson_drafts').select('id,title,topic,level,status,created_at').eq('author_id',user.id).order('created_at',{ascending:false}).limit(20);

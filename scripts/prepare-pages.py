@@ -1,7 +1,19 @@
 from pathlib import Path
 import subprocess
 
-html = Path("index.html").read_text(encoding="utf-8")
+page = Path("index.html")
+html = page.read_text(encoding="utf-8")
+
+# A literal newline inside the single-quoted booklet HTML string breaks the
+# owner-console script. Keep the generated HTML equivalent but make the
+# string a valid JavaScript string.
+broken = "</main>\n<script id=\"maxHomeStyleChoicesScript\">"
+fixed = "</main><script id=\"maxHomeStyleChoicesScript\">"
+html, replacements = html.replace(broken, fixed), html.count(broken)
+if replacements:
+    page.write_text(html, encoding="utf-8")
+print(f"MaxChess booklet string repair: fixed {replacements} newline boundary/boundaries.")
+
 pos = 0
 number = 0
 errors = []
@@ -18,7 +30,8 @@ while True:
         break
     tag = html[start:tag_end + 1]
     code = html[tag_end + 1:end]
-    if "src=" not in tag.lower() and code.strip():
+    is_json = "application/ld+json" in tag.lower() or "application/json" in tag.lower()
+    if "src=" not in tag.lower() and not is_json and code.strip():
         number += 1
         result = subprocess.run(["node", "--check", "-"], input=code, text=True, capture_output=True)
         if result.returncode:

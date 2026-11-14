@@ -1182,24 +1182,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
 @media(max-width:600px){.max-extra-home{min-height:0;padding:26px 16px}.max-extra-home h1{font-size:clamp(34px,10vw,54px)}#maxHomeStyleChooser .style-choice-buttons{width:100%}#maxHomeStyleChooser button{flex:1 1 42%;font-size:12px}}
 </style>
 <script>
-(function(){
-const palettes={
-'Original MaxChess':{'--bg':'#161512','--panel':'#262421','--panel2':'#302e2c','--panel3':'#1f1e1c','--line':'#3c3a37','--text':'#bababa','--strong':'#e8e8e8','--muted':'#8d8b88','--green':'#629924','--green2':'#85b23d','--blue':'#3692e7','--gold':'#e8c765'},
-'Black & Gold':{'--bg':'#080808','--panel':'#171717','--panel2':'#24211a','--panel3':'#111111','--line':'#514323','--text':'#d4d0c5','--strong':'#fff2c4','--muted':'#a59b82','--green':'#b58b2a','--green2':'#e1b84c','--blue':'#d9ad42','--gold':'#f4cf68'},
-'Bright & Friendly':{'--bg':'#eaf5fb','--panel':'#ffffff','--panel2':'#d8edf7','--panel3':'#f4fbff','--line':'#b9d7e5','--text':'#244052','--strong':'#102d40','--muted':'#567488','--green':'#23875d','--green2':'#38a878','--blue':'#1676b8','--gold':'#d69b22'},
-'Electric Blue':{'--bg':'#071426','--panel':'#10243d','--panel2':'#17365a','--panel3':'#0b1c31','--line':'#24517d','--text':'#c2dcf5','--strong':'#f0f8ff','--muted':'#83a9ce','--green':'#1684c8','--green2':'#28a8f0','--blue':'#48b9ff','--gold':'#f1c75b'},
-'Clean Minimal':{'--bg':'#f5f6f8','--panel':'#ffffff','--panel2':'#e9edf2','--panel3':'#f9fafb','--line':'#d1d8e0','--text':'#344054','--strong':'#101828','--muted':'#667085','--green':'#16845d','--green2':'#25a477','--blue':'#2463a8','--gold':'#bd8b21'},
-'Emerald Tournament':{'--bg':'#071d17','--panel':'#103328','--panel2':'#194737','--panel3':'#0b271f','--line':'#2e6954','--text':'#c3e0d3','--strong':'#f0fff7','--muted':'#88b8a2','--green':'#1b865a','--green2':'#2cab73','--blue':'#62b5d5','--gold':'#e6c56b'},
-'Chess Café':{'--bg':'#241710','--panel':'#3b281e','--panel2':'#513829','--panel3':'#2e2019','--line':'#76553c','--text':'#ead8c3','--strong':'#fff0d9','--muted':'#c2a58a','--green':'#7e8a45','--green2':'#a5ad5b','--blue':'#83b5c6','--gold':'#e5b76a'},
-'Neon Future':{'--bg':'#09091c','--panel':'#171735','--panel2':'#242451','--panel3':'#101027','--line':'#4d4384','--text':'#d4d5ff','--strong':'#ffffff','--muted':'#9b9bd0','--green':'#5e45cc','--green2':'#8a6cff','--blue':'#58f0ef','--gold':'#e5aaff'},
-'Royal Purple':{'--bg':'#160d24','--panel':'#29183d','--panel2':'#3c2458','--panel3':'#201331','--line':'#63427f','--text':'#e1d4ed','--strong':'#fff4ff','--muted':'#b9a1cb','--green':'#8c5bb4','--green2':'#b17bd8','--blue':'#9fbcff','--gold':'#e7c2ff'},
-'Mobile First':{'--bg':'#0c1b29','--panel':'#183247','--panel2':'#22465e','--panel3':'#102638','--line':'#3c718b','--text':'#d0e7f0','--strong':'#ffffff','--muted':'#93b6c5','--green':'#268c85','--green2':'#39b1a7','--blue':'#57c7ed','--gold':'#e5cf76'},
-'Chess Magazine':{'--bg':'#171717','--panel':'#252525','--panel2':'#333333','--panel3':'#1d1d1d','--line':'#555555','--text':'#dedede','--strong':'#ffffff','--muted':'#a7a7a7','--green':'#777777','--green2':'#999999','--blue':'#d2d2d2','--gold':'#ffffff'},
-'Player Community':{'--bg':'#10292c','--panel':'#1c4144','--panel2':'#28575a','--panel3':'#153538','--line':'#397477','--text':'#d0e8e2','--strong':'#f4fffb','--muted':'#91bdb4','--green':'#29977e','--green2':'#42b89c','--blue':'#62c5d8','--gold':'#f1d27a'}
-};
-try{const db=window.supabase.createClient('https://bvukakfhkebpsviehirr.supabase.co','sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG');db.from('maxchess_site_settings').select('setting_value').eq('setting_key','homepage_theme').maybeSingle().then(({data,error})=>{if(error){console.warn('MaxChess theme setting could not load',error.message);return}const name=data?.setting_value?.name||'Original MaxChess',vars=palettes[name]||palettes['Original MaxChess'];document.documentElement.dataset.maxchessTheme=name;Object.keys(vars).forEach(k=>document.documentElement.style.setProperty(k,vars[k]));if(name==='Bright & Friendly'||name==='Clean Minimal'){document.documentElement.style.colorScheme='light'}else{document.documentElement.style.colorScheme='dark'}}).catch(e=>console.warn('MaxChess theme unavailable',e))}catch(e){console.warn('MaxChess theme setup unavailable',e)}
-})();
-</script>
+
 </head>
 <body>
 <div class="app">
@@ -1919,6 +1902,24 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+(function(){
+const palettes={
+'Original MaxChess':{'--bg':'#161512','--panel':'#262421','--panel2':'#302e2c','--panel3':'#1f1e1c','--line':'#3c3a37','--text':'#bababa','--strong':'#e8e8e8','--muted':'#8d8b88','--green':'#629924','--green2':'#85b23d','--blue':'#3692e7','--gold':'#e8c765'},
+'Black & Gold':{'--bg':'#080808','--panel':'#171717','--panel2':'#24211a','--panel3':'#111111','--line':'#514323','--text':'#d4d0c5','--strong':'#fff2c4','--muted':'#a59b82','--green':'#b58b2a','--green2':'#e1b84c','--blue':'#d9ad42','--gold':'#f4cf68'},
+'Bright & Friendly':{'--bg':'#eaf5fb','--panel':'#ffffff','--panel2':'#d8edf7','--panel3':'#f4fbff','--line':'#b9d7e5','--text':'#244052','--strong':'#102d40','--muted':'#567488','--green':'#23875d','--green2':'#38a878','--blue':'#1676b8','--gold':'#d69b22'},
+'Electric Blue':{'--bg':'#071426','--panel':'#10243d','--panel2':'#17365a','--panel3':'#0b1c31','--line':'#24517d','--text':'#c2dcf5','--strong':'#f0f8ff','--muted':'#83a9ce','--green':'#1684c8','--green2':'#28a8f0','--blue':'#48b9ff','--gold':'#f1c75b'},
+'Clean Minimal':{'--bg':'#f5f6f8','--panel':'#ffffff','--panel2':'#e9edf2','--panel3':'#f9fafb','--line':'#d1d8e0','--text':'#344054','--strong':'#101828','--muted':'#667085','--green':'#16845d','--green2':'#25a477','--blue':'#2463a8','--gold':'#bd8b21'},
+'Emerald Tournament':{'--bg':'#071d17','--panel':'#103328','--panel2':'#194737','--panel3':'#0b271f','--line':'#2e6954','--text':'#c3e0d3','--strong':'#f0fff7','--muted':'#88b8a2','--green':'#1b865a','--green2':'#2cab73','--blue':'#62b5d5','--gold':'#e6c56b'},
+'Chess Café':{'--bg':'#241710','--panel':'#3b281e','--panel2':'#513829','--panel3':'#2e2019','--line':'#76553c','--text':'#ead8c3','--strong':'#fff0d9','--muted':'#c2a58a','--green':'#7e8a45','--green2':'#a5ad5b','--blue':'#83b5c6','--gold':'#e5b76a'},
+'Neon Future':{'--bg':'#09091c','--panel':'#171735','--panel2':'#242451','--panel3':'#101027','--line':'#4d4384','--text':'#d4d5ff','--strong':'#ffffff','--muted':'#9b9bd0','--green':'#5e45cc','--green2':'#8a6cff','--blue':'#58f0ef','--gold':'#e5aaff'},
+'Royal Purple':{'--bg':'#160d24','--panel':'#29183d','--panel2':'#3c2458','--panel3':'#201331','--line':'#63427f','--text':'#e1d4ed','--strong':'#fff4ff','--muted':'#b9a1cb','--green':'#8c5bb4','--green2':'#b17bd8','--blue':'#9fbcff','--gold':'#e7c2ff'},
+'Mobile First':{'--bg':'#0c1b29','--panel':'#183247','--panel2':'#22465e','--panel3':'#102638','--line':'#3c718b','--text':'#d0e7f0','--strong':'#ffffff','--muted':'#93b6c5','--green':'#268c85','--green2':'#39b1a7','--blue':'#57c7ed','--gold':'#e5cf76'},
+'Chess Magazine':{'--bg':'#171717','--panel':'#252525','--panel2':'#333333','--panel3':'#1d1d1d','--line':'#555555','--text':'#dedede','--strong':'#ffffff','--muted':'#a7a7a7','--green':'#777777','--green2':'#999999','--blue':'#d2d2d2','--gold':'#ffffff'},
+'Player Community':{'--bg':'#10292c','--panel':'#1c4144','--panel2':'#28575a','--panel3':'#153538','--line':'#397477','--text':'#d0e8e2','--strong':'#f4fffb','--muted':'#91bdb4','--green':'#29977e','--green2':'#42b89c','--blue':'#62c5d8','--gold':'#f1d27a'}
+};
+try{const db=window.supabase.createClient('https://bvukakfhkebpsviehirr.supabase.co','sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG');db.from('maxchess_site_settings').select('setting_value').eq('setting_key','homepage_theme').maybeSingle().then(({data,error})=>{if(error){console.warn('MaxChess theme setting could not load',error.message);return}const name=data?.setting_value?.name||'Original MaxChess',vars=palettes[name]||palettes['Original MaxChess'];document.documentElement.dataset.maxchessTheme=name;Object.keys(vars).forEach(k=>document.documentElement.style.setProperty(k,vars[k]));if(name==='Bright & Friendly'||name==='Clean Minimal'){document.documentElement.style.colorScheme='light'}else{document.documentElement.style.colorScheme='dark'}}).catch(e=>console.warn('MaxChess theme unavailable',e))}catch(e){console.warn('MaxChess theme setup unavailable',e)}
+})();
+</script>
 <script>
 (()=> {
  const $=id=>document.getElementById(id), boardEl=$('board'), toast=$('toast'), toastbar=$('toastbar');

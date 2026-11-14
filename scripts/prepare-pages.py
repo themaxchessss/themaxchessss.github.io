@@ -4,15 +4,22 @@ import subprocess
 page = Path("index.html")
 html = page.read_text(encoding="utf-8")
 
-# A literal newline inside the single-quoted booklet HTML string breaks the
-# owner-console script. Keep the generated HTML equivalent but make the
-# string a valid JavaScript string.
-broken = "</main>\n<script id=\"maxHomeStyleChoicesScript\">"
-fixed = "</main><script id=\"maxHomeStyleChoicesScript\">"
-html, replacements = html.replace(broken, fixed), html.count(broken)
-if replacements:
+# The owner-console booklet is assembled as a single-quoted JavaScript string.
+# Escape every source newline inside that returned HTML document so the
+# embedded script and markup remain one valid JavaScript string.
+start_marker = "  return '<!doctype html>"
+end_marker = "</body></html>';"
+start = html.find(start_marker)
+end = html.find(end_marker, start + len(start_marker)) if start >= 0 else -1
+if start < 0 or end < 0:
+    raise SystemExit("Could not locate the MaxChess newsletter booklet HTML string.")
+end += len("</body></html>")
+segment = html[start:end]
+newline_count = segment.count("\n")
+if newline_count:
+    html = html[:start] + segment.replace("\n", "\\n") + html[end:]
     page.write_text(html, encoding="utf-8")
-print(f"MaxChess booklet string repair: fixed {replacements} newline boundary/boundaries.")
+print(f"MaxChess booklet string repair: escaped {newline_count} newline(s).")
 
 pos = 0
 number = 0

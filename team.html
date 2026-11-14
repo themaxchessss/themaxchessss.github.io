@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090d16">
+<title>Join the MaxChess Team</title>
+<style>
+:root{color-scheme:dark;--gold:#f4c95d;--blue:#39a9ff;--muted:#b9c5d6;--line:#405571}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#1c3657,#080d16 65%);color:#f7f8fb;font:16px/1.55 system-ui,sans-serif}
+main{width:min(1080px,94vw);margin:auto;padding:24px 0 60px}a{color:var(--gold);text-decoration:none}a:hover{text-decoration:underline}
+h1{font-size:clamp(2.3rem,7vw,4.2rem);line-height:1.04;color:var(--gold);margin:.25em 0}.muted{color:var(--muted)}
+.hero,.panel,.role{border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#203651,#111d2e 55%,#0a1320);box-shadow:0 20px 45px #0007;padding:22px;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:14px}.role h3{color:var(--gold);margin:4px 0}.role p{margin:6px 0}.tag{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);font-weight:800}
+label{display:block;font-weight:750;margin:12px 0 5px}input,select,textarea{width:100%;padding:12px;border:1px solid #506781;border-radius:10px;background:#081321;color:#fff;font:inherit}textarea{min-height:120px;resize:vertical}
+button,.button{display:inline-block;border:0;border-radius:11px;padding:12px 16px;background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;font:inherit;font-weight:900;cursor:pointer;margin:8px 6px 0 0}
+button.secondary{background:linear-gradient(145deg,#344a65,#1b2b40);color:white;border:1px solid #58708b}
+button:disabled{opacity:.55;cursor:not-allowed}.status{color:var(--blue);min-height:1.5em}.notice{border-left:4px solid var(--gold);padding:10px 14px;background:#ffffff0a;border-radius:8px}
+@media(max-width:600px){.hero,.panel,.role{padding:16px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body><main>
+<nav><a href="./">← MaxChess home</a> · <a href="team-workspace.html">Team Workspace</a></nav>
+<header class="hero">
+<div class="tag">Build MaxChess together</div><h1>♛ Join the MaxChess Team</h1>
+<p class="muted">Help make free chess more fun, welcoming, useful, and accessible. Choose a role that matches what you enjoy doing.</p>
+<p class="notice">These are volunteer/community contributor roles, not paid jobs. There is no promise of payment or employment. If you are under 18, get a parent or guardian's permission before applying. Never include your address, phone number, school, passwords, or private account details.</p>
+</header>
+<section class="panel"><h2>Team opportunities</h2><div class="grid" id="roles">
+<article class="role"><div class="tag">Chess learning</div><h3>♟ Puzzle maker</h3><p>Create original tactics puzzles, verify solutions, and write helpful explanations.</p></article>
+<article class="role"><div class="tag">Chess learning</div><h3>📘 Lesson writer or coach</h3><p>Build clear chess studies, diagrams, move sequences, and practice questions.</p></article>
+<article class="role"><div class="tag">Chess learning</div><h3>🎓 Chess coach</h3><p>Suggest beginner-friendly topics and encouraging ways to explain chess ideas.</p></article>
+<article class="role"><div class="tag">Chess learning</div><h3>🧠 Quiz maker</h3><p>Write short quizzes about tactics, openings, rules, and endgames.</p></article>
+<article class="role"><div class="tag">Chess research</div><h3>📖 Opening researcher</h3><p>Research opening ideas and check move orders and example positions.</p></article>
+<article class="role"><div class="tag">Chess research</div><h3>♜ Endgame specialist</h3><p>Prepare accurate endgame examples and explain winning or drawing plans.</p></article>
+<article class="role"><div class="tag">Events</div><h3>🏆 Tournament organizer</h3><p>Suggest friendly formats, pairing ideas, schedules, and fair-play reminders.</p></article>
+<article class="role"><div class="tag">Events</div><h3>🎉 Event host</h3><p>Help plan chess events and write welcoming instructions.</p></article>
+<article class="role"><div class="tag">Media</div><h3>🎙 Game broadcaster</h3><p>Prepare commentary for public games and explain key moments.</p></article>
+<article class="role"><div class="tag">Media</div><h3>🎬 Stream / video helper</h3><p>Plan short chess videos, demonstrations, and broadcast segments.</p></article>
+<article class="role"><div class="tag">Media</div><h3>✍️ Chess content creator</h3><p>Create original chess articles, announcements, and community content.</p></article>
+<article class="role"><div class="tag">Community</div><h3>🤝 Community helper</h3><p>Suggest friendly community activities and help keep discussions welcoming.</p></article>
+<article class="role"><div class="tag">Community</div><h3>🛡 Fair-play helper</h3><p>Help document fair-play concerns for owner review. No independent punishments.</p></article>
+<article class="role"><div class="tag">Design</div><h3>🎨 Designer</h3><p>Suggest accessible layouts, graphics, icons, and visual improvements.</p></article>
+<article class="role"><div class="tag">Quality</div><h3>📱 Website tester</h3><p>Test pages on phones, tablets, and computers and write clear test steps.</p></article>
+<article class="role"><div class="tag">Quality</div><h3>🐛 Bug reporter</h3><p>Reproduce problems and report what happened versus what should happen.</p></article>
+<article class="role"><div class="tag">Access</div><h3>🌍 Translator</h3><p>Help make MaxChess instructions and learning content available in more languages.</p></article>
+<article class="role"><div class="tag">Access</div><h3>♿ Accessibility helper</h3><p>Review keyboard, screen-reader, contrast, and touch accessibility.</p></article>
+<article class="role"><div class="tag">Documentation</div><h3>📝 Documentation writer</h3><p>Write clear help pages, how-to guides, and feature explanations.</p></article>
+<article class="role"><div class="tag">Development</div><h3>💻 Website developer</h3><p>Suggest or contribute reviewed code changes with owner approval.</p></article>
+<article class="role"><div class="tag">Community</div><h3>📣 Ambassador</h3><p>Share approved MaxChess information with chess communities. No unsolicited messaging.</p></article>
+<article class="role"><div class="tag">Other</div><h3>✨ Something else</h3><p>Tell us about another useful way you would like to contribute.</p></article>
+</div></section>
+<section class="panel" id="apply"><h2>Apply to join</h2><p class="muted">Sign in to your MaxChess account first. Your application is saved privately for the MaxChess owner to review.</p>
+<div id="accountNotice" class="notice">Checking your MaxChess sign-in…</div>
+<form id="applicationForm" hidden>
+<label for="applicantName">Display name</label><input id="applicantName" maxlength="80" required autocomplete="nickname" placeholder="The name you use on MaxChess">
+<label for="role">Role you want to try</label><select id="role" required>
+<option value="">Choose a role</option>
+<option>Puzzle maker</option><option>Lesson writer or coach</option><option>Chess coach</option><option>Quiz maker</option><option>Opening researcher</option><option>Endgame specialist</option><option>Tournament organizer</option><option>Event host</option><option>Game broadcaster</option><option>Stream / video helper</option><option>Chess content creator</option><option>Community helper</option><option>Fair-play helper</option><option>Designer</option><option>Website tester</option><option>Bug reporter</option><option>Translator</option><option>Accessibility helper</option><option>Documentation writer</option><option>Website developer</option><option>Ambassador</option><option>Something else</option>
+</select>
+<label for="chessProfile">Chess profile or username (optional)</label><input id="chessProfile" maxlength="160" placeholder="Lichess or Chess.com username — no password">
+<label for="motivation">Why would you like to help?</label><textarea id="motivation" minlength="10" maxlength="1200" required placeholder="Tell us what you enjoy and what you could contribute."></textarea>
+<label style="display:flex;gap:10px;align-items:flex-start;font-weight:500"><input id="permission" type="checkbox" required style="width:auto;margin-top:5px"> I am 18 or older, or I have permission from my parent or guardian to apply.</label>
+<button id="submitApplication" type="submit">Submit application</button>
+</form>
+<p id="applicationStatus" class="status" role="status" aria-live="polite"></p>
+</section>
+<footer class="muted"><p>MaxChess is a free chess project. Applications are reviewed by the project owner. Applying does not grant permission to edit the live website, contact players, or publish content.</p><p><a href="team-workspace.html">Open the Team Workspace</a> · <a href="./">Return to MaxChess</a></p></footer>
+</main>
+<script>
+(function(){
+const URL='https://bvukakfhkebpsviehirr.supabase.co';
+const KEY='sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG';
+const $=id=>document.getElementById(id);
+let client=null,user=null;
+function say(s){$('applicationStatus').textContent=s}
+async function init(){
+ try{
+  const saved=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null');
+  const cfg=saved&&saved.url&&saved.key?saved:{url:URL,key:KEY};
+  client=window.supabase.createClient(cfg.url,cfg.key);
+  const result=await client.auth.getUser();user=result.data.user;
+  if(!user){$('accountNotice').textContent='Please sign in on the MaxChess home page, then return here.';return}
+  if(user.id==='f686e7f3-45ee-47bd-9279-c835b088744b'){$('accountNotice').textContent='You are signed in as the owner. Use the Team Workspace to review applications and manage the team.';return}
+  $('accountNotice').textContent='Signed in as '+(user.user_metadata?.username||user.email||'MaxChess player')+'.';
+  const existing=await client.from('team_applications').select('id,status,role,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(1);
+  if(existing.error)throw existing.error;
+  if(existing.data?.length&&['pending_ai','needs_review','approved'].includes(existing.data[0].status)){
+   const app=existing.data[0],labels={pending_ai:'Waiting for owner review',needs_review:'Waiting for owner review',approved:'Approved — welcome to the team!'};
+   $('applicationForm').hidden=true;say('Your latest application for '+app.role+' is '+(labels[app.status]||app.status)+'. You can check the Team Workspace for updates.');return;
+  }
+  $('applicationForm').hidden=false;
+  if(existing.data?.length&&existing.data[0].status==='declined')say('Your previous application was not approved. You may submit a new application if you have a different role or new information.');
+ }catch(e){$('accountNotice').textContent='Could not connect to MaxChess accounts. Open MaxChess home, sign in, and try again.'}
+}
+$('applicationForm').addEventListener('submit',async function(e){
+ e.preventDefault();if(!client||!user){say('Please sign in on MaxChess first.');return}
+ const button=$('submitApplication');button.disabled=true;button.textContent='Submitting…';
+ try{
+  const payload={user_id:user.id,applicant_name:$('applicantName').value.trim(),role:$('role').value,chess_profile:$('chessProfile').value.trim(),motivation:$('motivation').value.trim()};
+  const {error}=await client.from('team_applications').insert(payload);
+  if(error)throw error;
+  $('applicationForm').hidden=true;say('Application submitted! The MaxChess owner can now review it. Check the Team Workspace for your status.');
+ }catch(err){say('Could not submit the application: '+(err.message||'Please try again.'))}
+ finally{button.disabled=false;button.textContent='Submit application'}
+});
+init();
+})();
+</script>
+</body></html>

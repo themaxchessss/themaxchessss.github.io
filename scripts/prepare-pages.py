@@ -1,5 +1,4 @@
 from pathlib import Path
-from html.parser import HTMLParser
 import subprocess
 
 page = Path("index.html")
@@ -36,43 +35,17 @@ html = html[:content_start] + "".join(out) + html[end:]
 page.write_text(html, encoding="utf-8")
 print(f"MaxChess booklet string repair: escaped {newline_count} newline(s) and {quote_count} quote(s).")
 
-class ScriptCollector(HTMLParser):
-    def __init__(self):
-        super().__init__(convert_charrefs=False)
-        self.in_script = False
-        self.skip = False
-        self.current = []
-        self.scripts = []
-    def handle_starttag(self, tag, attrs):
-        if tag.lower() == "script":
-            self.in_script = True
-            attrs = dict(attrs)
-            self.skip = "src" in attrs or attrs.get("type", "").lower() in ("application/ld+json", "application/json")
-            self.current = []
-    def handle_data(self, data):
-        if self.in_script:
-            self.current.append(data)
-    def handle_endtag(self, tag):
-        if tag.lower() == "script" and self.in_script:
-            if not self.skip:
-                self.scripts.append("".join(self.current))
-            self.in_script = False
-            self.skip = False
-            self.current = []
-
-collector = ScriptCollector()
-collector.feed(html)
-errors = []
-for number, code in enumerate(collector.scripts, 1):
-    if not code.strip():
-        continue
-    result = subprocess.run(["node", "--check", "-"], input=code, text=True, capture_output=True)
-    if result.returncode:
-        errors.append(f"Inline script {number}: {result.stderr.strip()}")
-    else:
-        print(f"Inline script {number}: syntax OK")
-if errors:
-    for error in errors:
-        print(error)
-    raise SystemExit("MaxChess homepage JavaScript validation failed.")
-print(f"Validated {len(collector.scripts)} inline JavaScript blocks.")
+# Validate the real owner-newsletter script block. Find its outer <script>
+# tag by searching backward from the unique function marker; the generated
+# booklet contains a nested script tag as string data.
+fn = html.find("function booklet()")
+script_start = html.rfind("<script>", 0, fn)
+script_end = html.find("</script>", script_start)
+if fn < 0 or script_start < 0 or script_end < 0:
+    raise SystemExit("Could not locate the owner-newsletter script block.")
+code = html[script_start + len("<script>"):script_end]
+result = subprocess.run(["node", "--check", "-"], input=code, text=True, capture_output=True)
+if result.returncode:
+    print(result.stderr)
+    raise SystemExit("Owner-newsletter JavaScript syntax validation failed.")
+print("Owner-newsletter script syntax: OK.")

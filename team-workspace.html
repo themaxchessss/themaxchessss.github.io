@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090d16">
+<title>MaxChess Team Workspace</title>
+<style>
+:root{color-scheme:dark;--gold:#f4c95d;--blue:#39a9ff;--muted:#b9c5d6;--line:#405571}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#1c3657,#080d16 65%);color:#f7f8fb;font:16px/1.55 system-ui,sans-serif}
+main{width:min(1120px,94vw);margin:auto;padding:24px 0 60px}a{color:var(--gold);text-decoration:none}h1{font-size:clamp(2.1rem,6vw,3.7rem);line-height:1.05;color:var(--gold);margin:.2em 0}
+.hero,.panel,.task,.application{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#203651,#111d2e 55%,#0a1320);box-shadow:0 18px 38px #0006;padding:18px;margin:14px 0}
+.muted,small{color:var(--muted)}.tag{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.metric{padding:12px;border:1px solid var(--line);border-radius:12px;background:#091321}.metric b{display:block;font-size:1.7rem;color:var(--gold)}
+label{display:block;font-weight:750;margin:10px 0 5px}input,select,textarea{width:100%;padding:11px;border:1px solid #506781;border-radius:10px;background:#081321;color:#fff;font:inherit}textarea{min-height:90px}
+button,.button{display:inline-block;border:0;border-radius:10px;padding:10px 14px;background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;font:inherit;font-weight:850;cursor:pointer;margin:6px 6px 0 0}
+button.secondary{background:linear-gradient(145deg,#344a65,#1b2b40);color:white;border:1px solid #58708b}button.danger{background:#6e2730;color:#fff}button:disabled{opacity:.5;cursor:not-allowed}
+.status{color:var(--blue);min-height:1.5em}.task h3,.application h3{margin:4px 0;color:var(--gold)}.task p,.application p{margin:6px 0}.task.done{opacity:.65}.pill{display:inline-block;padding:3px 9px;border-radius:20px;background:#ffffff12;border:1px solid #ffffff20;font-size:.8rem}
+[hidden]{display:none!important}
+@media(max-width:600px){.metrics{grid-template-columns:1fr}.hero,.panel,.task,.application{padding:15px}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body><main>
+<nav><a href="./">← MaxChess home</a> · <a href="team.html">Join the Team</a> · <a href="owner-control.html">Owner Control</a></nav>
+<header class="hero"><div class="tag">Private member area</div><h1>♛ MaxChess Team Workspace</h1><p class="muted">Applications, assigned jobs, deadlines, progress, and lesson drafts — all in one place.</p><p class="muted">Only the MaxChess owner and approved team members can enter. Team contributions are volunteer/community work, not paid employment.</p></header>
+<section class="panel" id="gate"><h2>Checking team access…</h2><p id="gateStatus" class="status" role="status" aria-live="polite">Sign in to MaxChess with your account, then return here.</p><a class="button" href="./">Go to MaxChess sign in</a></section>
+<div id="app" hidden>
+<section class="panel"><div class="tag">Team dashboard</div><h2 id="welcome">Welcome</h2><p id="roleLabel" class="muted"></p>
+<div class="metrics"><div class="metric"><b id="openCount">0</b><span>Open tasks</span></div><div class="metric"><b id="reviewCount">0</b><span>Needs review</span></div><div class="metric"><b id="doneCount">0</b><span>Completed</span></div></div>
+<p id="dashboardStatus" class="status" role="status" aria-live="polite"></p></section>
+<section class="panel" id="ownerApplications" hidden><div class="tag">Owner only</div><h2>📨 Application review</h2><p class="muted">Review applications here. Approving someone gives them access to the private task board. Declining does not send an email.</p><button id="refreshApplications" class="secondary">Refresh applications</button><div id="applicationList" class="grid"><p class="muted">Loading…</p></div></section>
+<section class="panel" id="createTaskPanel" hidden><div class="tag">Owner only</div><h2>➕ Create and assign a job</h2>
+<form id="taskForm">
+<label for="taskTitle">Task title</label><input id="taskTitle" required minlength="3" maxlength="120" placeholder="Example: Test the new puzzle page on iPad">
+<label for="taskDetails">What needs to be done?</label><textarea id="taskDetails" maxlength="1600" placeholder="Add steps and what counts as finished."></textarea>
+<div class="grid"><div><label for="taskCategory">Work area</label><select id="taskCategory"><option>Website testing</option><option>Puzzles</option><option>Lessons</option><option>Design</option><option>Tournaments</option><option>Community</option><option>Newsletter</option><option>Documentation</option><option>Development</option><option>Other</option></select></div><div><label for="taskPriority">Priority</label><select id="taskPriority"><option>High</option><option selected>Medium</option><option>Low</option></select></div></div>
+<label for="taskAssignee">Assign to</label><select id="taskAssignee"><option value="">Unassigned</option></select>
+<label for="taskDue">Due date (optional)</label><input id="taskDue" type="date">
+<button id="createTaskButton" type="submit">Create team job</button><p id="taskCreateStatus" class="status" role="status" aria-live="polite"></p>
+</form></section>
+<section class="panel"><div class="tag">Shared work board</div><h2>📋 Team jobs</h2><p class="muted">Approved members can see the team board. Members can update the status of jobs assigned to them. The owner manages task details and assignments.</p><div id="taskList" class="grid"><p class="muted">Loading tasks…</p></div></section>
+<section class="panel" id="lessonPanel" hidden><div class="tag">Lesson writer / coach role</div><h2>📘 Create a lesson draft</h2><p class="muted">Save a draft for review. It will not appear publicly until the owner approves/publishes it.</p>
+<form id="lessonForm">
+<label for="lessonTitle">Lesson title</label><input id="lessonTitle" required minlength="3" maxlength="80" placeholder="Example: Find a knight fork">
+<div class="grid"><div><label for="lessonTopic">Topic</label><select id="lessonTopic"><option>Pieces and rules</option><option>Tactics</option><option>Openings</option><option>Strategy</option><option>Endgames</option><option>Checkmate</option><option>Other</option></select></div><div><label for="lessonLevel">Level</label><select id="lessonLevel"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div></div>
+<label for="lessonGoal">Learning goal</label><input id="lessonGoal" required minlength="10" maxlength="500" placeholder="What should the learner understand?">
+<label for="lessonText">Lesson explanation</label><textarea id="lessonText" required minlength="20" maxlength="5000" placeholder="Explain the chess idea in your own words."></textarea>
+<label for="lessonChallenge">Practice question</label><textarea id="lessonChallenge" required minlength="5" maxlength="1000"></textarea>
+<label for="lessonAnswer">Answer and explanation</label><textarea id="lessonAnswer" required minlength="1" maxlength="1000"></textarea>
+<button id="saveLesson" type="submit">Save lesson draft</button><p id="lessonStatus" class="status" role="status" aria-live="polite"></p>
+</form><h3>Your recent lesson drafts</h3><div id="lessonDraftList" class="muted">Loading…</div></section>
+</div>
+</main>
+<script>
+(function(){
+const URL='https://bvukakfhkebpsviehirr.supabase.co',KEY='sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG',OWNER='f686e7f3-45ee-47bd-9279-c835b088744b';
+const $=id=>document.getElementById(id);let db=null,user=null,isOwner=false,ownRole='',members=[];
+function gate(message){$('gateStatus').textContent=message}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateText(s){return s?new Date(s+'T00:00:00').toLocaleDateString():'No due date'}
+async function init(){
+ try{
+  const saved=JSON.parse(localStorage.getItem('maxchess_auth_config')||'null'),cfg=saved&&saved.url&&saved.key?saved:{url:URL,key:KEY};
+  db=window.supabase.createClient(cfg.url,cfg.key);
+  const result=await db.auth.getUser();user=result.data.user;
+  if(!user){gate('You are not signed in. Sign in on the MaxChess home page and come back.');return}
+  isOwner=user.id===OWNER;
+  $('app').hidden=false;$('gate').hidden=true;
+  if(isOwner){
+   $('welcome').textContent='Welcome, MaxChess Owner';$('roleLabel').textContent='Owner controls · application review · task assignments · all work areas';
+   $('ownerApplications').hidden=false;$('createTaskPanel').hidden=false;
+   await loadApplications();
+  }else{
+   const {data,error}=await db.from('team_applications').select('applicant_name,role,status').eq('user_id',user.id).order('created_at',{ascending:false}).limit(1);
+   if(error)throw error;
+   if(!data?.length||data[0].status!=='approved'){$('app').hidden=true;$('gate').hidden=false;gate(data?.length?'Your application is not approved yet. The workspace opens after the owner approves it.':'You do not have a team application yet. Apply on the Join the Team page.');return}
+   ownRole=data[0].role;$('welcome').textContent='Welcome, '+data[0].applicant_name;$('roleLabel').textContent='Approved team member · '+ownRole;
+   $('lessonPanel').hidden=ownRole!=='Lesson writer or coach';
+   if(ownRole==='Lesson writer or coach')loadLessonDrafts();
+  }
+  await loadTasks();
+ }catch(e){$('app').hidden=true;$('gate').hidden=false;gate('Could not verify team access: '+(e.message||'Please try again.'))}
+}
+async function loadApplications(){
+ const list=$('applicationList');list.textContent='Loading applications…';
+ const {data,error}=await db.from('team_applications').select('id,user_id,applicant_name,role,chess_profile,motivation,status,created_at').order('created_at',{ascending:false}).limit(100);
+ if(error){list.textContent='Could not load applications: '+error.message;return}
+ const approved=(data||[]).filter(a=>a.status==='approved');
+ members=approved;
+ $('taskAssignee').innerHTML='<option value="">Unassigned</option>'+approved.map(a=>'<option value="'+esc(a.user_id)+'">'+esc(a.applicant_name)+' · '+esc(a.role)+'</option>').join('');
+ list.innerHTML=data?.length?data.map(a=>'<article class="application"><div class="tag">'+esc(a.role)+'</div><h3>'+esc(a.applicant_name)+'</h3><p><span class="pill">'+esc(a.status)+'</span> · '+new Date(a.created_at).toLocaleDateString()+'</p><p>'+esc(a.motivation)+'</p><p class="muted">Chess profile: '+esc(a.chess_profile||'Not supplied')+'</p><div><button data-approve="'+esc(a.id)+'" '+(a.status==='approved'?'disabled':'')+'>Approve</button><button class="danger" data-decline="'+esc(a.id)+'" '+(a.status==='declined'?'disabled':'')+'>Decline</button></div></article>').join(''):'<p class="muted">No applications yet.</p>';
+ list.querySelectorAll('[data-approve]').forEach(b=>b.addEventListener('click',()=>review(b.dataset.approve,'approved')));
+ list.querySelectorAll('[data-decline]').forEach(b=>b.addEventListener('click',()=>review(b.dataset.decline,'declined')));
+}
+async function review(id,status){
+ const {error}=await db.from('team_applications').update({status:status,reviewed_at:new Date().toISOString(),ai_reason:'Reviewed by MaxChess owner.'}).eq('id',id);
+ if(error){$('dashboardStatus').textContent='Could not update application: '+error.message;return}
+ $('dashboardStatus').textContent='Application marked '+status+'.';await loadApplications();
+}
+async function loadTasks(){
+ const list=$('taskList');list.textContent='Loading tasks…';
+ const {data,error}=await db.from('team_tasks').select('id,title,details,category,priority,status,assigned_to,due_date,created_at').order('created_at',{ascending:false}).limit(100);
+ if(error){list.textContent='Could not load team tasks: '+error.message;return}
+ const rows=data||[];
+ $('openCount').textContent=rows.filter(t=>t.status!=='Done').length;
+ $('reviewCount').textContent=rows.filter(t=>t.status==='Needs review').length;
+ $('doneCount').textContent=rows.filter(t=>t.status==='Done').length;
+ list.innerHTML=rows.length?rows.map(t=>{
+  const assigned=members.find(m=>m.user_id===t.assigned_to);
+  const canUpdate=isOwner||t.assigned_to===user.id;
+  return '<article class="task '+(t.status==='Done'?'done':'')+'"><div class="tag">'+esc(t.category)+' · '+esc(t.priority)+' priority</div><h3>'+esc(t.title)+'</h3><p>'+esc(t.details||'No extra instructions.')+'</p><p class="muted">Assigned to: '+esc(assigned?assigned.applicant_name:(t.assigned_to===user.id?'You':t.assigned_to?'Team member':'Unassigned'))+' · Due: '+dateText(t.due_date)+'</p><p><span class="pill">'+esc(t.status)+'</span></p>'+(canUpdate?'<label for="state-'+esc(t.id)+'">Update status</label><select id="state-'+esc(t.id)+'" data-status="'+esc(t.id)+'"><option '+(t.status==='To do'?'selected':'')+'>To do</option><option '+(t.status==='In progress'?'selected':'')+'>In progress</option><option '+(t.status==='Needs review'?'selected':'')+'>Needs review</option><option '+(t.status==='Done'?'selected':'')+'>Done</option></select>':'<p class="muted">Only the assigned member or owner can update this task.</p>')+(isOwner?'<button class="danger" data-delete-task="'+esc(t.id)+'">Delete task</button>':'')+'</article>';
+ }).join(''):'<p class="muted">No team jobs yet. The owner can create the first task.</p>';
+ list.querySelectorAll('[data-status]').forEach(sel=>sel.addEventListener('change',async()=>{
+  const {error}=await db.from('team_tasks').update({status:sel.value}).eq('id',sel.dataset.status);
+  if(error){$('dashboardStatus').textContent='Could not update task status: '+error.message;await loadTasks();return}
+  $('dashboardStatus').textContent='Task status updated.';await loadTasks();
+ }));
+ list.querySelectorAll('[data-delete-task]').forEach(b=>b.addEventListener('click',async()=>{
+  if(!confirm('Delete this team task?'))return;
+  const {error}=await db.from('team_tasks').delete().eq('id',b.dataset.deleteTask);
+  if(error){$('dashboardStatus').textContent='Could not delete task: '+error.message;return}
+  await loadTasks();
+ }));
+}
+$('refreshApplications').addEventListener('click',loadApplications);
+$('taskForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!isOwner)return;
+ const button=$('createTaskButton');button.disabled=true;
+ try{
+  const {error}=await db.from('team_tasks').insert({title:$('taskTitle').value.trim(),details:$('taskDetails').value.trim(),category:$('taskCategory').value,priority:$('taskPriority').value,assigned_to:$('taskAssignee').value||null,due_date:$('taskDue').value||null,created_by:user.id});
+  if(error)throw error;
+  $('taskForm').reset();$('taskCreateStatus').textContent='Team job created and saved.';await loadTasks();
+ }catch(err){$('taskCreateStatus').textContent='Could not create task: '+(err.message||'Try again.')}
+ finally{button.disabled=false}
+});
+async function loadLessonDrafts(){
+ const list=$('lessonDraftList');if(!db||!user)return;
+ const {data,error}=await db.from('team_lesson_drafts').select('id,title,topic,level,status,created_at').eq('author_id',user.id).order('created_at',{ascending:false}).limit(20);
+ if(error){list.textContent='Could not load drafts: '+error.message;return}
+ list.innerHTML=data?.length?data.map(d=>'<p><b>'+esc(d.title)+'</b> · '+esc(d.topic)+' · '+esc(d.level)+' · '+esc(d.status)+'</p>').join(''):'No lesson drafts yet.';
+}
+$('lessonForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!db||ownRole!=='Lesson writer or coach')return;
+ const button=$('saveLesson');button.disabled=true;
+ try{
+  const {error}=await db.from('team_lesson_drafts').insert({author_id:user.id,title:$('lessonTitle').value.trim(),topic:$('lessonTopic').value,level:$('lessonLevel').value,learning_goal:$('lessonGoal').value.trim(),lesson_text:$('lessonText').value.trim(),challenge:$('lessonChallenge').value.trim(),answer:$('lessonAnswer').value.trim(),status:'draft'});
+  if(error)throw error;
+  $('lessonForm').reset();$('lessonStatus').textContent='Lesson draft saved privately for review.';await loadLessonDrafts();
+ }catch(err){$('lessonStatus').textContent='Could not save lesson draft: '+(err.message||'Try again.')}
+ finally{button.disabled=false}
+});
+init();
+})();
+</script>
+</body></html>

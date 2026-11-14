@@ -52,7 +52,7 @@ select{background:#081321;color:white;border-color:#506781}
 const KEY='maxchess_daily_training_v1',today=new Date().toLocaleDateString('en-CA');
 const $=id=>document.getElementById(id);
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return {}}}
-let data=load();if(data.date!==today){data={date:today,missions:{},minutes:0,completed:false,streak:data.streak||0,lastCompleted:data.lastCompleted||''};save()}
+let data=load();if(data.date!==today){const d=new Date();d.setDate(d.getDate()-1);const yesterday=d.toLocaleDateString('en-CA');data={date:today,missions:{},minutes:0,completed:false,streak:data.lastCompleted===yesterday?(data.streak||0):0,lastCompleted:data.lastCompleted||''};save()}
 function save(){localStorage.setItem(KEY,JSON.stringify(data))}
 $('today').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 function paint(){const boxes=[...document.querySelectorAll('[data-mission]')];boxes.forEach(b=>b.checked=!!data.missions[b.dataset.mission]);const n=boxes.filter(b=>b.checked).length;$('done').textContent=n+' / 4';$('minutes').textContent=String(data.minutes||0);$('streak').textContent=String(data.streak||0);$('progressBar').style.width=(n/4*100)+'%';$('missionStatus').textContent=data.completed?'Plan complete! Great work. Your streak is saved.':n===4?'All missions checked. Press Finish today’s plan to record your streak.':n+' of 4 missions completed.'}

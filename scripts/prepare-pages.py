@@ -5,8 +5,8 @@ page = Path("index.html")
 html = page.read_text(encoding="utf-8")
 # HTML ends a script element at the first literal </script>, even when the
 # characters appear inside a JavaScript string/template. Escape quoted
-# occurrences so generated HTML strings cannot terminate the real script.
-pattern = re.compile(r"""(['"`])</script>\\1""", re.IGNORECASE)
+pattern = re.compile(r"""(['\"`])</script>\1""", re.IGNORECASE)
+fixed, count = pattern.subn(lambda m: m.group(1) + r"<\/script>" + m.group(1), html)
 fixed, count = pattern.subn(lambda m: m.group(1) + r"<\\/script>" + m.group(1), html)
 if count:
     page.write_text(fixed, encoding="utf-8")

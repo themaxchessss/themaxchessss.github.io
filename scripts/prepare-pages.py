@@ -30,7 +30,7 @@ for ch in inner:
         slash_run = 0
     else:
         out.append(ch)
-        slash_run = slash_run + 1 if ch == "\\\\" else 0
+        slash_run = slash_run + 1 if ch == "\\" else 0
 html = html[:content_start] + "".join(out) + html[end:]
 page.write_text(html, encoding="utf-8")
 print(f"MaxChess booklet string repair: escaped {newline_count} newline(s) and {quote_count} quote(s).")

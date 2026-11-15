@@ -15,6 +15,20 @@ button.secondary{background:#263b54;border-color:#536b86;color:white}
 select{background:#081321;color:white;border-color:#506781}
 .timer{text-align:center;font-size:clamp(3rem,12vw,5.5rem);font-weight:900;color:#f4c95d;font-variant-numeric:tabular-nums;line-height:1.1;margin:18px 0}
 .status{min-height:1.5em;color:#72caff}.progress{height:12px;border-radius:20px;background:#081321;overflow:hidden;margin:12px 0}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#e2b84f,#ffe28a);transition:width .2s}
+
+.lesson-card{background:#081321;border:1px solid #405571;border-radius:14px;padding:16px;min-width:0}
+.lesson-kicker{font-size:11px;letter-spacing:.12em;font-weight:900;color:#f4c95d}
+.lesson-card h3{margin:6px 0;color:#fff;font-size:1.15rem}
+.lesson-card p{margin:8px 0}
+.lesson-example{background:#13263b;border-left:3px solid #f4c95d;border-radius:8px;padding:11px;margin:12px 0}
+.lesson-quiz{margin-top:12px}
+.lesson-choices{display:grid;gap:8px}
+.lesson-choices button{width:100%;margin:0;text-align:left;min-height:44px}
+.lesson-choices button[aria-pressed="true"]{border-color:#f4c95d;box-shadow:0 0 0 2px #f4c95d33}
+.lesson-feedback{min-height:1.5em;margin:10px 0 0;font-weight:750}
+.lesson-feedback.is-correct{color:#8be3a4}
+.lesson-feedback.is-try-again{color:#ffd27a}
+
 @media(max-width:600px){.hero,.panel{padding:15px}.mission{padding:13px}button{min-height:44px}}
 </style>
 </head>
@@ -40,9 +54,62 @@ select{background:#081321;color:white;border-color:#506781}
 <label for="duration">Session length</label> <select id="duration"><option value="5">5 minutes</option><option value="10" selected>10 minutes</option><option value="15">15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option></select>
 <div class="timer" id="timer">10:00</div><div style="text-align:center"><button id="start">Start</button><button class="secondary" id="pause">Pause</button><button class="secondary" id="resetTimer">Reset timer</button></div><p class="status" id="timerStatus" role="status" aria-live="polite"></p>
 </section>
+
+<section class="panel" id="quickLessons">
+<h2>📘 Quick chess lessons</h2>
+<p class="muted">Three short lessons with examples and a question to try. Read the example first, then choose your answer.</p>
+<div class="grid">
+<article class="lesson-card">
+<div class="lesson-kicker">LESSON 1 · OPENING</div>
+<h3>Develop your pieces</h3>
+<p>In the opening, bring your knights and bishops into the game, fight for the center, and get your king safe by castling. Try not to move the same piece again and again without a good reason.</p>
+<div class="lesson-example"><b>Example:</b> 1. e4 e5 2. Nf3 Nc6 3. Bc4. White develops a knight and bishop. The knight attacks the e5-pawn, and the bishop looks toward f7.</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Correct! Nf3 develops the knight and attacks the pawn on e5." data-hint="Look for a knight move that brings a new piece out and attacks e5.">
+<p><b>Try it:</b> After 1. e4 e5, which move develops a knight and attacks e5?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">2. a3</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">2. Nf3</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">2. h3</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+<article class="lesson-card">
+<div class="lesson-kicker">LESSON 2 · TACTICS</div>
+<h3>Spot a knight fork</h3>
+<p>A fork is one move that attacks two or more targets at the same time. Knights are excellent fork-makers because they can jump over other pieces.</p>
+<div class="lesson-example"><b>Example:</b> Imagine a white knight on d5, a black king on c7, and a black rook on f6. The knight on d5 checks the king and also attacks the rook. That double attack is a fork.</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Yes! A fork attacks two or more targets at once. The king must answer the check, so the rook may be lost." data-hint="A fork is a double attack. A pin makes a piece unsafe to move; a fork attacks more than one target.">
+<p><b>Try it:</b> A knight checks the king while attacking a rook. What tactic is this?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">A fork</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">A pin</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Stalemate</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+<article class="lesson-card">
+<div class="lesson-kicker">LESSON 3 · CHECKMATE</div>
+<h3>Understand back-rank mate</h3>
+<p>A back-rank mate happens when a rook or queen gives check along the king's home row and the king has no safe square to escape.</p>
+<div class="lesson-example"><b>Example:</b> A black king is on g8 with its own pawns on f7, g7, and h7. A white rook on e8 checks along the eighth rank. The rook controls f8 and h8, while the black pawns block the king's way down. If no black piece can block or capture the rook, it is checkmate.</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Exactly. The king's own pawns take away its escape squares, while the rook controls the open squares on the back rank." data-hint="Look at the squares on the seventh rank: the king's own pawns are standing on them.">
+<p><b>Try it:</b> In this example, why can't the black king escape to the seventh rank?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">The rook is too far away</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">Its own pawns block those squares</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">The king is not in check</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+</div>
+</section>
+
 <section class="panel"><h2>Useful MaxChess places</h2><div class="grid">
 <div><b>♟ Puzzles</b><p class="muted">Practise tactics and calculation.</p><a href="./">Open MaxChess</a></div>
-<div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="./">Open learning center</a></div>
+<div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="#quickLessons">Jump to quick lessons</a></div>
 <div><b>🏆 Play</b><p class="muted">Put your practice into a real game.</p><a href="./">Play chess</a></div>
 </div><button class="secondary" id="export">Download my training summary</button></section>
 <footer class="muted">MaxChess is free. Progress is stored only in this browser unless you choose to download it.</footer>
@@ -66,6 +133,19 @@ $('start').addEventListener('click',()=>{if(interval)return;if(remaining<=0)rema
 $('pause').addEventListener('click',()=>{stop();$('timerStatus').textContent='Timer paused.'});
 $('resetTimer').addEventListener('click',()=>{stop();remaining=Number($('duration').value)*60;showTime();$('timerStatus').textContent='Timer reset.'});
 $('export').addEventListener('click',()=>{const report=['MaxChess Daily Training Summary','Date: '+today,'Streak: '+(data.streak||0),'Minutes trained today: '+(data.minutes||0),'Completed plan: '+(data.completed?'Yes':'Not yet'),'',...Object.entries(data.missions||{}).map(([k,v])=>k+': '+(v?'Done':'Not done'))].join('\n');const blob=new Blob([report],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='maxchess-training-summary.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+
+document.querySelectorAll('[data-lesson-quiz]').forEach(quiz=>{
+ const feedback=quiz.querySelector('[data-quiz-feedback]');
+ const options=[...quiz.querySelectorAll('[data-quiz-option]')];
+ options.forEach(option=>option.addEventListener('click',()=>{
+  const correct=option.dataset.correct==='true';
+  options.forEach(button=>button.setAttribute('aria-pressed',button===option?'true':'false'));
+  feedback.textContent=correct?quiz.dataset.success:quiz.dataset.hint;
+  feedback.classList.toggle('is-correct',correct);
+  feedback.classList.toggle('is-try-again',!correct);
+ }));
+});
+
 paint();showTime();
 })();
 </script></body></html>

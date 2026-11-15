@@ -1790,6 +1790,22 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <textarea id="teamRoleNotes" rows="4" maxlength="2000" placeholder="Write ideas, progress or questions…" style="display:block;width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel3);color:var(--strong)"></textarea>
    <p class="desc">Checkmarks, custom tasks and notes save on this device only. They are not shared with teammates or sent to the owner. Use the team idea box to copy a progress update for review.</p>
   </div>
+  <div class="puzzlebox" id="volunteerJobBoard" style="margin-top:14px;border:2px solid var(--gold,#c9a64a)">
+   <h3>🧰 MaxChess Volunteer Job Board</h3>
+   <p class="muted">Pick a small project to help MaxChess. Choose a job, add it to your role checklist, and work through it at your own pace.</p>
+   <p class="desc">Volunteer tasks are suggestions, not paid jobs or official employment. Ask the site owner or a parent/guardian before publishing, contacting anyone, changing code, or handling player reports. Never share passwords or private information.</p>
+   <div id="volunteerJobList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px">
+    <article class="puzzlebox"><h4>♟ Puzzle Creator</h4><p class="desc">Make an original fork, pin, skewer or zwischenzug puzzle. Include the solution and explanation.</p><button type="button" class="toolbtn volunteer-add" data-role="Puzzle maker" data-task="Create an original tactics puzzle (fork, pin, skewer or zwischenzug), include the correct solution and explanation, and submit it for review.">＋ Add this job</button></article>
+    <article class="puzzlebox"><h4>🔍 Puzzle Tester</h4><p class="desc">Check puzzle answers, legal moves, second moves and whether the puzzle works on mobile.</p><button type="button" class="toolbtn volunteer-add" data-role="Puzzle maker" data-task="Test a puzzle's full solution, including every required move; check legal moves and test touch controls on a phone or tablet.">＋ Add this job</button></article>
+    <article class="puzzlebox"><h4>📘 Lesson Builder</h4><p class="desc">Create a short beginner lesson with examples, questions and answers.</p><button type="button" class="toolbtn volunteer-add" data-role="Lesson writer or coach" data-task="Build a short beginner chess lesson with one learning goal, an example position, a question and a checked answer.">＋ Add this job</button></article>
+    <article class="puzzlebox"><h4>📱 iPad & Phone Tester</h4><p class="desc">Try buttons, boards and pages. Write clear steps for anything broken.</p><button type="button" class="toolbtn volunteer-add" data-role="Website tester" data-task="Test one MaxChess feature on iPad or phone; record exact steps, expected result and actual result.">＋ Add this job</button></article>
+    <article class="puzzlebox"><h4>🎨 Design Helper</h4><p class="desc">Suggest readable, friendly improvements for clocks, boards and learning pages.</p><button type="button" class="toolbtn volunteer-add" data-role="Designer" data-task="Create a design suggestion for one MaxChess page; check contrast, readability and mobile layout, then share a preview for approval.">＋ Add this job</button></article>
+    <article class="puzzlebox"><h4>✍️ Chess Writer</h4><p class="desc">Write accurate chess tips, puzzle explanations and feature guides.</p><button type="button" class="toolbtn volunteer-add" data-role="Chess content creator" data-task="Write one original chess tip or puzzle explanation; verify chess accuracy and submit the draft for review before posting.">＋ Add this job</button></article>
+    <article class="puzzlebox"><h4>🌍 Translator</h4><p class="desc">Help make instructions and lessons easier to understand in another language.</p><button type="button" class="toolbtn volunteer-add" data-role="Translator" data-task="Translate one short MaxChess instruction or lesson; keep chess terms consistent and request a fluent-speaker review.">＋ Add this job</button></article>
+    <article class="puzzlebox"><h4>🛡 Community Helper</h4><p class="desc">Suggest friendly welcomes and useful answers to common questions.</p><button type="button" class="toolbtn volunteer-add" data-role="Community helper" data-task="Draft a friendly welcome message and answers to common MaxChess questions; get owner approval before sending or posting.">＋ Add this job</button></article>
+   </div>
+   <p id="volunteerJobStatus" class="desc" role="status" aria-live="polite">Choose Add this job to put a task in your role checklist.</p>
+  </div>
   <div class="puzzlebox" style="margin-top:14px">
    <h3>Team workspace</h3>
    <ul>
@@ -2429,6 +2445,18 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
 
 
 
+ (function initVolunteerJobBoard(){
+  const board=$('volunteerJobBoard');if(!board||board.dataset.ready==='1')return;board.dataset.ready='1';
+  board.querySelectorAll('.volunteer-add').forEach(button=>button.addEventListener('click',()=>{
+   const role=button.dataset.role,task=button.dataset.task;if(!role||!task)return;
+   const key='maxchess_team_'+(authUser?.id||'user')+'_'+role.replace(/[^a-z0-9]/gi,'_')+'_custom';
+   let items=[];try{items=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(items))items=[];}catch(_e){items=[];}
+   if(items.includes(task)){$('volunteerJobStatus').textContent='That task is already in your '+role+' checklist.';return;}
+   items.push(task);try{localStorage.setItem(key,JSON.stringify(items));}catch(_e){}
+   if(typeof renderTeamRoleWorkspace==='function')renderTeamRoleWorkspace(role);
+   $('volunteerJobStatus').textContent='Added to your '+role+' checklist. Open that role workspace to start it.';
+  }));
+ })();
  function renderTeamRoleWorkspace(role){
   const host=$('teamRoleTasks');if(!host)return;
   const sets={

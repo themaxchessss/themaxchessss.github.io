@@ -1584,6 +1584,22 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
   <h2>⏱ MaxChess Clock Room</h2>
   <p class="muted">Explore the clock appearances available in MaxChess. Choose one to use it in your games. The custom MaxChess skins are original designs; manufacturer names are used only for the corresponding model-inspired options.</p>
   <div class="puzzlebox" style="margin:14px 0"><h3>♟ 3D boards and pieces</h3><p class="muted">Open Play Chess to switch on the raised 3D board and choose glossy, marble or metallic 3D piece finishes. Your choices are saved on this device.</p><button class="greenbtn" type="button" onclick="document.querySelector('[data-page=play]').click()">Try the 3D chessboard</button></div>
+  <div class="puzzlebox" id="clockRoomLab" style="margin:14px 0;border:2px solid var(--gold,#c9a64a)">
+   <h3>⏱ Clock Room · Live test bench</h3>
+   <p class="muted">Try a real two-sided countdown before choosing a clock style. This practice timer does not affect a chess game.</p>
+   <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0">
+    <button type="button" id="clockRoomWhite" class="clock" style="min-width:0;font-size:clamp(25px,6vw,42px);padding:18px 8px" aria-label="White practice clock">05:00</button>
+    <button type="button" id="clockRoomBlack" class="clock" style="min-width:0;font-size:clamp(25px,6vw,42px);padding:18px 8px" aria-label="Black practice clock">05:00</button>
+   </div>
+   <p id="clockRoomTurn" class="desc" role="status" aria-live="polite">Ready · White to move</p>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <label for="clockRoomPreset">Starting time</label><select id="clockRoomPreset" class="toolbtn"><option value="60">1 minute</option><option value="180">3 minutes</option><option value="300" selected>5 minutes</option><option value="600">10 minutes</option><option value="900">15 minutes</option></select>
+    <button type="button" class="greenbtn" id="clockRoomStart">▶ Start</button>
+    <button type="button" class="toolbtn" id="clockRoomPause">Ⅱ Pause</button>
+    <button type="button" class="toolbtn" id="clockRoomReset">↻ Reset</button>
+   </div>
+   <p class="desc">Tap the active side's clock to switch turns. Start, pause and reset are safe to test here.</p>
+  </div>
   <div class="puzzlebox" style="margin:16px 0">
    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between">
     <div><b id="clockGalleryCount">Clock collection</b><p class="muted" style="margin:4px 0 0">Tap any clock to select its appearance.</p></div>
@@ -1772,7 +1788,7 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
    <div id="teamRoleTasks"></div>
    <label for="teamRoleNotes" style="display:block;margin-top:14px">My work notes</label>
    <textarea id="teamRoleNotes" rows="4" maxlength="2000" placeholder="Write ideas, progress or questions…" style="display:block;width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel3);color:var(--strong)"></textarea>
-   <p class="desc">Checkmarks and notes save only in this browser on this device. They are not sent to the owner or shared with other team members.</p>
+   <p class="desc">Checkmarks, custom tasks and notes save on this device only. They are not shared with teammates or sent to the owner. Use the team idea box to copy a progress update for review.</p>
   </div>
   <div class="puzzlebox" style="margin-top:14px">
    <h3>Team workspace</h3>
@@ -2440,9 +2456,23 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   };
   const tasks=sets[role]||['Read the team guidelines.','Choose one useful MaxChess improvement.','Write a clear plan for the owner.','Wait for approval before publishing or contacting players.'];
   const key='maxchess_team_'+(authUser?.id||'user')+'_'+role.replace(/[^a-z0-9]/gi,'_');
-  let done={};try{done=JSON.parse(localStorage.getItem(key)||'{}')||{};}catch(_e){}
-  host.replaceChildren();const intro=document.createElement('p');intro.className='muted';intro.textContent='Starter tasks for '+role;host.appendChild(intro);
-  tasks.forEach((task,i)=>{const label=document.createElement('label');label.style.cssText='display:flex;gap:10px;align-items:flex-start;margin:10px 0;line-height:1.4';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!done[i];cb.style.cssText='width:20px;height:20px;flex:0 0 20px;margin-top:1px';const span=document.createElement('span');span.textContent=task;cb.addEventListener('change',()=>{done[i]=cb.checked;try{localStorage.setItem(key,JSON.stringify(done));}catch(_e){}});label.append(cb,span);host.appendChild(label);});
+  let done={},custom=[];try{done=JSON.parse(localStorage.getItem(key)||'{}')||{};custom=JSON.parse(localStorage.getItem(key+'_custom')||'[]')||[];if(!Array.isArray(custom))custom=[];}catch(_e){}
+  host.replaceChildren();
+  const intro=document.createElement('p');intro.className='muted';intro.textContent='Your '+role+' checklist · Saved on this device';host.appendChild(intro);
+  const progress=document.createElement('div');progress.style.cssText='height:10px;border-radius:99px;background:var(--panel2);overflow:hidden;margin:8px 0';
+  const fill=document.createElement('div');fill.style.cssText='height:100%;width:0;background:linear-gradient(90deg,#d5a63a,#ff8a00);transition:width .2s';progress.appendChild(fill);host.appendChild(progress);
+  const count=document.createElement('p');count.className='desc';count.setAttribute('aria-live','polite');host.appendChild(count);
+  const list=document.createElement('div');host.appendChild(list);
+  const all=[...tasks,...custom];
+  function paintProgress(){const completed=all.reduce((n,_t,i)=>n+(done[i]?1:0),0);count.textContent=completed+' of '+all.length+' tasks complete';fill.style.width=(all.length?completed/all.length*100:0)+'%';}
+  all.forEach((task,i)=>{const label=document.createElement('label');label.style.cssText='display:flex;gap:10px;align-items:flex-start;margin:10px 0;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);line-height:1.4';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!done[i];cb.style.cssText='width:21px;height:21px;flex:0 0 21px;margin-top:1px';const span=document.createElement('span');span.textContent=task;span.style.flex='1';cb.addEventListener('change',()=>{done[i]=cb.checked;try{localStorage.setItem(key,JSON.stringify(done));}catch(_e){}paintProgress();});label.append(cb,span);list.appendChild(label);});
+  const addRow=document.createElement('div');addRow.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin-top:12px';
+  const addInput=document.createElement('input');addInput.type='text';addInput.maxLength=140;addInput.placeholder='Add a task for this role…';addInput.setAttribute('aria-label','New workspace task');addInput.style.cssText='flex:1;min-width:180px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--panel3);color:var(--strong)';
+  const addButton=document.createElement('button');addButton.type='button';addButton.className='toolbtn';addButton.textContent='＋ Add task';
+  addButton.addEventListener('click',()=>{const value=addInput.value.trim();if(!value)return;custom.push(value);try{localStorage.setItem(key+'_custom',JSON.stringify(custom));}catch(_e){}renderTeamRoleWorkspace(role);});
+  addInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addButton.click()}});
+  const resetButton=document.createElement('button');resetButton.type='button';resetButton.className='toolbtn';resetButton.textContent='Reset checklist';resetButton.addEventListener('click',()=>{if(!confirm('Reset all checkmarks for this role? Your notes and custom tasks will stay.'))return;done={};try{localStorage.setItem(key,'{}')}catch(_e){}renderTeamRoleWorkspace(role);});
+  addRow.append(addInput,addButton,resetButton);host.appendChild(addRow);paintProgress();
   const notes=$('teamRoleNotes'),nk=key+'_notes';if(notes){try{notes.value=localStorage.getItem(nk)||'';}catch(_e){}notes.oninput=()=>{try{localStorage.setItem(nk,notes.value);}catch(_e){}};}
  }
 
@@ -2831,7 +2861,7 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   const role=$('ownerTeamRoleSelect').value;
   renderTeamRoleWorkspace(role);
   $('teamHubRole').textContent='Owner · '+role;
-  $('ownerControlStatus').textContent='Opened '+role+' workspace. Notes and checkmarks are saved locally on this device.';
+  $('ownerControlStatus').textContent='Opened '+role+' workspace. Notes, checkmarks and custom tasks are saved locally on this device.';
  });
  $('ownerToggleStudyCreator')?.addEventListener('click',()=>{
   if(authUser?.id!==MAXCHESS_OWNER_USER_ID)return;
@@ -3232,6 +3262,28 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
   $('clockGallerySearch').addEventListener('input',e=>draw(e.target.value));
  }
  buildClockGallery();
+ (function initClockRoomLab(){
+  const white=$('clockRoomWhite'),black=$('clockRoomBlack'),turn=$('clockRoomTurn'),preset=$('clockRoomPreset'),start=$('clockRoomStart'),pause=$('clockRoomPause'),reset=$('clockRoomReset');
+  if(!white||!black||!turn||!preset||!start||!pause||!reset)return;
+  let base=Number(preset.value)||300,remaining={w:base,b:base},active='w',running=false,last=0,interval=null;
+  const format=n=>{n=Math.max(0,Math.ceil(n));return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')};
+  function paint(){
+   white.textContent=format(remaining.w);black.textContent=format(remaining.b);
+   white.style.outline=active==='w'?'3px solid var(--gold,#d5a63a)':'none';black.style.outline=active==='b'?'3px solid var(--gold,#d5a63a)':'none';
+   white.setAttribute('aria-pressed',String(active==='w'));black.setAttribute('aria-pressed',String(active==='b'));
+   turn.textContent=remaining.w<=0?'White flag fell · Reset to try again':remaining.b<=0?'Black flag fell · Reset to try again':(running?'Running':'Paused')+' · '+(active==='w'?'White':'Black')+' to move';
+   start.disabled=running||remaining.w<=0||remaining.b<=0;pause.disabled=!running;
+  }
+  function tick(){if(!running)return;const now=Date.now();const elapsed=(now-last)/1000;last=now;remaining[active]=Math.max(0,remaining[active]-elapsed);if(remaining[active]<=0){running=false;clearInterval(interval);interval=null}paint()}
+  function stop(){running=false;if(interval){clearInterval(interval);interval=null}paint()}
+  function begin(){if(remaining.w<=0||remaining.b<=0)return;if(!running){running=true;last=Date.now();interval=setInterval(tick,100);paint()}}
+  function switchSide(side){if(side!==active||remaining[side]<=0||!running)return;tick();if(!running)return;active=active==='w'?'b':'w';last=Date.now();paint()}
+  white.addEventListener('click',()=>switchSide('w'));black.addEventListener('click',()=>switchSide('b'));
+  start.addEventListener('click',begin);pause.addEventListener('click',stop);
+  reset.addEventListener('click',()=>{stop();base=Number(preset.value)||300;remaining={w:base,b:base};active='w';paint()});
+  preset.addEventListener('change',()=>{stop();base=Number(preset.value)||300;remaining={w:base,b:base};active='w';paint()});
+  paint();
+ })();
  async function saveOnlinePosition(move,expectedFen){
   if(!authClient||!onlineGameId||!move)return;
   const {data,error}=await authClient.functions.invoke('maxchess-move',{body:{game_id:onlineGameId,from:move.from,to:move.to,promotion:move.promotion||null,expected_fen:expectedFen}});

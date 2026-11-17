@@ -154,7 +154,7 @@ jobs:
                 problems.push(`Could not verify internal link ${url}: ${error.message}`);
               }
             }
-            await requestContext.dispose();
+            await requestContext.close();
             await browser.close();
 
             if (problems.length) {

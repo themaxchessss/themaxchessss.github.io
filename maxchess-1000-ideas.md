@@ -3,6 +3,8 @@
 A searchable-by-heading planning library of possible additions. These are ideas, not claims that the features already exist. Keep MaxChess free; prioritize reliability, privacy, accessibility, and useful chess features.
 
 
+> Want the prioritized shortlist? Open the [Best 100 MaxChess ideas](./maxchess-top-100.html) first.
+
 ## 1. Swiss Tournament Tools
 
 1. **Swiss Tournament Tools — quick-start setup wizard.** Make the workflow faster while keeping the rules and status visible. Include clear round state, result confirmation, and a printable view where appropriate.

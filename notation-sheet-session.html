@@ -196,7 +196,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='maxchess-'+type.value+'-notation.txt';a.click();URL.revokeObjectURL(url);$('status').textContent='Session exported as a text file.';
  }
- type.addEventListener('change',render);
+ type.addEventListener('change',()=>{render();$('status').textContent='Switched sheet. Each format keeps its own saved draft on this device.';});
+ $('printArea').addEventListener('input',save);
+ $('sessionName').addEventListener('input',save);
  $('saveSheet').addEventListener('click',save);
  $('printSheet').addEventListener('click',()=>{save();window.print()});
  $('downloadSheet').addEventListener('click',exportText);

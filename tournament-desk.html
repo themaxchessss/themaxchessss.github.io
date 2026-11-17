@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090d16"><title>MaxChess Tournament Desk</title>
+<style>
+:root{color-scheme:dark;--gold:#f4c95d;--blue:#39a9ff;--line:#405571;--muted:#b9c5d6;--panel:#132238}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#1c3657,#080d16 66%);color:#f7f8fb;font:16px/1.5 system-ui,sans-serif}
+main{width:min(1080px,94vw);margin:auto;padding:22px 0 60px}a{color:var(--gold);text-decoration:none}h1{font-size:clamp(2.1rem,7vw,3.8rem);line-height:1.02;color:var(--gold);margin:.2em 0}.muted,small{color:var(--muted)}
+.hero,.panel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#203651,#111d2e 58%,#0a1320);padding:18px;margin:14px 0;box-shadow:0 16px 35px #0006}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.metric{background:#081321;border:1px solid var(--line);border-radius:13px;padding:12px}.metric b{display:block;font-size:1.8rem;color:var(--gold)}
+label{display:block;font-weight:750;margin:10px 0 5px}input,select{width:100%;min-width:0;padding:12px;border:1px solid #506781;border-radius:10px;background:#081321;color:#fff;font:inherit}
+button{font:inherit;border-radius:10px;padding:11px 14px;border:1px solid #8b7136;background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;font-weight:850;cursor:pointer;margin:6px 6px 0 0}
+button.secondary{background:#263b54;border-color:#536b86;color:white}button:disabled{opacity:.45;cursor:not-allowed}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #405571;vertical-align:middle}th{color:var(--gold);font-size:.9rem}
+.table-wrap{overflow-x:auto}.pairing{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;background:#081321;border:1px solid var(--line);padding:12px;border-radius:12px;margin:9px 0}.player{text-align:center;overflow-wrap:anywhere}.vs{color:var(--gold);font-weight:900}.result{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}.result button{font-size:.85rem;padding:8px}
+.notice{padding:12px;border-left:4px solid var(--blue);background:#081321;border-radius:8px;color:#dbe8f7}.empty{color:var(--muted);padding:14px;text-align:center;border:1px dashed #506781;border-radius:12px}
+@media(max-width:560px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.metric{padding:9px}.metric b{font-size:1.35rem}.pairing{gap:5px;padding:9px}.pairing button{padding:7px 8px;font-size:.78rem}th,td{padding:8px 5px;font-size:.9rem}}
+@media print{body{background:white;color:#111}.hero,.panel,.metric,.pairing{background:white;color:#111;box-shadow:none;border:1px solid #aaa}h1,th,.metric b{color:#111}.muted,small{color:#444}button,.no-print{display:none!important}main{width:100%;padding:0}.pairing{break-inside:avoid}}
+</style>
+</head>
+<body><main>
+<header class="hero">
+<a href="./training-planner.html">← MaxChess Learn</a>
+<p class="muted">FREE TOURNAMENT ORGANIZER · SAVED ON THIS DEVICE</p>
+<h1>🏆 Tournament Desk</h1>
+<p>Run a small chess event from one place: enter players, make practice Swiss-style pairings, record results, and follow the standings.</p>
+<div class="notice">This is an offline organizer, not an official US Chess or FIDE pairing/rating system. Data stays in this browser on this device. Export a backup before clearing browser data.</div>
+</header>
+<section class="panel">
+<h2>1. Event setup</h2><div class="grid">
+<div><label for="eventName">Tournament name</label><input id="eventName" maxlength="70" placeholder="Saturday MaxChess Open"></div>
+<div><label for="timeControl">Time control</label><select id="timeControl"><option>10 + 0 Rapid</option><option>15 + 10 Rapid</option><option>5 + 0 Blitz</option><option>3 + 2 Blitz</option><option>30 + 0 Classical</option><option>Custom / over-the-board</option></select></div>
+<div><label for="roundLimit">Planned rounds</label><select id="roundLimit"><option>3</option><option selected>5</option><option>6</option><option>7</option><option>9</option></select></div>
+</div><button id="saveSettings" class="secondary">Save event settings</button><span id="settingsStatus" class="muted" role="status"></span>
+</section>
+<section class="panel">
+<h2>2. Player check-in</h2><div class="grid">
+<div><label for="playerName">Player name</label><input id="playerName" maxlength="45" placeholder="Enter player name"></div>
+<div><label for="playerRating">Optional rating / seed</label><input id="playerRating" type="number" min="0" max="4000" placeholder="e.g. 850"></div>
+</div><button id="addPlayer">＋ Add player</button>
+<div class="metrics"><div class="metric"><b id="playerCount">0</b><small>Players</small></div><div class="metric"><b id="roundCount">0</b><small>Rounds made</small></div><div class="metric"><b id="eventStatus">Setup</b><small>Event status</small></div></div>
+<div id="playersList"></div>
+</section>
+<section class="panel">
+<h2>3. Round control</h2><p class="muted">Pairings sort by score, then seed. The generator tries to avoid repeat opponents. If the field is odd, one player receives a bye worth 1 point. Review pairings before starting the round.</p>
+<button id="makeRound">Make next round pairings</button><button id="print" class="secondary">Print pairings / standings</button><button id="export" class="secondary">Export tournament backup</button><button id="reset" class="secondary">Reset event</button>
+<div id="roundsArea"><div class="empty">Add at least two players to make your first round.</div></div>
+</section>
+<section class="panel">
+<h2>4. Live standings</h2><p class="muted">Points: win 1, draw ½, loss 0, bye 1. Buchholz is the sum of each player's opponents' current scores.</p>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Player</th><th>Pts</th><th>Buchholz</th><th>Seed</th><th>W-D-L</th></tr></thead><tbody id="standings"><tr><td colspan="6">Standings appear after players are added.</td></tr></tbody></table></div>
+</section>
+<footer class="muted">MaxChess Tournament Desk · Free forever · Local browser storage · Not an official rating submission service</footer>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id),KEY='maxchess-tournament-desk-v1';
+const fresh=()=>({name:'MaxChess Friendly Tournament',time:'10 + 0 Rapid',roundLimit:5,players:[],rounds:[]});
+let data=fresh();
+function load(){try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Array.isArray(saved.players)&&Array.isArray(saved.rounds))data={...fresh(),...saved}}catch(e){$('settingsStatus').textContent='Saved data could not be read; a fresh event was opened.'}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));return true}catch(e){$('settingsStatus').textContent='Could not save: device storage may be full or disabled.';return false}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function points(p){return data.rounds.reduce((n,r)=>n+(r.pairs.find(x=>x.white===p.id)?.result==='1-0'?1:r.pairs.find(x=>x.white===p.id)?.result==='½-½'?.5:0)+(r.pairs.find(x=>x.black===p.id)?.result==='0-1'?1:r.pairs.find(x=>x.black===p.id)?.result==='½-½'?.5:0)+(r.bye===p.id?1:0),0)}
+function opponents(p){const a=[];for(const r of data.rounds)for(const m of r.pairs)if(m.white===p.id)a.push(m.black);else if(m.black===p.id)a.push(m.white);return a}
+function buchholz(p){return opponents(p).reduce((n,id)=>n+(data.players.find(x=>x.id===id)?points(data.players.find(x=>x.id===id)):0),0)}
+function record(p){let w=0,d=0,l=0;for(const r of data.rounds){for(const m of r.pairs){if(m.white===p.id||m.black===p.id){if(m.result==='½-½')d++;else if((m.white===p.id&&m.result==='1-0')||(m.black===p.id&&m.result==='0-1'))w++;else if(m.result)l++}}}return w+'-'+d+'-'+l}
+function sorted(){return [...data.players].sort((a,b)=>points(b)-points(a)||buchholz(b)-buchholz(a)||b.rating-a.rating||a.name.localeCompare(b.name))}
+function paint(){
+$('eventName').value=data.name;$('timeControl').value=data.time;$('roundLimit').value=String(data.roundLimit);
+$('playerCount').textContent=data.players.length;$('roundCount').textContent=data.rounds.length;$('eventStatus').textContent=data.rounds.length?'Live':'Setup';
+$('playersList').innerHTML=data.players.length?'<div class="table-wrap"><table><thead><tr><th>Player</th><th>Seed</th><th class="no-print">Action</th></tr></thead><tbody>'+data.players.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+p.rating+'</td><td class="no-print"><button class="secondary" data-remove="'+p.id+'">Remove</button></td></tr>').join('')+'</tbody></table></div>':'<div class="empty">No players checked in yet.</div>';
+$('standings').innerHTML=sorted().map((p,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(p.name)+'</td><td>'+points(p).toFixed(1)+'</td><td>'+buchholz(p).toFixed(1)+'</td><td>'+p.rating+'</td><td>'+record(p)+'</td></tr>').join('')||'<tr><td colspan="6">Standings appear after players are added.</td></tr>';
+$('roundsArea').innerHTML=data.rounds.map((r,i)=>'<h3>Round '+(i+1)+(r.bye?' · Bye: '+esc(data.players.find(p=>p.id===r.bye)?.name||'Player'):'')+'</h3>'+r.pairs.map((m,j)=>'<div class="pairing"><div class="player">'+esc(data.players.find(p=>p.id===m.white)?.name||'Removed player')+' <small>(White)</small></div><div class="vs">VS</div><div class="player">'+esc(data.players.find(p=>p.id===m.black)?.name||'Removed player')+' <small>(Black)</small></div><div class="result" style="grid-column:1/-1"><button data-result="'+i+','+j+',1-0">1–0</button><button data-result="'+i+','+j+',½-½">½–½</button><button data-result="'+i+','+j+',0-1">0–1</button><button class="secondary" data-result="'+i+','+j+',pending">Pending</button><b>'+ (m.result||'Pending')+'</b></div></div>').join('')||'<div class="empty">Bye round — no opponent.</div>').join('')||'<div class="empty">Add at least two players to make your first round.</div>';
+$('makeRound').disabled=data.players.length<2||data.rounds.length>=Number(data.roundLimit)||data.rounds.some(r=>r.pairs.some(p=>!p.result));
+}
+function pairRound(){
+let pool=sorted(),bye=null;if(pool.length%2){const byeCandidates=[...pool].reverse().filter(p=>!data.rounds.some(r=>r.bye===p.id));bye=byeCandidates[0]||pool[pool.length-1];pool=pool.filter(p=>p.id!==bye.id)}
+const pairs=[];while(pool.length){const a=pool.shift();let idx=pool.findIndex(b=>!opponents(a).includes(b.id));if(idx<0)idx=0;const b=pool.splice(idx,1)[0];pairs.push({white:a.id,black:b.id,result:''})}
+data.rounds.push({pairs,bye:bye?.id||null});save();paint();
+}
+$('saveSettings').onclick=()=>{data.name=$('eventName').value.trim()||'MaxChess Tournament';data.time=$('timeControl').value;data.roundLimit=Number($('roundLimit').value);save();$('settingsStatus').textContent='Event settings saved.';paint()};
+$('addPlayer').onclick=()=>{const name=$('playerName').value.trim(),rating=Number($('playerRating').value)||0;if(!name){$('playerName').focus();return}if(data.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){$('settingsStatus').textContent='That player is already on the list.';return}if(data.rounds.length){$('settingsStatus').textContent='Check-in is closed after round one. Reset the event to change the player list.';return}data.players.push({id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name,rating:Math.max(0,Math.min(4000,rating))});$('playerName').value='';$('playerRating').value='';save();paint()};
+$('playersList').onclick=e=>{const b=e.target.closest('[data-remove]');if(!b||data.rounds.length)return;data.players=data.players.filter(p=>p.id!==b.dataset.remove);save();paint()};
+$('makeRound').onclick=()=>{if(data.players.length<2)return;if(data.rounds.length>=Number(data.roundLimit))return;if(data.rounds.some(r=>r.pairs.some(p=>!p.result))){$('settingsStatus').textContent='Enter every result before making the next round.';return}pairRound()};
+$('roundsArea').onclick=e=>{const b=e.target.closest('[data-result]');if(!b)return;const [ri,mi,result]=b.dataset.result.split(',');data.rounds[Number(ri)].pairs[Number(mi)].result=result==='pending'?'':result;save();paint()};
+$('print').onclick=()=>window.print();
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='maxchess-tournament-backup.json';a.click();URL.revokeObjectURL(url)};
+$('reset').onclick=()=>{if(confirm('Reset this tournament and erase its saved players, rounds and results on this device?')){data=fresh();save();paint()}};
+load();paint();
+})();
+</script></body></html>

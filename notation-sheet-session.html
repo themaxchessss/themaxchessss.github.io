@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090d16">
+<title>MaxChess Notation Studio</title>
+<style>
+:root{color-scheme:dark;--gold:#f4c95d;--blue:#39a9ff;--line:#405571;--muted:#b9c5d6}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% 0,#203956,#080d16 68%);color:#f5f7fb;font:16px/1.5 system-ui,sans-serif}
+main{width:min(1120px,94vw);margin:auto;padding:22px 0 56px}
+a{color:var(--gold);text-decoration:none}
+h1{font-size:clamp(2.2rem,7vw,4rem);line-height:1.03;color:var(--gold);margin:.2em 0}
+h2{color:var(--gold);margin:.2em 0 .6em}
+.muted{color:var(--muted)}
+.hero,.panel{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#203651,#111d2e 58%,#0a1320);padding:20px;margin:14px 0;box-shadow:0 16px 35px #0006}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+label{display:block;font-weight:800;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #506781;border-radius:10px;background:#081321;color:#fff;font:inherit;min-width:0}
+textarea{min-height:76px;resize:vertical}
+button,.button{font:inherit;font-weight:850;border-radius:10px;padding:11px 15px;border:1px solid #6e5c30;background:#f4c95d;color:#15120b;cursor:pointer;margin:6px 6px 0 0;min-height:44px}
+button.secondary{background:#263b54;border-color:#536b86;color:white}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.status{min-height:1.5em;color:#8bd2ff}
+.sheet{background:#fff;color:#15191f;border-radius:12px;padding:22px;overflow-x:auto}
+.sheet h2,.sheet h3{color:#17283a}
+.sheet .sheet-brand{font-size:.75rem;letter-spacing:.18em;font-weight:950;color:#8c681b}
+.sheet input,.sheet textarea{background:#fff;color:#15191f;border:1px solid #9aa5b2;border-radius:4px;padding:7px}
+.sheet label{color:#344255;font-size:.82rem;margin-top:7px}
+.sheet .meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.sheet table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem}
+.sheet th,.sheet td{border:1px solid #aab2bd;padding:6px;text-align:left;vertical-align:top}
+.sheet th{background:#edf1f5;color:#26384d}
+.sheet td input{border:0;width:100%;min-width:50px;padding:4px;background:transparent}
+.sheet .notes{min-height:74px}
+.sheet .symbol{display:inline-block;border:1px solid #aab2bd;border-radius:5px;padding:3px 7px;margin:3px;font-weight:800}
+.sheet .rownum{width:40px;text-align:center;color:#6b7280}
+.sheet .smallprint{font-size:.8rem;color:#4b5563}
+.sheet .wide{grid-column:1/-1}
+.template-description{border-left:3px solid var(--gold);padding:8px 12px;background:#081321;border-radius:6px}
+@media(max-width:650px){.hero,.panel{padding:15px}.sheet{padding:13px}.sheet .meta{grid-template-columns:1fr 1fr}.sheet table{font-size:.8rem}.sheet th,.sheet td{padding:4px}}
+@media print{
+ @page{size:landscape;margin:10mm}
+ body{background:#fff;color:#111}
+ main{width:100%;padding:0}
+ nav,.hero,.controls,.legend-panel,.session-help,.actions,.status{display:none!important}
+ .panel{border:0;background:#fff;box-shadow:none;padding:0;margin:0}
+ .sheet{border:0;border-radius:0;padding:0;overflow:visible}
+ .sheet input,.sheet textarea{color:#111!important;background:transparent!important}
+ .sheet input::placeholder,.sheet textarea::placeholder{color:#777}
+ .sheet table{break-inside:avoid}
+}
+</style>
+</head>
+<body><main>
+<nav><a href="./">← Back to MaxChess</a> · <a href="training-planner.html">Daily Training Planner</a></nav>
+<header class="hero">
+ <div class="muted">A MAXCHESS ORIGINAL · FREE PRINTABLE CHESS FORMS</div>
+ <h1>♛ MaxChess Notation Studio</h1>
+ <p class="muted">One session, several purpose-built notation sheets. Choose a format, fill it in, save it on this device, or print a clean copy. Designed for MaxChess players and learners.</p>
+</header>
+<section class="panel controls">
+ <h2>Choose your notation sheet</h2>
+ <div class="grid">
+  <div><label for="sheetType">Sheet style</label><select id="sheetType">
+   <option value="classic">Classic Game Scoresheet</option>
+   <option value="rapid">Rapid & Blitz Scoresheet</option>
+   <option value="lesson">Lesson & Game Analysis</option>
+   <option value="puzzle">Puzzle Solver Worksheet</option>
+   <option value="tournament">Tournament Round Record</option>
+   <option value="opening">Opening Explorer</option>
+  </select></div>
+  <div><label for="sessionName">Session name</label><input id="sessionName" maxlength="70" placeholder="e.g. Saturday chess club"></div>
+ </div>
+ <p id="sheetDescription" class="template-description muted" aria-live="polite"></p>
+ <div class="actions">
+  <button id="printSheet" type="button">Print this sheet</button>
+  <button id="downloadSheet" type="button" class="secondary">Export session (.txt)</button>
+  <button id="saveSheet" type="button" class="secondary">Save on this device</button>
+  <button id="clearSheet" type="button" class="secondary">Clear this sheet</button>
+ </div>
+ <p id="status" class="status" role="status" aria-live="polite">Your work stays in this browser unless you export it.</p>
+</section>
+<section class="panel">
+ <div class="sheet" id="printArea">
+  <div class="sheet-brand">♛ MAXCHESS · ORIGINAL NOTATION SERIES</div>
+  <h2 id="formTitle">Classic Game Scoresheet</h2>
+  <p id="formSubtitle" class="smallprint">Record a complete game move by move.</p>
+  <div class="meta">
+   <div><label for="whiteName">White</label><input id="whiteName" placeholder="White player"></div>
+   <div><label for="blackName">Black</label><input id="blackName" placeholder="Black player"></div>
+   <div><label for="playedDate">Date</label><input id="playedDate" type="date"></div>
+   <div><label for="eventName">Event / location</label><input id="eventName" placeholder="Club, event or online"></div>
+   <div><label for="timeControl">Time control</label><input id="timeControl" placeholder="10 + 5, 30 min, etc."></div>
+   <div><label for="result">Result</label><select id="result"><option value="">Choose result</option><option>1-0 White wins</option><option>0-1 Black wins</option><option>½-½ Draw</option><option>Unfinished</option></select></div>
+   <div id="extraFields" class="wide"></div>
+  </div>
+  <div id="tableArea"></div>
+  <div class="grid">
+   <div><label for="sessionNotes">Notes / key moments</label><textarea id="sessionNotes" class="notes" placeholder="What was the turning point? What did you learn?"></textarea></div>
+   <div><label for="nextGoal">Next practice goal</label><textarea id="nextGoal" class="notes" placeholder="One thing to practise next time"></textarea></div>
+  </div>
+  <div class="smallprint">MaxChess notation reminder: write moves in algebraic notation (SAN). Example: 1. e4 e5 2. Nf3 Nc6.</div>
+ </div>
+</section>
+<section class="panel legend-panel">
+ <h2>MaxChess notation key</h2>
+ <p class="muted">Use this quick reference with every sheet. These are standard chess notation marks, arranged in the MaxChess reference style.</p>
+ <div class="grid">
+  <div><b>Piece letters</b><p><span class="symbol">K</span> King <span class="symbol">Q</span> Queen <span class="symbol">R</span> Rook <span class="symbol">B</span> Bishop <span class="symbol">N</span> Knight. Pawns have no letter.</p></div>
+  <div><b>Moves & outcomes</b><p><span class="symbol">x</span> capture <span class="symbol">+</span> check <span class="symbol">#</span> checkmate <span class="symbol">=Q</span> promotion to queen.</p></div>
+  <div><b>Special moves</b><p><span class="symbol">O-O</span> kingside castle <span class="symbol">O-O-O</span> queenside castle <span class="symbol">e.p.</span> en passant.</p></div>
+  <div><b>Move annotations</b><p><span class="symbol">!</span> good <span class="symbol">!!</span> brilliant <span class="symbol">?</span> mistake <span class="symbol">??</span> blunder <span class="symbol">!?</span> interesting <span class="symbol">?!</span> dubious.</p></div>
+ </div>
+ <p class="smallprint">Examples: Nf3 = knight to f3 · exd5 = e-pawn captures on d5 · Raxd1 = rook from the a-file captures on d1 · Qh7# = queen delivers checkmate.</p>
+</section>
+<section class="panel session-help">
+ <h2>How a notation session works</h2>
+ <ol>
+  <li>Pick the sheet that matches what you are doing.</li>
+  <li>Fill in the player and session details.</li>
+  <li>Enter moves or analysis in the rows. You can switch sheet styles whenever you need another form.</li>
+  <li>Save locally, export a text copy, or print the sheet.</li>
+ </ol>
+ <p class="muted">Privacy note: this page stores drafts only in this browser's local storage. It does not upload games or create an account.</p>
+</section>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);
+ const type=$('sheetType');
+ const descriptions={
+  classic:['Classic Game Scoresheet','A roomy two-column move record for a full game. Write White and Black moves in algebraic notation.','Move number · White move · Black move'],
+  rapid:['Rapid & Blitz Scoresheet','A compact record for fast games, with clock checkpoints and a quick result review.','Move number · White move · White time · Black move · Black time'],
+  lesson:['Lesson & Game Analysis Sheet','Record candidate moves, what you considered, the move played, and the lesson from the position.','Position / move · Candidate line · Played move · What I learned'],
+  puzzle:['Puzzle Solver Worksheet','Work through a tactic without rushing: identify the theme, candidate moves, opponent reply and final solution.','Step · Side to move · Candidate · Best move · Why it works'],
+  tournament:['Tournament Round Record','Keep a round-by-round record with opponent, colour, result, opening and post-game reflection.','Round · Opponent · Colour · Opening · Result · Notes'],
+  opening:['Opening Explorer Sheet','Build an opening tree with move order, variation name, plans and common traps to remember.','Move number · White · Black · Variation / plan']
+ };
+ const common=['whiteName','blackName','playedDate','eventName','timeControl','result','sessionName','sessionNotes','nextGoal'];
+ const labels={
+  classic:['Move','White','Black'],
+  rapid:['Move','White move','White clock','Black move','Black clock'],
+  lesson:['Position / move','Candidate line','Move played','Why / evaluation'],
+  puzzle:['Step','Side to move','Candidate move','Best move','Why it works'],
+  tournament:['Round','Opponent','Colour','Opening','Result / notes'],
+  opening:['Move','White','Black','Variation / plan']
+ };
+ function makeRows(kind){
+  const count=kind==='lesson'?12:kind==='puzzle'?8:kind==='tournament'?10:kind==='opening'?20:30;
+  const heads=labels[kind];
+  let html='<table><thead><tr>'+heads.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>';
+  for(let i=1;i<=count;i++){
+   html+='<tr>'+heads.map((h,j)=>{
+    const value=j===0?String(i):'';
+    const placeholder=j===0?(kind==='lesson'?'e.g. 12...':kind==='puzzle'?'1':''):h;
+    return '<td>'+(j===0?'<span class="rownum">'+i+'</span>':'')+(j===0&&kind!=='lesson'&&kind!=='puzzle'&&kind!=='tournament'&&kind!=='opening'?'':'<input aria-label="'+h+' row '+i+'" data-row="'+i+'" data-col="'+j+'" placeholder="'+placeholder+'">')+'</td>';
+   }).join('')+'</tr>';
+  }
+  return html+'</tbody></table>';
+ }
+ function extra(kind){
+  if(kind==='lesson')return '<label for="lessonFocus">Lesson focus</label><input id="lessonFocus" placeholder="e.g. candidate moves, king safety, endgame technique">';
+  if(kind==='puzzle')return '<label for="puzzleTheme">Puzzle theme / position reference</label><input id="puzzleTheme" placeholder="e.g. zwischenzug · FEN or puzzle ID">';
+  if(kind==='tournament')return '<label for="roundNumber">Round number</label><input id="roundNumber" placeholder="Round 1">';
+  if(kind==='opening')return '<label for="openingName">Opening / variation name</label><input id="openingName" placeholder="e.g. Italian Game · Two Knights Defence">';
+  if(kind==='rapid')return '<label for="clockNotes">Clock checkpoints</label><input id="clockNotes" placeholder="Note remaining time after key moves">';
+  return '<label for="gamePlan">Game plan</label><input id="gamePlan" placeholder="What was your plan before the game?">';
+ }
+ function render(){
+  const kind=type.value,info=descriptions[kind];
+  $('formTitle').textContent=info[0];$('formSubtitle').textContent=info[1];$('sheetDescription').textContent=info[1];
+  $('extraFields').innerHTML=extra(kind);$('tableArea').innerHTML=makeRows(kind);
+  const key='maxchess-notation-'+kind;
+  try{
+   const saved=JSON.parse(localStorage.getItem(key)||'null');
+   if(saved){for(const [id,value] of Object.entries(saved.fields||{})){const el=$(id);if(el)el.value=value}
+    $('sessionName').value=saved.sessionName||$('sessionName').value;
+    for(const item of saved.rows||[]){const el=$('tableArea').querySelector('[data-row="'+item.row+'"][data-col="'+item.col+'"]');if(el)el.value=item.value}
+   }
+  }catch(e){}
+ }
+ function payload(){
+  const fields={};document.querySelectorAll('#printArea input,#printArea select,#printArea textarea').forEach(el=>{if(el.id)fields[el.id]=el.value});
+  const rows=[...$('tableArea').querySelectorAll('[data-row]')].map(el=>({row:el.dataset.row,col:el.dataset.col,value:el.value}));
+  return {sessionName:$('sessionName').value,fields,rows};
+ }
+ function save(){
+  try{localStorage.setItem('maxchess-notation-'+type.value,JSON.stringify(payload()));$('status').textContent='Saved on this device.';return true}
+  catch(e){$('status').textContent='Could not save here. Try exporting your session instead.';return false}
+ }
+ function exportText(){
+  const p=payload(),lines=['MAXCHESS NOTATION STUDIO',descriptions[type.value][0],'Session: '+p.sessionName,...Object.entries(p.fields).map(([k,v])=>k+': '+v),'','MOVE / WORKSHEET ENTRIES'];
+  for(const r of p.rows)if(r.value)lines.push('Row '+r.row+', column '+r.col+': '+r.value);
+  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='maxchess-'+type.value+'-notation.txt';a.click();URL.revokeObjectURL(url);$('status').textContent='Session exported as a text file.';
+ }
+ type.addEventListener('change',render);
+ $('saveSheet').addEventListener('click',save);
+ $('printSheet').addEventListener('click',()=>{save();window.print()});
+ $('downloadSheet').addEventListener('click',exportText);
+ $('clearSheet').addEventListener('click',()=>{
+  if(!confirm('Clear this notation sheet on this device?'))return;
+  localStorage.removeItem('maxchess-notation-'+type.value);
+  document.querySelectorAll('#printArea input,#printArea select,#printArea textarea').forEach(el=>el.value='');
+  $('tableArea').querySelectorAll('input').forEach(el=>el.value='');$('sessionName').value='';
+  $('status').textContent='This sheet has been cleared.';
+ });
+ $('printArea').addEventListener('input',()=>{ $('status').textContent='Unsaved edits — choose Save on this device when ready.'; });
+ $('playedDate').value=new Date().toISOString().slice(0,10);
+ render();
+})();
+</script>
+</body></html>

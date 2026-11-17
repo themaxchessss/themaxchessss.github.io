@@ -46,6 +46,7 @@ jobs:
             '/',
             '/training-planner.html',
             '/notation-sheet-session.html',
+            '/tournament-desk.html',
             '/chess-clock.html',
             '/team-workspace.html',
             '/workbench.html',

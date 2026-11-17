@@ -47,6 +47,7 @@ jobs:
             '/training-planner.html',
             '/notation-sheet-session.html',
             '/tournament-desk.html',
+            '/maxchess-top-100.html',
             '/chess-clock.html',
             '/team-workspace.html',
             '/workbench.html',

@@ -57,7 +57,7 @@ select{background:#081321;color:white;border-color:#506781}
 
 <section class="panel" id="quickLessons">
 <h2>📘 Quick chess lessons</h2>
-<p class="muted">Three short lessons with examples and a question to try. Read the example first, then choose your answer.</p>
+<p class="muted">Short lessons with examples and questions to try. Read each pattern first, then choose your answer.</p>
 <div class="grid">
 <article class="lesson-card">
 <div class="lesson-kicker">LESSON 1 · OPENING</div>
@@ -119,6 +119,31 @@ select{background:#081321;color:white;border-color:#506781}
 <button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">No. The rook must never be under attack.</button>
 <button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">Yes. The king's route is safe and the other rules are met.</button>
 <button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Only after the bishop is captured.</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+<article class="lesson-card">
+<div class="lesson-kicker">LESSON 5 · TACTICS</div>
+<h3>Recognize an absolute pin</h3>
+<p>A pin happens when moving an attacked piece would expose something valuable behind it. In an <b>absolute pin</b>, the valuable target is the king, so the pinned piece cannot legally move if that would leave its king in check.</p>
+<div class="lesson-example"><b>Pattern:</b> White bishop on g5, Black knight on f6, and Black king on e7. The bishop, knight, and king are lined up on the diagonal g5–f6–e7. The knight blocks the bishop's attack on the king. If the knight moves away and opens that diagonal, the bishop gives check.</div>
+<p><b>Compare:</b> If the black queen were on e7 instead of the king, the knight would be in a <b>relative pin</b>. It could legally move, but the bishop would then attack the queen. A pinned piece is not always completely stuck—work out exactly what is behind it.</p>
+<div class="lesson-quiz" data-lesson-quiz data-success="Correct! The knight is absolutely pinned to its king. Moving it off the diagonal would expose the king to the bishop's attack, which is illegal." data-hint="Look at the line from the bishop on g5 through the knight on f6 to the king on e7.">
+<p><b>Try it 1:</b> In the pattern above, why can't the black knight move away?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Knights are not allowed to move when attacked</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">It would expose its king to check</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">The bishop controls every square on the board</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Exactly. That is a relative pin: moving the knight is legal, but it leaves the queen exposed to the bishop." data-hint="A queen is valuable, but unlike a king it may be left under attack.">
+<p><b>Try it 2:</b> If the piece behind the knight on e7 were a queen instead of a king, what kind of pin would it be?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">A relative pin</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">An absolute pin</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">A fork</button>
 </div>
 <p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
 </div>

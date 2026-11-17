@@ -45,6 +45,7 @@ jobs:
           const routes = [
             '/',
             '/training-planner.html',
+            '/notation-sheet-session.html',
             '/chess-clock.html',
             '/team-workspace.html',
             '/workbench.html',

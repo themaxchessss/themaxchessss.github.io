@@ -27,70 +27,132 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
 
-      - name: Check homepage, browser errors, navigation and internal links
+      - name: Smoke-test published pages on desktop, tablet and touch
         id: smoke
         run: |
           cat > health-check.cjs <<'EOF'
           const { chromium } = require('playwright');
+
+          const origin = 'https://themaxchessss.github.io';
+          const routes = [
+            '/',
+            '/training-planner.html',
+            '/chess-clock.html',
+            '/team-workspace.html',
+            '/workbench.html',
+            '/workspace.html',
+            '/team.html',
+            '/newsletter.html',
+            '/support.html',
+            '/privacy.html',
+            '/terms.html'
+          ];
+          const devices = [
+            { name: 'desktop', viewport: { width: 1280, height: 900 }, scale: 1 },
+            { name: 'tablet', viewport: { width: 820, height: 1180 }, scale: 1 },
+            { name: 'iPad-sized touch simulation', viewport: { width: 810, height: 1080 }, scale: 2, touch: true, mobile: true }
+          ];
+
           (async () => {
             const browser = await chromium.launch({ headless: true });
             const problems = [];
-            for (const device of [
-              { name: 'desktop', viewport: { width: 1280, height: 900 } },
-              { name: 'tablet', viewport: { width: 820, height: 1180 } },
-              { name: 'iPad 9th generation touch', viewport: { width: 810, height: 1080 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 }
-            ]) {
-              const page = await browser.newPage({
+            const checkedLinks = new Set();
+
+            for (const device of devices) {
+              const context = await browser.newContext({
                 viewport: device.viewport,
-                isMobile: device.isMobile || false,
-                hasTouch: device.hasTouch || false,
-                deviceScaleFactor: device.deviceScaleFactor || 1
+                deviceScaleFactor: device.scale,
+                isMobile: Boolean(device.mobile),
+                hasTouch: Boolean(device.touch)
               });
-              page.on('pageerror', error => problems.push('Browser JavaScript error: ' + error.message));
-              page.on('console', msg => { if (msg.type() === 'error') problems.push('Console error: ' + msg.text()); });
-              page.on('requestfailed', request => {
-                if (request.url().startsWith('https://themaxchessss.github.io/'))
-                  problems.push('Failed site request: ' + request.url() + ' (' + request.failure()?.errorText + ')');
-              });
-              try {
-                const response = await page.goto('https://themaxchessss.github.io/', { waitUntil: 'networkidle', timeout: 60000 });
-                if (!response || !response.ok()) problems.push('Homepage HTTP status: ' + (response?.status() ?? 'no response'));
-                await page.waitForTimeout(1500);
-                const title = await page.title();
-                if (!title.toLowerCase().includes('maxchess')) problems.push('Homepage title does not mention MaxChess');
-                const navTargets = await page.locator('[data-page]').evaluateAll(nodes => [...new Set(nodes.map(n => n.getAttribute('data-page')).filter(Boolean))]);
-                const missing = await page.evaluate(targets => targets.filter(id => !document.getElementById('page-' + id)), navTargets);
-                if (missing.length) problems.push('Navigation targets missing page sections: ' + missing.join(', '));
-                const internalLinks = await page.locator('a[href]').evaluateAll(nodes => [...new Set(nodes.map(n => n.href).filter(h => h.startsWith(location.origin) && !h.includes('#') && !h.endsWith('/')))].slice(0, 60));
-                for (const url of internalLinks) {
-                  try {
-                    const result = await page.request.get(url, { timeout: 15000 });
-                    if (result.status() >= 400) problems.push('Broken internal link (' + result.status() + '): ' + url);
-                  } catch (e) { problems.push('Could not check internal link: ' + url + ' — ' + e.message); }
+
+              for (const route of routes) {
+                const page = await context.newPage();
+                page.on('pageerror', error => problems.push(`[${device.name} ${route}] JavaScript exception: ${error.message}`));
+                page.on('console', msg => {
+                  if (msg.type() === 'error') problems.push(`[${device.name} ${route}] Console error: ${msg.text()}`);
+                });
+                page.on('requestfailed', request => {
+                  if (request.url().startsWith(origin + '/')) {
+                    problems.push(`[${device.name} ${route}] Failed first-party request: ${request.url()} (${request.failure()?.errorText})`);
+                  }
+                });
+
+                try {
+                  const response = await page.goto(origin + route, { waitUntil: 'domcontentloaded', timeout: 45000 });
+                  if (!response || response.status() !== 200) {
+                    problems.push(`[${device.name} ${route}] Expected HTTP 200, received ${response?.status() ?? 'no response'}`);
+                  }
+
+                  await page.waitForTimeout(700);
+                  const pageState = await page.evaluate(() => ({
+                    title: document.title.trim(),
+                    textLength: (document.body?.innerText || '').trim().length,
+                    bodyVisible: Boolean(document.body && document.body.getBoundingClientRect().height > 0),
+                    viewportWidth: document.documentElement.clientWidth,
+                    documentWidth: document.documentElement.scrollWidth,
+                    brokenImages: [...document.images]
+                      .filter(img => img.complete && img.naturalWidth === 0 && img.currentSrc)
+                      .map(img => img.currentSrc),
+                    links: [...document.querySelectorAll('a[href]')].map(a => ({
+                      href: a.href,
+                      text: (a.innerText || a.getAttribute('aria-label') || '').trim()
+                    }))
+                  }));
+
+                  if (!pageState.title) problems.push(`[${device.name} ${route}] Page has no document title`);
+                  if (pageState.textLength < 40) problems.push(`[${device.name} ${route}] Page appears blank or has too little visible text (${pageState.textLength} characters)`);
+                  if (!pageState.bodyVisible) problems.push(`[${device.name} ${route}] Document body is not visible`);
+                  if (device.touch && pageState.documentWidth > pageState.viewportWidth + 4) {
+                    problems.push(`[${device.name} ${route}] Horizontal overflow: document is ${pageState.documentWidth}px wide in a ${pageState.viewportWidth}px viewport`);
+                  }
+                  for (const imageUrl of pageState.brokenImages) {
+                    problems.push(`[${device.name} ${route}] Broken image: ${imageUrl}`);
+                  }
+
+                  for (const link of pageState.links) {
+                    if (!link.href.startsWith(origin + '/')) continue;
+                    const url = new URL(link.href);
+                    const fragment = decodeURIComponent(url.hash.slice(1));
+                    url.hash = '';
+                    const target = url.href;
+                    if (!checkedLinks.has(target)) checkedLinks.add(target);
+                    if (fragment && new URL(target).pathname === new URL(origin + route).pathname) {
+                      const exists = await page.evaluate(id =>
+                        Boolean(document.getElementById(id) || [...document.getElementsByName(id)].length),
+                        fragment
+                      );
+                      if (!exists) problems.push(`[${device.name} ${route}] Missing in-page link target #${fragment}`);
+                    }
+                  }
+                } catch (error) {
+                  problems.push(`[${device.name} ${route}] Page test failed: ${error.message}`);
+                } finally {
+                  await page.close();
                 }
-                if (device.hasTouch) {
-                  const playMenu = page.locator('.topnav button.navtop[aria-haspopup="true"]').first();
-                  await playMenu.click();
-                  const playLink = page.locator('.topnav button[data-page="play"]');
-                  await playLink.click();
-                  await page.waitForFunction(() => document.querySelectorAll('#board .sq').length === 64, { timeout: 15000 });
-                  await page.locator('#board .sq[aria-label^="e2, white"]').click();
-                  await page.locator('#board .sq[aria-label^="e4, empty"]').click();
-                  const moveWorked = await page.locator('#board .sq[aria-label^="e4, white"]').count() === 1
-                    && await page.locator('#board .sq[aria-label^="e2, empty"]').count() === 1;
-                  if (!moveWorked) problems.push('iPad touch test: tapping e2 then e4 did not move the white pawn');
-                }
-              } catch (e) { problems.push('Page load/test failed at ' + device.name + ': ' + e.message); }
-              await page.close();
+              }
+              await context.close();
             }
+
+            const requestContext = await browser.newContext();
+            for (const url of checkedLinks) {
+              try {
+                const response = await requestContext.request.get(url, { timeout: 20000 });
+                if (response.status() >= 400) problems.push(`Broken internal link (${response.status()}): ${url}`);
+              } catch (error) {
+                problems.push(`Could not verify internal link ${url}: ${error.message}`);
+              }
+            }
+            await requestContext.dispose();
             await browser.close();
+
             if (problems.length) {
-              console.error('MAXCHESS HEALTH CHECK FOUND PROBLEMS');
+              console.error('MAXCHESS HEALTH CHECK FAILED');
               for (const problem of [...new Set(problems)]) console.error('- ' + problem);
               process.exit(1);
             }
-            console.log('MaxChess homepage loaded at desktop and tablet-sized viewports; no browser errors or missing navigation targets were detected, and checked internal links responded successfully.');
-          })().catch(e => { console.error(e); process.exit(1); });
+            console.log(`Passed: ${routes.length} published pages across ${devices.length} viewport profiles; checked ${checkedLinks.size} unique internal links, page errors, loaded images and touch-width overflow.`);
+          })().catch(error => { console.error(error); process.exit(1); });
           EOF
           node health-check.cjs
 

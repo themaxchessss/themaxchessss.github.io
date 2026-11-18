@@ -3,39 +3,91 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Support MaxChess, a free online chess project. Payment information is managed by a parent or guardian.">
+<meta name="description" content="Support MaxChess, a free online chess project. Contributions are processed by PayPal.">
+<meta name="theme-color" content="#090b10">
 <title>Support MaxChess</title>
 <style>
-:root{color-scheme:dark;--bg:#090b10;--panel:#141923;--gold:#e6bd55;--text:#f4f5f7;--muted:#b8c0cc}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 system-ui,-apple-system,Segoe UI,sans-serif}
-header{padding:26px 20px;border-bottom:1px solid #303744;background:#10141c}header a{color:var(--gold);text-decoration:none;font-weight:700}
-main{max-width:800px;margin:36px auto;padding:0 20px 60px}h1{color:var(--gold);font-size:2.2rem;line-height:1.25}h2{font-size:1.25rem}p,li{color:var(--muted)}a{color:var(--gold)}.panel{padding:22px;border:1px solid #3a414d;border-radius:14px;background:var(--panel);margin:24px 0}.status{display:inline-block;padding:5px 10px;border-radius:999px;background:#303744;color:#f4f5f7;font-size:.88rem;font-weight:700}.handle{font-weight:800;color:var(--gold);font-size:1.15rem}footer{border-top:1px solid #303744;padding:22px;text-align:center;color:#929cab}footer a{margin:0 10px}
+:root{color-scheme:dark;--bg:#090b10;--panel:#141923;--gold:#e6bd55;--text:#f4f5f7;--muted:#b8c0cc;--line:#3a414d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:22px 20px;border-bottom:1px solid #303744;background:#10141c}
+header a{color:var(--gold);text-decoration:none;font-weight:800;letter-spacing:.08em}
+main{max-width:800px;margin:38px auto;padding:0 20px 64px}
+h1{color:var(--gold);font-size:clamp(2rem,6vw,2.7rem);line-height:1.2;margin-bottom:12px}
+h2{font-size:1.25rem;margin-top:0}
+p,li{color:var(--muted)}
+a{color:var(--gold)}
+.panel{padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--panel);margin:24px 0}
+.status{display:inline-block;padding:5px 11px;border-radius:999px;background:#303744;color:var(--text);font-size:.88rem;font-weight:700}
+.handle{font-weight:800;color:var(--gold);font-size:1.15rem}
+.donate-button{display:inline-block;margin:12px 0;padding:12px 20px;border-radius:10px;background:var(--gold);color:#17130a;text-decoration:none;font-weight:800}
+.donate-button:focus-visible,a:focus-visible{outline:3px solid white;outline-offset:3px}
+.small{font-size:.92rem}
+footer{border-top:1px solid #303744;padding:22px;text-align:center;color:#929cab}
+footer a{margin:0 10px}
 </style>
 </head>
 <body>
 <header><a href="/">♛ MAXCHESS</a></header>
 <main>
 <h1>Support MaxChess</h1>
-<p>Thanks for supporting the MaxChess project. MaxChess is a free online chess project created to help people play, learn, and enjoy chess.</p>
-<section class="panel">
-<h2>Support with a contribution</h2>
-<p class="status">Payment setup in progress</p>
-<p>A parent or guardian is arranging the payment option for MaxChess. The contribution link will appear here after they have set it up and checked it.</p>
-<p><strong>There is no payment link available yet. Please do not send money to any personal account or use a link shared by someone claiming to represent MaxChess.</strong></p>
+<p>Thanks for supporting MaxChess, a free chess project made for people to play, learn, and enjoy chess.</p>
+
+<section class="panel" aria-labelledby="contribute-heading">
+<h2 id="contribute-heading">Contribute to MaxChess</h2>
+<p id="payment-status" class="status">Contributions not open yet</p>
+<p id="payment-message">The MaxChess payment link is being set up by the project owner with help from a parent or guardian. When it is ready, this page will send contributions directly to the PayPal account chosen by them.</p>
+<div id="payment-action" hidden></div>
+<p class="small">Payments are handled by PayPal, not by this website. Please check the recipient name on PayPal before confirming a payment. Never send money to an unofficial link or someone pretending to represent MaxChess.</p>
 </section>
+
 <section class="panel">
 <h2>MaxChess account</h2>
 <p class="handle">Username: lionsmb36</p>
 <p>Visit the main site to play chess and explore MaxChess.</p>
 <p><a href="/">Visit MaxChess</a></p>
 </section>
+
 <section class="panel">
 <h2>Need help?</h2>
 <p>For support questions, a parent or guardian can contact:</p>
 <p><a href="mailto:maxchess.help@gmail.com">maxchess.help@gmail.com</a></p>
-<p>Please do not email passwords, sign-in codes, access tokens, home addresses, or other sensitive information.</p>
+<p class="small">Please do not email passwords, sign-in codes, access tokens, payment details, or other sensitive information.</p>
 </section>
 </main>
 <footer><a href="/">MaxChess home</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a></footer>
+
+<script>
+/*
+ * OWNER-ONLY SITE CONFIGURATION
+ * Change this value only from the GitHub repository using an authorized
+ * GitHub account with write access. Do not put PayPal passwords, API secrets,
+ * or private account information in this file.
+ *
+ * The public MaxChess username "lionsmb36" is not an authentication method.
+ * GitHub repository permissions are what restrict who can publish changes.
+ * A parent/guardian should create and manage the PayPal payment link.
+ */
+const PAYPAL_DONATION_URL = "";
+
+(function () {
+  const status = document.getElementById("payment-status");
+  const message = document.getElementById("payment-message");
+  const action = document.getElementById("payment-action");
+  let url;
+  try { url = new URL(PAYPAL_DONATION_URL); } catch (_) { return; }
+  if (url.protocol !== "https:" || !/(^|\\.)paypal\\.com$/i.test(url.hostname) && !/(^|\\.)paypal\\.me$/i.test(url.hostname)) return;
+  status.textContent = "PayPal contributions available";
+  message.textContent = "Choose the Contribute button to continue to the official PayPal checkout.";
+  const link = document.createElement("a");
+  link.className = "donate-button";
+  link.href = url.href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = "Contribute with PayPal";
+  action.appendChild(link);
+  action.hidden = false;
+})();
+</script>
 </body>
 </html>

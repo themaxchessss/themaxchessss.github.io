@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#090b10">
+<title>MaxChess owner setup</title>
+<style>
+:root{color-scheme:dark;--bg:#090b10;--panel:#141923;--gold:#e6bd55;--text:#f4f5f7;--muted:#b8c0cc;--line:#3a414d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.7 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:760px;margin:36px auto;padding:0 20px 60px}h1,h2{color:var(--gold)}p,li{color:var(--muted)}a{color:var(--gold)}.panel{padding:22px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:22px 0}.warning{border-color:#8b6b2b}.button{display:inline-block;padding:11px 17px;border-radius:9px;background:var(--gold);color:#17130a;text-decoration:none;font-weight:800}
+</style>
+</head>
+<body><main>
+<p><a href="/support.html">← Back to Support MaxChess</a></p>
+<h1>MaxChess contribution setup</h1>
+<p>Setup guide for the site maintainer and the parent or guardian managing payments.</p>
+<section class="panel warning">
+<h2>Who can change the page?</h2>
+<p>MaxChess is hosted on public GitHub Pages. A static webpage cannot securely check whether a visitor is signed in to the MaxChess account <strong>lionsmb36</strong>. This page is a public guide, not a private login or password-protected dashboard.</p>
+<p>Publishing changes is controlled by GitHub repository permissions. Keep write access to <code>themaxchessss/themaxchessss.github.io</code> limited to the intended GitHub account(s). If the GitHub account used by the owner is not the same identity as lionsmb36, GitHub permissions—not the MaxChess username—determine who can edit.</p>
+</section>
+<section class="panel">
+<h2>PayPal setup (parent or guardian)</h2>
+<ol>
+<li>Your dad creates and verifies a PayPal payment or donation link using an account he manages and is eligible to use.</li>
+<li>He checks the recipient name, currency, contribution options, and PayPal's terms and fees.</li>
+<li>He gives the site maintainer only the public PayPal URL. Never share a password, sign-in code, API secret, or private account information.</li>
+<li>The maintainer adds that URL to the <code>PAYPAL_DONATION_URL</code> setting in <code>support.html</code>, then checks that the button opens the correct official PayPal page.</li>
+</ol>
+<p><strong>Current state:</strong> The PayPal URL is blank. The public support page therefore shows that contributions are not open yet.</p>
+</section>
+<section class="panel">
+<h2>Edit the support page</h2>
+<p>GitHub will require sign-in and repository write permission before it allows a change to be published.</p>
+<a class="button" href="https://github.com/themaxchessss/themaxchessss.github.io/edit/main/support.html" rel="noopener noreferrer">Open support page editor on GitHub</a>
+</section>
+</main></body></html>

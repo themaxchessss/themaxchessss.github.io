@@ -76,7 +76,7 @@ const PAYPAL_DONATION_URL = "";
   const action = document.getElementById("payment-action");
   let url;
   try { url = new URL(PAYPAL_DONATION_URL); } catch (_) { return; }
-  if (url.protocol !== "https:" || !/(^|\\.)paypal\\.com$/i.test(url.hostname) && !/(^|\\.)paypal\\.me$/i.test(url.hostname)) return;
+  if (url.protocol !== "https:" || !/(^|\.)paypal\.com$/i.test(url.hostname) && !/(^|\.)paypal\.me$/i.test(url.hostname)) return;
   status.textContent = "PayPal contributions available";
   message.textContent = "Choose the Contribute button to continue to the official PayPal checkout.";
   const link = document.createElement("a");

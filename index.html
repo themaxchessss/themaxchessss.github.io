@@ -3848,7 +3848,7 @@ window.dispatchEvent(new Event("maxchess:ready"));
    const bottom=document.createElement('div');bottom.className='mbc-bottom';
    const footEl=document.createElement('div');footEl.className='mbc-foot';footEl.textContent=foot;bottom.append(footEl);
    const qr=document.createElement('img');qr.className='mbc-qr';qr.alt='Standard black-and-white QR code linking to the MaxChess website';
-   qr.loading='eager';qr.src='cards/maxchess-qr-code.png';bottom.append(qr);
+   qr.loading='eager';qr.src='cards/maxchess-qr-plain.png';bottom.append(qr);
    card.append(brand,middle,bottom);sheet.append(card);
   }
   backSheet.replaceChildren();
@@ -3856,7 +3856,7 @@ window.dispatchEvent(new Event("maxchess:ready"));
    const back=document.createElement('article');back.className='max-business-card back-card '+design;
    const heading=document.createElement('div');heading.className='mbc-back-title';heading.textContent='SCAN TO PLAY';
    const qr=document.createElement('img');qr.className='mbc-back-qr';qr.alt='Fancy star-pattern QR code linking to the MaxChess website';
-   qr.loading='eager';qr.decoding='sync';qr.src='cards/maxchess-qr-plain.png';
+   qr.loading='eager';qr.decoding='sync';qr.src='cards/maxchess-qr-code.png';
    const tagline=document.createElement('div');tagline.className='mbc-back-tagline';tagline.textContent='PLAY • LEARN • COMPETE';
    const url=document.createElement('div');url.className='mbc-back-url';url.textContent='themaxchessss.github.io';
    back.append(heading,qr,tagline,url);backSheet.append(back);

@@ -3540,7 +3540,16 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
      const {data,error}=await authClient.auth.signInWithPassword({email,password});if(error)throw error;
      authUser=data.user;saveCred(email,password,authUser?.user_metadata?.username);accountModal.classList.remove('open');paintProfile();note('Welcome back to MaxChess!');
     }else{
-     const {data,error}=await authClient.auth.signUp({email,password,options:{data:{username},emailRedirectTo:'https://themaxchessss.github.io/'}});
+     // Bound the wait so a stalled auth request cannot leave Register spinning forever.
+     const signupRequest=authClient.auth.signUp({email,password,options:{data:{username},emailRedirectTo:'https://themaxchessss.github.io/'}});
+     let signupTimer,signupResult;
+     try{
+      signupResult=await Promise.race([
+       signupRequest,
+       new Promise((_,reject)=>{signupTimer=setTimeout(()=>reject(new Error('MAXCHESS_SIGNUP_TIMEOUT')),25000)})
+      ]);
+     }finally{clearTimeout(signupTimer)}
+     const {data,error}=signupResult;
      if(error)throw error;
      if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){
       setAuthStatus('This email already has a MaxChess account. Choose “Already have an account? Sign in” instead.');accountPassword.value='';return;
@@ -3551,7 +3560,8 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
     }
    }catch(err){
     const msg=err?.message||'Authentication failed.';
-    if(/already registered|user already exists|already been registered/i.test(msg))setAuthStatus('This email already has a MaxChess account. Choose “Already have an account? Sign in” instead.');
+    if(msg==='MAXCHESS_SIGNUP_TIMEOUT')setAuthStatus('The account service is taking too long to respond. Your request may still finish, so check your email before trying again. If no confirmation email arrives after a few minutes, try again.');
+    else if(/already registered|user already exists|already been registered/i.test(msg))setAuthStatus('This email already has a MaxChess account. Choose “Already have an account? Sign in” instead.');
     else if(/invalid login credentials|invalid_credentials/i.test(msg))setAuthStatus('That email or password is not right. Try again, or use Forgot password.');
     else if(/failed to fetch|network|timeout|timed out|504/i.test(msg))setAuthStatus('MaxChess could not reach the account service. Check your connection and try again in a moment. If you retry, use the same email.');
     else setAuthStatus('Registration/sign-in failed: '+msg);

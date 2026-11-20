@@ -3517,8 +3517,9 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    e.preventDefault();
    if(accountSubmitBusy)return;
    const submitButton=accountForm.querySelector('button[type="submit"]');
-   const originalLabel=submitButton.textContent;
-   if(authMode==='reset'){
+   if(!submitButton)return;
+   const originalLabel=submitButton.textContent,mode=authMode;
+   if(mode==='reset'){
     const pw=accountPassword.value;
     if(!authClient||!authUser){setAuthStatus('This reset link has expired. Request a new one with Forgot password.');return}
     if(pw.length<8){setAuthStatus('Use a password with at least 8 characters.');return}
@@ -3528,49 +3529,44 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
     finally{accountSubmitBusy=false;submitButton.disabled=false;submitButton.textContent=originalLabel}
     return;
    }
-   if(!authClient){setAuthStatus('MaxChess account service is still connecting. Wait a moment, then try again.');return}
-   const email=accountEmail.value.trim(),password=accountPassword.value,username=accountUsername.value.trim();
-   if(!email){setAuthStatus('Enter your email address.');accountEmail.focus();return}
+   if(!authClient){setAuthStatus('MaxChess account service is still connecting. Refresh the page and try again.');return}
+   const email=accountEmail.value.trim().toLowerCase(),password=accountPassword.value,username=accountUsername.value.trim();
+   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setAuthStatus('Enter a valid email address.');accountEmail.focus();return}
    if(password.length<8){setAuthStatus('Use a password with at least 8 characters.');accountPassword.focus();return}
-   if(authMode!=='login'&&(username.length<3||username.length>30)){setAuthStatus('Username must be 3–30 characters.');accountUsername.focus();return}
-   accountSubmitBusy=true;submitButton.disabled=true;submitButton.textContent=authMode==='login'?'Signing in…':'Creating account…';
-   setAuthStatus(authMode==='login'?'Signing in to MaxChess…':'Creating your free MaxChess account. Please keep this page open…');
+   if(mode==='signup'&&(username.length<3||username.length>30)){setAuthStatus('Username must be 3–30 characters.');accountUsername.focus();return}
+   if(mode==='signup'&&!/^[A-Za-z0-9_ -]+$/.test(username)){setAuthStatus('Username can use letters, numbers, spaces, underscores and hyphens.');accountUsername.focus();return}
+   accountSubmitBusy=true;submitButton.disabled=true;submitButton.textContent=mode==='login'?'Signing in…':'Creating account…';
+   setAuthStatus(mode==='login'?'Signing in to MaxChess…':'Connecting securely to MaxChess to create your account…');
+   let timeoutId=null;
    try{
-    if(authMode==='login'){
-     const {data,error}=await authClient.auth.signInWithPassword({email,password});if(error)throw error;
+    const request=mode==='login'?authClient.auth.signInWithPassword({email,password}):authClient.auth.signUp({email,password,options:{data:{username},emailRedirectTo:'https://themaxchessss.github.io/'}});
+    const result=await Promise.race([request,new Promise((_,reject)=>{timeoutId=setTimeout(()=>reject(new Error('MAXCHESS_AUTH_TIMEOUT')),30000)})]);
+    if(result.error)throw result.error;
+    const data=result.data||{};
+    if(mode==='login'){
+     if(!data.user)throw new Error('MaxChess did not return an account after sign-in. Please try again.');
      authUser=data.user;saveCred(email,password,authUser?.user_metadata?.username);accountModal.classList.remove('open');paintProfile();note('Welcome back to MaxChess!');
     }else{
-     // Bound the wait so a stalled auth request cannot leave Register spinning forever.
-     const signupRequest=authClient.auth.signUp({email,password,options:{data:{username},emailRedirectTo:'https://themaxchessss.github.io/'}});
-     let signupTimer,signupResult;
-     try{
-      signupResult=await Promise.race([
-       signupRequest,
-       new Promise((_,reject)=>{signupTimer=setTimeout(()=>reject(new Error('MAXCHESS_SIGNUP_TIMEOUT')),25000)})
-      ]);
-     }finally{clearTimeout(signupTimer)}
-     const {data,error}=signupResult;
-     if(error)throw error;
-     if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){
-      setAuthStatus('This email already has a MaxChess account. Choose “Already have an account? Sign in” instead.');accountPassword.value='';return;
-     }
-     authUser=data.session?.user||null;
-     if(data.session){saveCred(email,password,username);accountModal.classList.remove('open');paintProfile();note('Welcome to MaxChess, '+username+'!')}
-     else{setAuthStatus('Registration was received. Check your email for a confirmation link, then return here to sign in.');accountPassword.value=''}
+     if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){setAuthStatus('This email may already have a MaxChess account. Try signing in or use Forgot password.');accountPassword.value='';return}
+     if(data.session?.user){authUser=data.session.user;accountModal.classList.remove('open');paintProfile();note('Welcome to MaxChess, '+username+'!')}
+     else if(data.user){setAuthStatus('Your registration was accepted. Check your email for a confirmation link, then return here and sign in.');accountPassword.value=''}
+     else throw new Error('The account service returned an empty response. Please try again.');
     }
    }catch(err){
-    const msg=err?.message||'Authentication failed.';
-    if(msg==='MAXCHESS_SIGNUP_TIMEOUT')setAuthStatus('The account service is taking too long to respond. Your request may still finish, so check your email before trying again. If no confirmation email arrives after a few minutes, try again.');
-    else if(/already registered|user already exists|already been registered/i.test(msg))setAuthStatus('This email already has a MaxChess account. Choose “Already have an account? Sign in” instead.');
-    else if(/invalid login credentials|invalid_credentials/i.test(msg))setAuthStatus('That email or password is not right. Try again, or use Forgot password.');
-    else if(/failed to fetch|network|timeout|timed out|504/i.test(msg))setAuthStatus('MaxChess could not reach the account service. Check your connection and try again in a moment. If you retry, use the same email.');
-    else setAuthStatus('Registration/sign-in failed: '+msg);
+    const msg=String(err?.message||err||'Authentication failed.'),code=String(err?.code||'');
+    if(msg==='MAXCHESS_AUTH_TIMEOUT')setAuthStatus('MaxChess did not respond within 30 seconds. The request may still have completed. Check your email or try signing in before registering again.');
+    else if(/already registered|user already exists|already been registered/i.test(msg)||code==='user_already_exists')setAuthStatus('This email may already have a MaxChess account. Try signing in or use Forgot password.');
+    else if(/invalid login credentials|invalid_credentials/i.test(msg)||code==='invalid_credentials')setAuthStatus('That email or password is not correct. Try again or use Forgot password.');
+    else if(/failed to fetch|networkerror|network request failed|load failed|fetch failed/i.test(msg))setAuthStatus('Your browser could not reach MaxChess account services. Check your connection, disable any network-blocking extension temporarily, then refresh and try again.');
+    else if(/rate limit|too many requests/i.test(msg)||code==='over_email_send_rate_limit')setAuthStatus('Too many account or email requests were made recently. Wait a little while before trying again.');
+    else setAuthStatus('MaxChess account error: '+msg);
     accountPassword.value='';
    }finally{
+    if(timeoutId!==null)clearTimeout(timeoutId);
     accountSubmitBusy=false;submitButton.disabled=false;submitButton.textContent=originalLabel;
    }
   };
- const cfg=savedAuthConfig()||{url:'https://bvukakfhkebpsviehirr.supabase.co',key:'sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG'};supabaseUrl.value=cfg.url||'';supabaseKey.value=cfg.key||'';connectAuth(cfg.url||'',cfg.key||'',true).then(ok=>{if(ok)finishLichessLogin()});
+  const cfg=savedAuthConfig()||{url:'https://bvukakfhkebpsviehirr.supabase.co',key:'sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG'};supabaseUrl.value=cfg.url||'';supabaseKey.value=cfg.key||'';connectAuth(cfg.url||'',cfg.key||'',true).then(ok=>{if(ok)finishLichessLogin()});
  paintProfile();
  document.querySelectorAll('[data-learnpage]').forEach(()=>{});
  $('brandHome').onclick=()=>navigate('home');$('brandHome').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();navigate('home')}};

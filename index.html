@@ -1916,7 +1916,9 @@ button,.toolbtn,.greenbtn,.widebtn,select{touch-action:manipulation}
   <h2 id="accountTitle">Register</h2>
   <p id="accountIntro">Choose a username to personalize MaxChess on this device.</p>
   <form id="accountForm" method="post" action="#" autocomplete="on">
-   <label for="accountEmail">Email</label><input id="accountEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+   <label for="accountEmail" id="accountEmailLabel">Email address</label><input id="accountEmail" name="email" type="text" inputmode="email" autocomplete="username" placeholder="Email address or +15551234567" required>
+   <label for="accountPhone" id="accountPhoneLabel">Mobile phone number</label><input id="accountPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+1 555 555 5555" required>
+   <label for="accountOtp" id="accountOtpLabel" style="display:none">6-digit text message code</label><input id="accountOtp" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="123456" style="display:none" aria-describedby="authStatus">
    <label for="accountUsername">Username</label><input id="accountUsername" name="username" maxlength="30" minlength="3" autocomplete="nickname" placeholder="The Max of Chess" required>
    <label for="accountPassword">Password</label><input id="accountPassword" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required>
    <div class="account-actions"><button class="greenbtn" type="submit" style="margin:0">Register</button><button class="account-close" type="button" id="closeAccount">Cancel</button></div>
@@ -2429,22 +2431,26 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
  if($('pieceShopChoice'))$('pieceShopChoice').value=['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)?savedSkin:'friendly';
  if(['friendly','ice','ruby','gold','classic','bold'].includes(savedSkin)){style=savedSkin;setTimeout(render,0);}
  
- const accountModal=$('accountModal'),accountForm=$('accountForm'),accountUsername=$('accountUsername'),accountPassword=$('accountPassword'),accountEmail=$('accountEmail');
+ const accountModal=$('accountModal'),accountForm=$('accountForm'),accountUsername=$('accountUsername'),accountPassword=$('accountPassword'),accountEmail=$('accountEmail'),accountPhone=$('accountPhone'),accountOtp=$('accountOtp');let pendingSignupPhone='';
  const authStatus=$('authStatus'),supabaseUrl=$('supabaseUrl'),supabaseKey=$('supabaseKey');
  const wasRecovery=/[#&]type=recovery/.test(location.hash||'');let authClient=null,authStateSubscription=null,authMode='signup',authUser=null,onlineGameId=null,onlineColor=null,onlinePoll=null,onlineBusy=false,matchCheckBusy=false,clockPressPending=false,clockPressPlayer=null,clockStyle='digital';let activeDirectChat=null,privateChatChannel=null;
  function savedAuthConfig(){try{return JSON.parse(localStorage.getItem('maxchess_auth_config')||'null')}catch(e){return null}}
  function setAuthStatus(msg){if(authStatus)authStatus.textContent=msg}
  function saveCred(id,pw,name){try{if(window.PasswordCredential&&navigator.credentials&&navigator.credentials.store)navigator.credentials.store(new PasswordCredential({id:id,password:pw,name:name||id}))}catch(e){}}
- function setAuthMode(mode){authMode=mode;const login=mode==='login',reset=mode==='reset',signup=mode==='signup';
-  const emailLbl=accountForm.querySelector('label[for="accountEmail"]'),userLbl=accountForm.querySelector('label[for="accountUsername"]'),pwLbl=accountForm.querySelector('label[for="accountPassword"]');
-  accountEmail.required=!reset;accountEmail.style.display=reset?'none':'';emailLbl.style.display=reset?'none':'';
+ function setAuthMode(mode){authMode=mode;const login=mode==='login',reset=mode==='reset',signup=mode==='signup',verify=mode==='verify';
+  const emailLbl=$('accountEmailLabel'),phoneLbl=$('accountPhoneLabel'),otpLbl=$('accountOtpLabel'),userLbl=accountForm.querySelector('label[for="accountUsername"]'),pwLbl=accountForm.querySelector('label[for="accountPassword"]');
+  accountEmail.required=!reset&&!verify;accountEmail.style.display=reset||verify?'none':'';emailLbl.style.display=reset||verify?'none':'';
+  accountPhone.required=signup;accountPhone.style.display=signup?'':'none';phoneLbl.style.display=signup?'':'';
+  accountOtp.required=verify;accountOtp.style.display=verify?'':'none';otpLbl.style.display=verify?'':'';
   accountUsername.required=signup;accountUsername.style.display=signup?'':'none';userLbl.style.display=signup?'':'none';
+  accountPassword.required=!verify;accountPassword.style.display=verify?'none':'';pwLbl.style.display=verify?'none':'';
   pwLbl.textContent=reset?'New password':'Password';
-  $('accountTitle').textContent=reset?'Set a new password':login?'Sign in':'Register';
-  $('accountIntro').textContent=reset?'Choose a new password for your account.':login?'':'Choose a username, then enter your email and a password.';
+  $('accountTitle').textContent=verify?'Verify your phone':reset?'Set a new password':login?'Sign in':'Register';
+  $('accountIntro').textContent=verify?'Enter the six-digit code sent to '+pendingSignupPhone+'.':reset?'Choose a new password for your account.':login?'Sign in with your email or phone number.':'Create your free account with an email address and a verified mobile phone.';
   accountPassword.autocomplete=login?'current-password':'new-password';accountEmail.autocomplete=login?'username':'email';
-  accountForm.querySelector('button[type="submit"]').textContent=reset?'Save new password':login?'Sign in':'Register';
-  $('switchAccountMode').style.display=reset?'none':'';$('forgotPw').style.display=login?'':'none';
+  accountForm.querySelector('button[type="submit"]').textContent=verify?'Verify code':reset?'Save new password':login?'Sign in':'Send verification code';
+  $('switchAccountMode').style.display=reset||verify?'none':'';
+  $('forgotPw').style.display=login?'':'none';
   $('switchAccountMode').textContent=login?'Register':'Already have an account? Sign in'}
  paintRating();
  async function saveProgressCloud(){if(!authClient||!authUser)return;let activeComputerGame=null;try{activeComputerGame=JSON.parse(localStorage.getItem('maxchess_active_computer_game_v1')||'null')}catch(e){}const data={activeComputerGame,computerRating:computerRatingData,puzzleRating:localStorage.getItem('maxchess_puzzle_rating')||'800',training:localStorage.getItem('maxchess_training_v1')||'{}',study:localStorage.getItem('maxchess_study_library_v1')||'[]',boardTheme:localStorage.getItem('maxchess_theme')||'royal',pieceStyle:localStorage.getItem('maxchess_pieces')||'friendly',quizBest:localStorage.getItem('maxchess_quiz_best')||'0',puzzleRushBest:localStorage.getItem('maxchess_puzzle_rush_best')||'0',puzzleRushBests:localStorage.getItem('maxchess_puzzle_rush_bests')||'{}'};const z=await authClient.from('user_progress').upsert({user_id:authUser.id,data,updated_at:new Date().toISOString()},{onConflict:'user_id'});if(z.error)console.warn('MaxChess cloud save:',z.error.message)}
@@ -3530,7 +3536,16 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
     return;
    }
    if(!authClient){setAuthStatus('MaxChess account service is still connecting. Refresh the page and try again.');return}
-   const email=accountEmail.value.trim().toLowerCase(),password=accountPassword.value,username=accountUsername.value.trim();
+   if(mode==='verify'){
+    const token=accountOtp.value.trim();
+    if(!/^\\d{6}$/.test(token)){setAuthStatus('Enter the six-digit code from your text message.');accountOtp.focus();return}
+    accountSubmitBusy=true;submitButton.disabled=true;submitButton.textContent='Verifying…';setAuthStatus('Checking your phone code…');
+    try{const {data,error}=await authClient.auth.verifyOtp({phone:pendingSignupPhone,token,type:'sms'});if(error)throw error;if(!data.session?.user)throw new Error('The code was accepted but no signed-in session was returned. Please try signing in.');authUser=data.session.user;pendingSignupPhone='';accountOtp.value='';accountModal.classList.remove('open');paintProfile();note('Your phone is verified. Welcome to MaxChess!')}
+    catch(err){const msg=String(err?.message||err||'Verification failed.');setAuthStatus(/expired|invalid|token/i.test(msg)?'That code is invalid or expired. Request a new code and try again.':'Could not verify your phone: '+msg)}
+    finally{accountSubmitBusy=false;submitButton.disabled=false;submitButton.textContent='Verify code'}
+    return;
+   }
+   const identifier=accountEmail.value.trim(),email=identifier.toLowerCase(),password=accountPassword.value,username=accountUsername.value.trim(),phone=accountPhone.value.trim().replace(/[\\s().-]/g,'');
    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setAuthStatus('Enter a valid email address.');accountEmail.focus();return}
    if(password.length<8){setAuthStatus('Use a password with at least 8 characters.');accountPassword.focus();return}
    if(mode==='signup'&&(username.length<3||username.length>30)){setAuthStatus('Username must be 3–30 characters.');accountUsername.focus();return}
@@ -3539,7 +3554,8 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    setAuthStatus(mode==='login'?'Signing in to MaxChess…':'Connecting securely to MaxChess to create your account…');
    let timeoutId=null;
    try{
-    const request=mode==='login'?authClient.auth.signInWithPassword({email,password}):authClient.auth.signUp({email,password,options:{data:{username},emailRedirectTo:'https://themaxchessss.github.io/'}});
+    const isEmailLogin=mode==='login'&&identifier.includes('@');
+    const request=mode==='login'?(isEmailLogin?authClient.auth.signInWithPassword({email,password}):authClient.auth.signInWithPassword({phone:identifier.replace(/[\\s().-]/g,''),password})):authClient.auth.signUp({phone,password,options:{data:{username,email}}});
     const result=await Promise.race([request,new Promise((_,reject)=>{timeoutId=setTimeout(()=>reject(new Error('MAXCHESS_AUTH_TIMEOUT')),30000)})]);
     if(result.error)throw result.error;
     const data=result.data||{};
@@ -3547,15 +3563,15 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
      if(!data.user)throw new Error('MaxChess did not return an account after sign-in. Please try again.');
      authUser=data.user;accountModal.classList.remove('open');paintProfile();note('Welcome back to MaxChess!');
     }else{
-     if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){setAuthStatus('This email may already have a MaxChess account. Try signing in or use Forgot password.');accountPassword.value='';return}
+     if(data.user&&Array.isArray(data.user.identities)&&data.user.identities.length===0){setAuthStatus('This phone number may already have a MaxChess account. Try signing in.');accountPassword.value='';return}
      if(data.session?.user){authUser=data.session.user;accountModal.classList.remove('open');paintProfile();note('Welcome to MaxChess, '+username+'!')}
-     else if(data.user){setAuthStatus('Your registration was accepted. Check your email for a confirmation link, then return here and sign in.');accountPassword.value=''}
+     else if(data.user){pendingSignupPhone=phone;accountOtp.value='';setAuthMode('verify');setAuthStatus('A six-digit verification code has been sent by text to '+phone+'.')}
      else throw new Error('The account service returned an empty response. Please try again.');
     }
    }catch(err){
     const msg=String(err?.message||err||'Authentication failed.'),code=String(err?.code||'');
     if(msg==='MAXCHESS_AUTH_TIMEOUT')setAuthStatus('MaxChess did not respond within 30 seconds. The request may still have completed. Check your email or try signing in before registering again.');
-    else if(/already registered|user already exists|already been registered/i.test(msg)||code==='user_already_exists')setAuthStatus('This email may already have a MaxChess account. Try signing in or use Forgot password.');
+    else if(/already registered|user already exists|already been registered/i.test(msg)||code==='user_already_exists')setAuthStatus('This phone number may already have a MaxChess account. Try signing in.');
     else if(/invalid login credentials|invalid_credentials/i.test(msg)||code==='invalid_credentials')setAuthStatus('That email or password is not correct. Try again or use Forgot password.');
     else if(/failed to fetch|networkerror|network request failed|load failed|fetch failed/i.test(msg))setAuthStatus('Your browser could not reach MaxChess account services. Check your connection, disable any network-blocking extension temporarily, then refresh and try again.');
     else if(/rate limit|too many requests/i.test(msg)||code==='over_email_send_rate_limit')setAuthStatus('Too many account or email requests were made recently. Wait a little while before trying again.');
@@ -3563,6 +3579,8 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
     else if(/signup.*disabled|signups.*disabled/i.test(msg))setAuthStatus('New registrations are currently disabled in the MaxChess account settings.');
     else if(/weak password|password.*(short|characters)/i.test(msg)||code==='weak_password')setAuthStatus('Choose a stronger password with at least 8 characters.');
     else if(/invalid.*email|email_address_invalid/i.test(msg)||code==='email_address_invalid')setAuthStatus('That email address is not valid. Check the spelling and try again.');
+    else if(/phone.*(invalid|format)|invalid_phone/i.test(msg)||code==='phone_invalid')setAuthStatus('Enter a valid phone number with country code, such as +15551234567.');
+    else if(/sms.*provider|phone provider|sms.*not configured/i.test(msg))setAuthStatus('Phone verification is not configured yet. MaxChess needs an SMS provider enabled in Supabase Auth.');
     else setAuthStatus('MaxChess account error: '+msg);
     accountPassword.value='';
    }finally{

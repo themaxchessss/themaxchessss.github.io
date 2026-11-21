@@ -3538,15 +3538,17 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    if(!authClient){setAuthStatus('MaxChess account service is still connecting. Refresh the page and try again.');return}
    if(mode==='verify'){
     const token=accountOtp.value.trim();
-    if(!/^\\d{6}$/.test(token)){setAuthStatus('Enter the six-digit code from your text message.');accountOtp.focus();return}
+    if(!/^\d{6}$/.test(token)){setAuthStatus('Enter the six-digit code from your text message.');accountOtp.focus();return}
     accountSubmitBusy=true;submitButton.disabled=true;submitButton.textContent='Verifying…';setAuthStatus('Checking your phone code…');
     try{const {data,error}=await authClient.auth.verifyOtp({phone:pendingSignupPhone,token,type:'sms'});if(error)throw error;if(!data.session?.user)throw new Error('The code was accepted but no signed-in session was returned. Please try signing in.');authUser=data.session.user;pendingSignupPhone='';accountOtp.value='';accountModal.classList.remove('open');paintProfile();note('Your phone is verified. Welcome to MaxChess!')}
     catch(err){const msg=String(err?.message||err||'Verification failed.');setAuthStatus(/expired|invalid|token/i.test(msg)?'That code is invalid or expired. Request a new code and try again.':'Could not verify your phone: '+msg)}
     finally{accountSubmitBusy=false;submitButton.disabled=false;submitButton.textContent='Verify code'}
     return;
    }
-   const identifier=accountEmail.value.trim(),email=identifier.toLowerCase(),password=accountPassword.value,username=accountUsername.value.trim(),phone=accountPhone.value.trim().replace(/[\\s().-]/g,'');
-   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setAuthStatus('Enter a valid email address.');accountEmail.focus();return}
+   const identifier=accountEmail.value.trim(),email=identifier.toLowerCase(),password=accountPassword.value,username=accountUsername.value.trim(),phone=accountPhone.value.trim().replace(/[\s().-]/g,'');
+   if(mode==='signup'&&(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))){setAuthStatus('Enter a valid email address.');accountEmail.focus();return}
+   if(mode==='login'&&!identifier){setAuthStatus('Enter your email address or phone number.');accountEmail.focus();return}
+   if(mode==='signup'&&!/^\+[1-9]\d{7,14}$/.test(phone)){setAuthStatus('Enter your phone number with country code, such as +15551234567.');accountPhone.focus();return}
    if(password.length<8){setAuthStatus('Use a password with at least 8 characters.');accountPassword.focus();return}
    if(mode==='signup'&&(username.length<3||username.length>30)){setAuthStatus('Username must be 3–30 characters.');accountUsername.focus();return}
    if(mode==='signup'&&!/^[A-Za-z0-9_ -]+$/.test(username)){setAuthStatus('Username can use letters, numbers, spaces, underscores and hyphens.');accountUsername.focus();return}
@@ -3555,7 +3557,7 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
    let timeoutId=null;
    try{
     const isEmailLogin=mode==='login'&&identifier.includes('@');
-    const request=mode==='login'?(isEmailLogin?authClient.auth.signInWithPassword({email,password}):authClient.auth.signInWithPassword({phone:identifier.replace(/[\\s().-]/g,''),password})):authClient.auth.signUp({phone,password,options:{data:{username,email}}});
+    const request=mode==='login'?(isEmailLogin?authClient.auth.signInWithPassword({email,password}):authClient.auth.signInWithPassword({phone:identifier.replace(/[\s().-]/g,''),password})):authClient.auth.signUp({phone,password,options:{data:{username,email}}});
     const result=await Promise.race([request,new Promise((_,reject)=>{timeoutId=setTimeout(()=>reject(new Error('MAXCHESS_AUTH_TIMEOUT')),30000)})]);
     if(result.error)throw result.error;
     const data=result.data||{};

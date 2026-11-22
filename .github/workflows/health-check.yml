@@ -67,6 +67,8 @@ jobs:
             '/dgt-hub.html',
             '/tournament-broadcast.html',
             '/tournament-broadcast.html?mode=obs',
+            '/tournament-broadcast.html?demo=1',
+            '/tournament-broadcast.html?mode=obs&demo=1',
             '/team-workspace.html',
             '/workbench.html',
             '/workspace.html',
@@ -165,6 +167,18 @@ jobs:
                   if (routeUrl.pathname === '/tournament-broadcast.html' && routeUrl.searchParams.get('mode') === 'obs') {
                     const setupHidden = await page.locator('#setup').evaluate(el => getComputedStyle(el).display === 'none');
                     if (!setupHidden) problems.push(`[${device.name} ${route}] OBS mode did not hide setup controls`);
+                  }
+
+                  if (routeUrl.pathname === '/tournament-broadcast.html' && routeUrl.searchParams.get('demo') === '1') {
+                    const demoState = await page.evaluate(() => ({
+                      status: document.querySelector('#gameStatus')?.textContent,
+                      squares: document.querySelectorAll('#chessBoard .square').length,
+                      pieces: document.querySelectorAll('#chessBoard .piece').length,
+                      latestMove: document.querySelector('#lastMove')?.textContent
+                    }));
+                    if (demoState.status !== 'DEMO PREVIEW') problems.push(`[${device.name} ${route}] Demo preview status was not shown`);
+                    if (demoState.squares !== 64 || demoState.pieces < 30) problems.push(`[${device.name} ${route}] Demo board did not reconstruct a complete chess position: ${JSON.stringify(demoState)}`);
+                    if (demoState.latestMove !== 'Be7') problems.push(`[${device.name} ${route}] Demo move replay did not reach the expected final move: ${demoState.latestMove}`);
                   }
 
                   for (const link of pageState.links) {

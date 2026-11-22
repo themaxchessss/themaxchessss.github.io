@@ -124,10 +124,12 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <section class="setup" id="setup">
  <h2>Connect a DGT tournament</h2>
  <p class="hint">Paste the tournament viewer link created by DGT LiveChess Cloud. MaxChess will read the tournament, pairing and game feeds and draw its own board view. You do not need to paste a private DGT password.</p>
+ <p class="hint">Preview the broadcast style without real tournament data: <a href="tournament-broadcast.html?demo=1">Open the MaxChess sample broadcast</a>.</p>
  <div class="steps">
   <div class="step"><b>1 · Connect the boards</b><span>On a Windows, Mac or Linux tournament computer, run DGT LiveChess and connect the physical DGT e-Boards.</span></div>
   <div class="step"><b>2 · Publish the games</b><span>In DGT LiveChess, start recording the selected boards and add the LiveChess Cloud exporter under Output.</span></div>
   <div class="step"><b>3 · Share the viewer link</b><span>Copy the tournament URL from LiveChess Cloud and paste it below. A UUID copied from the link also works.</span></div>
+  <div class="step"><b>4 · Put it on YouTube</b><span>After MaxChess connects, copy the OBS link. Add it to OBS as a Browser source, set 1920 × 1080, and place it in your YouTube livestream scene.</span></div>
  </div>
  <label for="tournamentLink">DGT LiveChess Cloud tournament link or ID</label>
  <input id="tournamentLink" type="url" placeholder="https://view.livechesscloud.com/#your-tournament-id">

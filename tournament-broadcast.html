@@ -21,6 +21,7 @@ a{color:var(--gold);text-decoration:none}button,input,select{font:inherit}
 .summary strong{font-size:18px}.summary small{color:var(--muted)}.liveword{font-size:11px;letter-spacing:1.5px;color:var(--red);font-weight:900}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}
 .stage{min-width:0;background:#080d15;border:1px solid #344a63;border-radius:10px;overflow:hidden;box-shadow:0 18px 50px #0009}
+.dgt-fallback{display:none;padding:14px;background:#080d15}.dgt-fallback iframe{display:block;width:100%;height:min(70vh,820px);min-height:420px;border:1px solid #344a63;border-radius:8px;background:#080d15}
 .stagehead{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#111d2b;padding:10px 14px;border-bottom:1px solid #344a63}
 .stagehead b{letter-spacing:1px;color:var(--gold)}.stagehead span{font-size:12px;color:var(--muted)}
 .players{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:linear-gradient(90deg,#142235,#0c1420);padding:13px 15px;border-bottom:1px solid #2a3e55}
@@ -99,7 +100,8 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <div class="versus">VS</div>
   <div class="player black"><strong id="blackName">Black player</strong><small id="blackDetail">Black</small></div>
  </div>
- <div class="board-zone">
+ <div id="dgtFallback" class="dgt-fallback"><iframe id="dgtViewer" title="Official DGT LiveChess Cloud viewer" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><p class="hint">MaxChess could not read the structured game feed, so this is the official DGT viewer fallback. If it does not appear here, use the Open DGT viewer button.</p></div>
+ <div id="boardZone" class="board-zone">
   <div id="chessBoard" class="board" aria-label="Live chessboard"></div>
   <div class="board-note">
    <div class="info-card"><div class="info-label">GAME STATUS</div><div class="info-value" id="gameStatus">WAITING</div><div class="info-sub" id="gameResult">Connect a tournament feed</div></div>
@@ -321,6 +323,7 @@ async function connect(raw){
  if(!id){say('That link could not be read. Paste the HTTPS view.livechesscloud.com/#… URL or the tournament ID.');return}
  clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);
  state.gameToken++;state.loading=false;state.demo=false;state.id=id;state.board=0;state.round=0;state.index=null;state.tournament=null;state.game=null;
+ $('dgtFallback').style.display='none';$('boardZone').style.display='grid';
  say('Connecting to DGT LiveChess Cloud…');$('airStatus').textContent='● CONNECTING';$('airStatus').style.color='var(--gold)';
  try{
   var tournament=await getJson(apiUrl('tournament.json'));
@@ -347,8 +350,11 @@ async function connect(raw){
    }catch(e){}
   },12000);
  }catch(e){
-  setConnected(false);say('Could not connect: '+e.message+'. Check that the DGT tournament is published and that the link is correct.');
-  $('airStatus').textContent='● NOT CONNECTED';$('airStatus').style.color='var(--red)';
+  setConnected(false);$('copyObsBtn').disabled=false;$('openDgtBtn').disabled=false;
+  $('dgtViewer').src='https://view.livechesscloud.com/#'+id;
+  $('dgtFallback').style.display='block';$('boardZone').style.display='none';
+  say('MaxChess game feed could not be read: '+e.message+'. Showing the official DGT viewer backup; you can also open it separately.');
+  $('airStatus').textContent='● DGT VIEWER BACKUP';$('airStatus').style.color='var(--gold)';
  }
 }
 function makeObsUrl(){

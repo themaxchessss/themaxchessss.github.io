@@ -30,6 +30,10 @@ p,li{color:var(--muted)}
 .trophy-name{font-weight:950;letter-spacing:.09em;color:var(--gold2);font-size:1.15rem}
 .ribbon{display:inline-block;background:linear-gradient(90deg,#9d6a16,#ffe28a,#a8751b);color:#17120a;font-weight:950;padding:6px 18px;border-radius:5px;margin-top:10px}
 #paypal-container-5RFCQCTP2M9BL{display:flex;justify-content:center;min-height:48px;margin:18px auto}
+/* PayPal hosts its amount-entry form in an embedded frame. Request a light form
+   appearance so typed amounts remain readable on this dark support page. */
+#paypal-container-5RFCQCTP2M9BL{color-scheme:light;background:#fff;border-radius:10px;padding:8px;max-width:440px}
+#paypal-container-5RFCQCTP2M9BL iframe{color-scheme:light!important}
 .small{font-size:.9rem}
 .note{border-left:3px solid var(--gold);padding-left:13px}
 a{color:var(--gold2)}

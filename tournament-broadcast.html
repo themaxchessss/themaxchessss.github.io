@@ -271,7 +271,8 @@ function renderGame(data){
  $('gameResult').textContent=resultText(data&&data.result||pairing.result);
  $('lastMove').textContent=tokens.length?tokens[tokens.length-1]:'—';
  $('moveCount').textContent=tokens.length+' half-moves recorded';
- $('boardMeta').textContent='BOARD '+(state.board||'—')+' · ROUND '+(state.round||'—');\n if(state.demo){$('lowerPlayers').textContent=safeName(pairing.white)+'  vs  '+safeName(pairing.black);$('lowerEvent').textContent='MAXCHESS INVITATIONAL · ROUND '+state.round+' · BOARD '+state.board;$('tickerText').textContent='SAMPLE GAME · '+tokens.length+' HALF-MOVES PLAYED · SIMULATED CLOCKS · NOT A REAL TOURNAMENT'}else{$('lowerPlayers').textContent=safeName(pairing.white)+'  vs  '+safeName(pairing.black);$('lowerEvent').textContent=(state.tournament&&state.tournament.name||'TOURNAMENT')+' · ROUND '+state.round+' · BOARD '+state.board;$('tickerText').textContent='OFFICIAL FEED DATA · '+tokens.length+' HALF-MOVES RECEIVED · LAST UPDATE '+(state.lastUpdate||'—')}
+ $('boardMeta').textContent='BOARD '+(state.board||'—')+' · ROUND '+(state.round||'—');
+ if(state.demo){$('lowerPlayers').textContent=safeName(pairing.white)+'  vs  '+safeName(pairing.black);$('lowerEvent').textContent='MAXCHESS INVITATIONAL · ROUND '+state.round+' · BOARD '+state.board;$('tickerText').textContent='SAMPLE GAME · '+tokens.length+' HALF-MOVES PLAYED · SIMULATED CLOCKS · NOT A REAL TOURNAMENT'}else{$('lowerPlayers').textContent=safeName(pairing.white)+'  vs  '+safeName(pairing.black);$('lowerEvent').textContent=(state.tournament&&state.tournament.name||'TOURNAMENT')+' · ROUND '+state.round+' · BOARD '+state.board;$('tickerText').textContent='OFFICIAL FEED DATA · '+tokens.length+' HALF-MOVES RECEIVED · LAST UPDATE '+(state.lastUpdate||'—')}
  $('airStatus').textContent=live?'● LIVE FEED':'● FEED CONNECTED';
  $('airStatus').style.color=live?'var(--red)':'var(--green)';
  $('updated').textContent=live?'LIVE':'CONNECTED';

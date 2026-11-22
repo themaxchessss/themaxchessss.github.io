@@ -139,6 +139,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <button class="secondary" id="copyObsBtn" disabled>Copy YouTube / OBS link</button>
   <button class="ghost" id="openDgtBtn" disabled>Open DGT viewer</button>
  </div>
+ <div class="broadcast-tools"><label for="cycleSeconds">OBS board rotation<select id="cycleSeconds"><option value="0">Off — selected board only</option><option value="15">Every 15 seconds</option><option value="30" selected>Every 30 seconds</option><option value="60">Every 60 seconds</option></select></label></div>
  <div id="connectionStatus" class="status" role="status" aria-live="polite"></div>
  <p class="hint">MaxChess reads the public JSON feed from LiveChess Cloud. This is a community-observed feed format rather than a published DGT developer API. If DGT changes the feed or blocks browser requests, the connection will show an error instead of pretending to be live.</p>
 </section>
@@ -154,7 +155,7 @@ var obsMode=params.get('mode')==='obs';
 if(obsMode)document.body.classList.add('obs');
 var POOL='https://1.pool.livechesscloud.com/get/';
 var UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,loading:false,gameToken:0,demo:false,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white'};
+var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,cycleTimer:null,loading:false,gameToken:0,demo:false,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white',cycleSeconds:30};
 var pieces={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
 function say(message){$('connectionStatus').textContent=message}
 function safeName(p){if(!p)return'Unknown player';var parts=[p.fname,p.mname,p.lname].filter(function(x){return typeof x==='string'&&x.trim()});return parts.join(' ')||'Unknown player'}
@@ -165,7 +166,7 @@ function parseTournamentId(raw){
  if(UUID.test(value))return value.toLowerCase();
  try{
   var u=new URL(value);
-  if((u.protocol!=='https:'&&u.protocol!=='http:')||!(u.hostname==='view.livechesscloud.com'||u.hostname==='livechesscloud.com'||u.hostname==='www.livechesscloud.com'))return'';
+  if(u.protocol!=='https:'||!(u.hostname==='view.livechesscloud.com'||u.hostname==='livechesscloud.com'||u.hostname==='www.livechesscloud.com'))return'';
   var candidates=[u.hash.replace(/^#/,'').split(/[/?&]/)[0],u.searchParams.get('id'),u.pathname.split('/').filter(Boolean).pop()];
   for(var i=0;i<candidates.length;i++){if(candidates[i]&&UUID.test(candidates[i]))return candidates[i].toLowerCase()}
  }catch(e){}
@@ -285,6 +286,7 @@ async function fetchRound(round){
  var firstLive=index.pairings.findIndex(function(p){return p&&p.live});
  var chosen=(requested>0&&requested<=index.pairings.length)?requested:(firstLive>=0?firstLive+1:(index.pairings.length?1:0));
  if(chosen)await selectBoard(chosen);else{state.board=0;renderGame(null);say('No games are listed in this round.')}
+ startBoardCycle();
 }
 async function selectBoard(number){
  state.gameToken++;state.loading=false;state.board=number;state.pairing=state.index&&state.index.pairings[number-1]||null;
@@ -322,6 +324,7 @@ async function pollGame(){
 }
 async function connect(raw){
  var id=parseTournamentId(raw);
+ state.cycleSeconds=params.has('cycle')?Math.max(0,Math.min(300,Number(params.get('cycle'))||0)):(Number($('cycleSeconds').value)||0);
  if(!id){say('That link could not be read. Paste the HTTPS view.livechesscloud.com/#… URL or the tournament ID.');return}
  clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);
  state.gameToken++;state.loading=false;state.demo=false;state.id=id;state.board=0;state.round=0;state.index=null;state.tournament=null;state.game=null;
@@ -359,14 +362,25 @@ async function connect(raw){
   $('airStatus').textContent='● DGT VIEWER BACKUP';$('airStatus').style.color='var(--gold)';
  }
 }
+function startBoardCycle(){
+ clearInterval(state.cycleTimer);
+ if(!state.cycleSeconds||state.demo||!state.index)return;
+ var pairs=state.index.pairings||[];
+ var live=pairs.map(function(p,i){return p&&p.live?i+1:0}).filter(Boolean);
+ var sequence=live.length?live:pairs.map(function(p,i){return p?i+1:0}).filter(Boolean);
+ if(sequence.length<2)return;
+ state.cycleTimer=setInterval(function(){var at=sequence.indexOf(state.board);var next=sequence[(at+1+sequence.length)%sequence.length];selectBoard(next)},state.cycleSeconds*1000);
+}
 function makeObsUrl(){
  if(!state.id)return'';
  var u=new URL(location.href);u.search='';u.searchParams.set('mode','obs');u.searchParams.set('tournament',state.id);
  if(state.round)u.searchParams.set('round',String(state.round));
  if(state.board)u.searchParams.set('board',String(state.board));
+ if(state.cycleSeconds)u.searchParams.set('cycle',String(state.cycleSeconds));
  return u.toString();
 }
-$('connectBtn').addEventListener('click',function(){connect($('tournamentLink').value)});
+$('cycleSeconds').addEventListener('change',function(){state.cycleSeconds=Number(this.value)||0;startBoardCycle()});
+$('connectBtn').addEventListener('click',function(){state.cycleSeconds=Number($('cycleSeconds').value)||0;connect($('tournamentLink').value)});
 $('refreshBtn').addEventListener('click',function(){if(state.id)connect(state.id)});
 $('roundSelect').addEventListener('change',function(){fetchRound(Number(this.value)).catch(function(e){say('Could not load round: '+e.message)})});
 $('copyObsBtn').addEventListener('click',async function(){
@@ -400,7 +414,7 @@ else{
  if(initial){$('tournamentLink').value=initial;connect(initial)}
  else{setStartingBoard();setConnected(false)}
 }
-window.addEventListener('beforeunload',function(){clearTimeout(state.pollTimer);clearInterval(state.refreshTimer)});
+window.addEventListener('beforeunload',function(){clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);clearInterval(state.cycleTimer)});
 })();
 </script>
 </body>

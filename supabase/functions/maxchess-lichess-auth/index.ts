@@ -51,7 +51,7 @@ Deno.serve(async (req: Request) => {
     const code = typeof body.code === "string" ? body.code : "";
     const verifier = typeof body.code_verifier === "string" ? body.code_verifier : "";
     const redirectUri = typeof body.redirect_uri === "string" ? body.redirect_uri : "";
-    if (!code || !verifier || redirectUri !== SITE_ORIGIN + "/" || verifier.length < 43 || verifier.length > 128) {
+    if (!code || !verifier || redirectUri !== SITE_ORIGIN + "/" && redirectUri !== SITE_ORIGIN + "/sso-connect.html" || verifier.length < 43 || verifier.length > 128) {
       return reply({ error: "The Lichess sign-in response is incomplete. Please try again." }, 400);
     }
 

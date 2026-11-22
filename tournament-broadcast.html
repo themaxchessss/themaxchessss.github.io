@@ -150,7 +150,7 @@ var obsMode=params.get('mode')==='obs';
 if(obsMode)document.body.classList.add('obs');
 var POOL='https://1.pool.livechesscloud.com/get/';
 var UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,loading:false,gameToken:0,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white'};
+var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,loading:false,gameToken:0,demo:false,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white'};
 var pieces={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
 function say(message){$('connectionStatus').textContent=message}
 function safeName(p){if(!p)return'Unknown player';var parts=[p.fname,p.mname,p.lname].filter(function(x){return typeof x==='string'&&x.trim()});return parts.join(' ')||'Unknown player'}
@@ -286,6 +286,16 @@ async function selectBoard(number){
  state.gameToken++;state.loading=false;state.board=number;state.pairing=state.index&&state.index.pairings[number-1]||null;
  renderBoardList();
  if(!state.pairing)return;
+ if(state.demo){
+  state.lastUpdate='DEMO';
+  renderGame(demoGames[number-1]||demoGames[0]);
+  $('gameStatus').textContent='DEMO PREVIEW';
+  $('gameResult').textContent='Sample game only · no real DGT data';
+  $('airStatus').textContent='● DEMO PREVIEW';$('airStatus').style.color='var(--blue)';
+  $('updated').textContent='DEMO';$('feedTime').textContent='SAMPLE FEED';
+  say('Demo preview only — no DGT board or tournament is connected.');
+  return;
+ }
  renderGame({moves:[],live:!!state.pairing.live,result:state.pairing.result});
  await pollGame();
 }
@@ -310,7 +320,7 @@ async function connect(raw){
  var id=parseTournamentId(raw);
  if(!id){say('That link could not be read. Paste the HTTPS view.livechesscloud.com/#… URL or the tournament ID.');return}
  clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);
- state.gameToken++;state.loading=false;state.id=id;state.board=0;state.round=0;state.index=null;state.tournament=null;state.game=null;
+ state.gameToken++;state.loading=false;state.demo=false;state.id=id;state.board=0;state.round=0;state.index=null;state.tournament=null;state.game=null;
  say('Connecting to DGT LiveChess Cloud…');$('airStatus').textContent='● CONNECTING';$('airStatus').style.color='var(--gold)';
  try{
   var tournament=await getJson(apiUrl('tournament.json'));
@@ -358,10 +368,30 @@ $('copyObsBtn').addEventListener('click',async function(){
 });
 $('openDgtBtn').addEventListener('click',function(){if(state.id)window.open('https://view.livechesscloud.com/#'+state.id,'_blank','noopener')});
 $('tournamentLink').addEventListener('keydown',function(e){if(e.key==='Enter')connect(this.value)});
+var demoGames=[
+ {live:false,serialNr:'DEMO-01',firstMove:0,chess960:518,result:'*',moves:['e4','e5','Nf3','Nc6','Bb5','a6','Ba4','Nf6','O-O','Be7']},
+ {live:false,serialNr:'DEMO-02',firstMove:0,chess960:518,result:'*',moves:['d4','d5','c4','e6','Nc3','Nf6','Bg5','Be7','e3','O-O']}
+];
+function startDemo(){
+ state.demo=true;state.tournament={name:'MAXCHESS INVITATIONAL — DEMO',location:'MaxChess Demo Arena',country:'USA',timecontrol:'10+5',rounds:[{count:2,live:0}]};
+ state.round=1;state.index={date:'Demo round',pairings:[
+  {white:{fname:'MaxChess Player A',title:'DEMO'},black:{fname:'MaxChess Player B',title:'DEMO'},result:'*',live:false},
+  {white:{fname:'MaxChess Player C',title:'DEMO'},black:{fname:'MaxChess Player D',title:'DEMO'},result:'*',live:false}
+ ]};
+ $('tournamentLink').value='';$('roundSelect').textContent='';
+ var option=document.createElement('option');option.value='1';option.textContent='Round 1 · DEMO';$('roundSelect').appendChild(option);
+ setConnected(true);$('copyObsBtn').disabled=true;$('openDgtBtn').disabled=true;
+ updateHeader();$('roundName').textContent='Round 1 · DEMO PREVIEW';
+ $('airStatus').textContent='● DEMO PREVIEW';$('airStatus').style.color='var(--blue)';
+ $('updated').textContent='DEMO';renderBoardList();selectBoard(1);
+}
 var initial=params.get('tournament')||'';
-if(!initial){try{initial=localStorage.getItem('maxchess-livechess-id')||''}catch(e){}}
-if(initial){$('tournamentLink').value=initial;connect(initial)}
-else{setStartingBoard();setConnected(false)}
+if(params.get('demo')==='1'){startDemo()}
+else{
+ if(!initial){try{initial=localStorage.getItem('maxchess-livechess-id')||''}catch(e){}}
+ if(initial){$('tournamentLink').value=initial;connect(initial)}
+ else{setStartingBoard();setConnected(false)}
+}
 window.addEventListener('beforeunload',function(){clearTimeout(state.pollTimer);clearInterval(state.refreshTimer)});
 })();
 </script>

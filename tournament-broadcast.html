@@ -53,6 +53,16 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .status{min-height:19px;font-size:12px;color:#a8d8ff;margin-top:9px;overflow-wrap:anywhere}
 
+
+/* TV-style broadcast graphics */
+.stage{position:relative}.stagehead{background:linear-gradient(90deg,#17283b,#101a28 70%,#18263a)}.stagehead b{font-size:12px}.stagehead:after{content:"MAXCHESS TV";font-size:10px;letter-spacing:1.8px;color:#a9bdd3;font-weight:900}
+.players{background:linear-gradient(100deg,#1c3048,#0b1421 50%,#1c3048);padding:16px 18px}.player strong{font-size:clamp(15px,2.2vw,22px);letter-spacing:.15px}.player small{display:inline-block;margin-top:3px;font-size:11px;letter-spacing:.7px;text-transform:uppercase}
+.versus{background:#d6ad55;color:#17120a;padding:5px 9px;border-radius:3px;font-size:10px}
+.board-zone{background:radial-gradient(ellipse at 36% 45%,#23354a 0,#0c1420 58%,#080d15 100%);padding:18px}.board{border:6px solid #9c763a;box-shadow:0 0 0 1px #e0c17c,0 14px 35px #000b}.square.light{background:#e8dfc9}.square.dark{background:#78916f}.square .piece{filter:drop-shadow(0 2px 1px #0007)}
+.broadcast-lower{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 16px;background:linear-gradient(100deg,#142b43,#0a1421);border-top:2px solid #d5ad58;border-bottom:1px solid #2c435c}.lower-left{display:grid;gap:3px;min-width:0}.lower-kicker{font-size:9px;letter-spacing:1.8px;color:#f0c96d;font-weight:1000}.lower-left strong{font-size:clamp(14px,2vw,20px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lower-left strong i{font-size:10px;color:#f0c96d;font-style:normal;padding:0 7px}.lower-left small{font-size:10px;letter-spacing:.8px;color:#aebdd0}.lower-right{display:flex;align-items:center;gap:10px;flex-shrink:0}.lower-score{font-size:20px;font-weight:1000;color:#f5d78f}.lower-tag{font-size:9px;font-weight:1000;letter-spacing:1px;color:#101722;background:#f0ca72;border-radius:3px;padding:5px 7px}
+.broadcast-ticker{display:flex;align-items:center;gap:12px;min-height:34px;padding:6px 12px;background:#070c13;border-top:1px solid #273b50;color:#c6d2df;font-size:10px;letter-spacing:.7px}.broadcast-ticker b{color:#edc66c;letter-spacing:1.5px}.broadcast-ticker span:nth-child(2){flex:1}.ticker-end{color:#83b8e7;font-weight:900;white-space:nowrap}
+.obs .broadcast-lower{padding:14px 26px}.obs .broadcast-ticker{padding:8px 20px;font-size:12px}
+@media(max-width:560px){.broadcast-lower{padding:9px 11px}.lower-left small{font-size:8px}.lower-tag{font-size:8px}.broadcast-ticker{font-size:9px;gap:7px}.ticker-end{display:none}}
 .clock-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #26394f}.clock-row:last-of-type{border:0}.clock-row span{font-size:11px;color:var(--muted);font-weight:800}.clock-row strong{font-variant-numeric:tabular-nums;font-size:25px;letter-spacing:1px;color:#f4d47f}.clock-row.active strong{color:#8ef0b9}
 .score-panel{padding:12px;border-bottom:1px solid #30465f;background:linear-gradient(145deg,#142236,#0c1420)}.score-title{font-size:12px;font-weight:1000;letter-spacing:1.3px;color:var(--gold)}.score-sub{font-size:11px;color:var(--muted);margin:3px 0 8px}.score-rows{display:grid;gap:5px}.score-row{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:7px;align-items:center;padding:6px 7px;background:#0a1320;border:1px solid #293e55;border-radius:5px;font-size:12px}.score-row .rank{color:var(--gold);font-weight:900}.score-row .score-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.score-row .points{font-weight:900;color:#f5e2ad}
 .boards{display:grid;gap:6px;margin-top:8px;max-height:350px;overflow:auto}
@@ -114,6 +124,9 @@ button:disabled{opacity:.5;cursor:not-allowed}
    <div class="info-card"><div class="info-label">FEED UPDATE</div><div class="info-value" id="feedTime">—</div><div class="info-sub">MaxChess Live feed monitor</div></div>
    <div class="info-card"><div class="info-label">SOURCE</div><div class="info-value" style="font-size:14px">DGT LIVECHESS</div><div class="info-sub">LiveChess Cloud game data</div></div>
   </div>
+
+ <div class="broadcast-lower"><div class="lower-left"><span class="lower-kicker">MAXCHESS LIVE · SAMPLE COVERAGE</span><strong id="lowerPlayers">PLAYER A <i>vs</i> PLAYER B</strong><small id="lowerEvent">MAXCHESS INVITATIONAL · ROUND 1 · BOARD 1</small></div><div class="lower-right"><span class="lower-score">— : —</span><span class="lower-tag">DEMO FEED</span></div></div>
+ <div class="broadcast-ticker"><b>MAXCHESS</b><span id="tickerText">DEMO BROADCAST · SAMPLE MOVES AND CLOCKS · NOT A REAL TOURNAMENT</span><span class="ticker-end">LIVE STYLE · DEMO</span></div>
  </div>
 </section>
 <aside class="side">
@@ -160,7 +173,7 @@ var obsMode=params.get('mode')==='obs';
 if(obsMode)document.body.classList.add('obs');
 var POOL='https://1.pool.livechesscloud.com/get/';
 var UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-var demoClockSeconds={white:582,black:535};var demoClockTimer=null;
+var demoClockSeconds={white:582,black:535};var demoClockTimer=null;var demoReplayTimer=null;var demoMoveIndex=0;
 var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,cycleTimer:null,loading:false,gameToken:0,demo:false,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white',cycleSeconds:30};
 var pieces={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
 function say(message){$('connectionStatus').textContent=message}
@@ -258,7 +271,7 @@ function renderGame(data){
  $('gameResult').textContent=resultText(data&&data.result||pairing.result);
  $('lastMove').textContent=tokens.length?tokens[tokens.length-1]:'—';
  $('moveCount').textContent=tokens.length+' half-moves recorded';
- $('boardMeta').textContent='BOARD '+(state.board||'—')+' · ROUND '+(state.round||'—');
+ $('boardMeta').textContent='BOARD '+(state.board||'—')+' · ROUND '+(state.round||'—');\n if(state.demo){$('lowerPlayers').textContent=safeName(pairing.white)+'  vs  '+safeName(pairing.black);$('lowerEvent').textContent='MAXCHESS INVITATIONAL · ROUND '+state.round+' · BOARD '+state.board;$('tickerText').textContent='SAMPLE GAME · '+tokens.length+' HALF-MOVES PLAYED · SIMULATED CLOCKS · NOT A REAL TOURNAMENT'}else{$('lowerPlayers').textContent=safeName(pairing.white)+'  vs  '+safeName(pairing.black);$('lowerEvent').textContent=(state.tournament&&state.tournament.name||'TOURNAMENT')+' · ROUND '+state.round+' · BOARD '+state.board;$('tickerText').textContent='OFFICIAL FEED DATA · '+tokens.length+' HALF-MOVES RECEIVED · LAST UPDATE '+(state.lastUpdate||'—')}
  $('airStatus').textContent=live?'● LIVE FEED':'● FEED CONNECTED';
  $('airStatus').style.color=live?'var(--red)':'var(--green)';
  $('updated').textContent=live?'LIVE':'CONNECTED';
@@ -319,7 +332,7 @@ async function selectBoard(number){
  if(!state.pairing)return;
  if(state.demo){
   state.lastUpdate='DEMO';
-  renderGame(demoGames[number-1]||demoGames[0]);
+  demoMoveIndex=0;renderGame(Object.assign({},demoGames[number-1]||demoGames[0],{moves:[]}));
   $('gameStatus').textContent='DEMO PREVIEW';
   $('gameResult').textContent='Sample game only · no real DGT data';
   $('airStatus').textContent='● DEMO PREVIEW';$('airStatus').style.color='var(--blue)';
@@ -426,7 +439,7 @@ function startDemo(){
   {white:{fname:'MaxChess Player C',title:'DEMO'},black:{fname:'MaxChess Player D',title:'DEMO'},result:'DRAW',live:false}
  ]};
  $('tournamentLink').value='';$('roundSelect').textContent='';renderScoreboard();
- if(demoClockTimer)clearInterval(demoClockTimer);demoClockSeconds={white:582,black:535};demoClockTimer=setInterval(function(){if(demoClockSeconds.white>0)demoClockSeconds.white--;if(demoClockSeconds.black>0)demoClockSeconds.black--;renderClocks(null)},1000);
+ if(demoClockTimer)clearInterval(demoClockTimer);if(demoReplayTimer)clearInterval(demoReplayTimer);demoMoveIndex=0;demoClockSeconds={white:582,black:535};demoClockTimer=setInterval(function(){var side=demoMoveIndex%2===0?'white':'black';if(demoClockSeconds[side]>0)demoClockSeconds[side]--;renderClocks(null)},1000);demoReplayTimer=setInterval(function(){var game=demoGames[state.board-1]||demoGames[0];if(demoMoveIndex<game.moves.length){demoMoveIndex++;renderGame(Object.assign({},game,{moves:game.moves.slice(0,demoMoveIndex)}));$('gameStatus').textContent='DEMO PREVIEW';$('gameResult').textContent='Simulated replay · sample only';$('airStatus').textContent='● DEMO PREVIEW';$('updated').textContent='DEMO';$('feedTime').textContent='SAMPLE FEED'}else{demoMoveIndex=0;demoClockSeconds={white:582,black:535}}},3200);
  var option=document.createElement('option');option.value='1';option.textContent='Round 1 · DEMO';$('roundSelect').appendChild(option);
  setConnected(true);$('refreshBtn').disabled=true;$('copyObsBtn').disabled=true;$('openDgtBtn').disabled=true;
  updateHeader();$('roundName').textContent='Round 1 · DEMO PREVIEW';
@@ -440,7 +453,7 @@ else{
  if(initial){$('tournamentLink').value=initial;connect(initial)}
  else{setStartingBoard();setConnected(false)}
 }
-window.addEventListener('beforeunload',function(){if(demoClockTimer)clearInterval(demoClockTimer);clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);clearInterval(state.cycleTimer)});
+window.addEventListener('beforeunload',function(){if(demoClockTimer)clearInterval(demoClockTimer);if(demoReplayTimer)clearInterval(demoReplayTimer);clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);clearInterval(state.cycleTimer)});
 })();
 </script>
 </body>

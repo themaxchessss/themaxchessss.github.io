@@ -51,6 +51,22 @@ select{background:#081321;color:white;border-color:#506781}
 .decoy-status{min-height:1.5em;color:#8bd7ff}
 @media(max-width:600px){.decoy-trainer{padding:9px}.decoy-square{font-size:clamp(1.35rem,9vw,2.7rem)}}
 @media(max-width:600px){.hero,.panel{padding:15px}.mission{padding:13px}button{min-height:44px}}
+
+/* Responsive health-check guardrails: prevent intrinsic content from widening tablet layouts. */
+html, body { max-width:100%; min-width:0; }
+main { width:min(980px, calc(100% - 32px)); min-width:0; }
+.grid { min-width:0; grid-template-columns:repeat(auto-fit, minmax(min(100%, 190px), 1fr)); }
+.grid > * { min-width:0; max-width:100%; }
+.lesson-card, .metric, .mission, .lesson-example, .lesson-quiz, .lesson-choices, .decoy-trainer {
+  min-width:0; max-width:100%;
+}
+.lesson-card p, .lesson-example, .lesson-feedback, .decoy-explanation {
+  overflow-wrap:anywhere;
+}
+.lesson-board { max-width:100%; box-sizing:border-box; overflow-x:auto; }
+.decoy-board { max-width:100%; }
+.decoy-trainer-head > * { min-width:0; overflow-wrap:anywhere; }
+.decoy-controls > button, .decoy-moves > button { max-width:100%; white-space:normal; }
 </style>
 </head>
 <body><main>

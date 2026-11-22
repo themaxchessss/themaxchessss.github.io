@@ -49,6 +49,7 @@ jobs:
             '/tournament-desk.html',
             '/maxchess-top-100.html',
             '/chess-clock.html',
+            '/dgt-hub.html',
             '/team-workspace.html',
             '/workbench.html',
             '/workspace.html',
@@ -115,7 +116,17 @@ jobs:
                   if (pageState.textLength < 40) problems.push(`[${device.name} ${route}] Page appears blank or has too little visible text (${pageState.textLength} characters)`);
                   if (!pageState.bodyVisible) problems.push(`[${device.name} ${route}] Document body is not visible`);
                   if (device.touch && pageState.documentWidth > pageState.viewportWidth + 4) {
-                    problems.push(`[${device.name} ${route}] Horizontal overflow: document is ${pageState.documentWidth}px wide in a ${pageState.viewportWidth}px viewport`);
+                    const offenders = await page.evaluate(() => [...document.querySelectorAll('body *')]
+                      .map(el => {
+                        const rect = el.getBoundingClientRect();
+                        return { tag: el.tagName.toLowerCase(), id: el.id || '', className: String(el.className || '').slice(0, 100),
+                          left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width),
+                          scrollWidth: el.scrollWidth, clientWidth: el.clientWidth };
+                      })
+                      .filter(item => item.right > document.documentElement.clientWidth + 4 || item.left < -4)
+                      .sort((a, b) => b.right - a.right)
+                      .slice(0, 8));
+                    problems.push(`[${device.name} ${route}] Horizontal overflow: document is ${pageState.documentWidth}px wide in a ${pageState.viewportWidth}px viewport. Offending elements: ${JSON.stringify(offenders)}`);
                   }
                   for (const imageUrl of pageState.brokenImages) {
                     problems.push(`[${device.name} ${route}] Broken image: ${imageUrl}`);

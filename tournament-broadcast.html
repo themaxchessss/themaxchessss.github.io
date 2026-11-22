@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090d16">
+<title>MaxChess Tournament Broadcast</title>
+<style>
+:root{color-scheme:dark;--gold:#f4c95d;--blue:#62b8ff;--line:#405571;--muted:#bdc9d9;--panel:#132238}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#1d3b5e,#080d16 68%);color:#f7f8fb;font:16px/1.5 system-ui,-apple-system,sans-serif}
+main{width:min(1180px,95vw);margin:auto;padding:20px 0 55px}a{color:var(--gold);text-decoration:none}
+header,.panel,.board-card{border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#203651,#111d2e 58%,#0a1320);padding:17px;margin:13px 0;box-shadow:0 12px 30px #0005}
+h1{font-size:clamp(2rem,7vw,3.6rem);line-height:1.04;color:var(--gold);margin:.2em 0}
+.muted,small{color:var(--muted)}.notice{background:#081321;border-left:4px solid var(--blue);padding:12px;border-radius:8px}.warn{border-color:#e6b94f}
+.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}button,.filelabel{font:inherit;font-weight:800;border:1px solid #8b7136;border-radius:10px;padding:10px 13px;background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;cursor:pointer}
+button.secondary{background:#263b54;border-color:#536b86;color:white}button:disabled{opacity:.45;cursor:not-allowed}
+input{font:inherit;color:white;background:#081321;border:1px solid #506781;border-radius:9px;padding:10px;max-width:100%}
+input[type=file]{display:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:12px}
+.board-card h2{color:var(--gold);margin:.1em 0 .5em}.meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+.chessboard{width:min(100%,390px);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:5px solid #b78c39;border-radius:5px;overflow:hidden;margin:12px auto;background:#eee}
+.square{display:grid;place-items:center;font-family:"Arial Unicode MS",serif;font-size:clamp(24px,6vw,43px);line-height:1;user-select:none}
+.light{background:#f0d9b5;color:#171717}.dark{background:#b58863;color:#171717}
+.move-list{max-height:170px;overflow:auto;background:#081321;padding:10px;border-radius:9px;display:flex;flex-wrap:wrap;gap:6px}
+.move{padding:3px 7px;border-radius:5px;background:#203651}.move.active{background:#f4c95d;color:#17120a;font-weight:900}
+.empty{padding:22px;text-align:center;border:1px dashed #526781;border-radius:12px;color:var(--muted)}
+.status{min-height:1.5em;color:#a9d3ff}footer{color:var(--muted);font-size:.88rem;margin-top:24px}
+@media(max-width:560px){main{width:94vw;padding-top:10px}.panel,.board-card,header{padding:13px}.chessboard{border-width:3px}}
+</style>
+</head>
+<body><main>
+<nav><a href="dgt-hub.html">← DGT Hub</a> · <a href="tournament-desk.html">Tournament Desk</a> · <a href="./">MaxChess Home</a></nav>
+<header>
+<p class="muted">MAXCHESS · TOURNAMENT BROADCAST WORKSPACE</p>
+<h1>♛ Live Tournament Broadcast</h1>
+<p>Prepare a broadcast layout and preview tournament PGN games on a phone, tablet, or computer.</p>
+<div class="notice warn"><strong>Important — pilot preview, not yet an official live service.</strong> This page currently previews PGN files on the device that uploads them. It does not yet publish a shared live feed, connect directly to DGT LiveChess, synchronize clocks, or distribute updates to remote spectators. Do not use it as the sole broadcast system for a rated event.</div>
+</header>
+<section class="panel">
+<h2>1. Event details</h2>
+<div class="controls">
+<label>Event name <input id="eventName" maxlength="90" value="MaxChess Tournament Broadcast Preview"></label>
+<label>Round <input id="roundName" maxlength="30" value="Round 1"></label>
+</div>
+<p class="muted">These labels appear above the game boards in this local preview.</p>
+</section>
+<section class="panel">
+<h2>2. Load tournament games</h2>
+<p>Choose a PGN file containing one or more games. Games are parsed and displayed below. You can also paste PGN text.</p>
+<div class="controls"><label class="filelabel" for="pgnFile">Choose PGN file</label><input id="pgnFile" type="file" accept=".pgn,.txt,text/plain"><button id="loadSample" class="secondary">Load sample game</button><button id="clearGames" class="secondary">Clear games</button></div>
+<label for="pgnText">Or paste PGN here</label>
+<textarea id="pgnText" rows="7" style="width:100%;margin:8px 0;padding:12px;border:1px solid #506781;border-radius:10px;background:#081321;color:white;font:14px/1.5 ui-monospace,monospace" placeholder='[Event "Example Open"]&#10;[White "Player A"]&#10;[Black "Player B"]&#10;&#10;1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *'></textarea>
+<div class="controls"><button id="parsePgn">Load games into preview</button><span id="status" class="status" role="status" aria-live="polite"></span></div>
+</section>
+<section class="panel">
+<div class="meta"><h2 id="displayEvent">MaxChess Tournament Broadcast Preview</h2><strong id="displayRound">Round 1</strong></div>
+<div id="games" class="grid"><div class="empty">No games loaded yet. Upload a PGN file or load the sample game to preview the broadcast.</div></div>
+</section>
+<footer>MaxChess Broadcast Preview · Free · Local PGN preview only · Not affiliated with FIDE, US Chess, or DGT</footer>
+</main>
+<script>
+(function(){
+const $=id=>document.getElementById(id);let games=[];
+const sample='[Event "MaxChess Broadcast Demo"]\n[Site "MaxChess"]\n[Round "1.1"]\n[White "Alex Player"]\n[Black "Jordan Player"]\n[Result "*"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *';
+const initial=['♜','♞','♝','♛','♚','♝','♞','♜','♟','♟','♟','♟','♟','♟','♟','♟','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','♙','♙','♙','♙','♙','♙','♙','♙','♖','♘','♗','♕','♔','♗','♘','♖'];
+function splitGames(src){
+ const chunks=src.replace(/\r/g,'').split(/(?=\[Event\s)/i).map(s=>s.trim()).filter(Boolean);
+ return chunks.map(chunk=>{const header={};const h=chunk.match(/^(?:\[[^\n]+\]\s*)+/);if(h){for(const m of h[0].matchAll(/\[([^\s]+)\s+"((?:\\.|[^"])*)"/g))header[m[1]]=m[2].replace(/\\"/g,'"')}
+ const movetext=chunk.replace(/^(?:\[[^\n]+\]\s*)+/,'').replace(/\{[^}]*\}/g,' ').replace(/;[^\n]*/g,' ').replace(/\([^)]*\)/g,' ').replace(/\$\d+/g,' ');
+ const tokens=movetext.split(/\s+/).filter(Boolean).filter(t=>!/^\d+\.{1,3}$/.test(t)&&!/^\d+\.+/.test(t)&&!/^(1-0|0-1|1\/2-1\/2|\*)$/.test(t));
+ return {header,moves:tokens.filter(t=>/^[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](=[QRBN])?[+#]?$|^O-O(-O)?[+#]?$/.test(t))};
+ }).filter(g=>g.moves.length||Object.keys(g.header).length);
+}
+function positionAfter(moves,count){
+ const b=initial.slice();let side=0;
+ // Minimal SAN preview engine: board remains at initial setup unless legal-move engine is connected.
+ // Moves are always shown accurately as notation; no fake piece positions are generated.
+ return {board:b,side:count%2?'Black':'White'};
+}
+function render(){
+ $('displayEvent').textContent=$('eventName').value||'Tournament Broadcast';
+ $('displayRound').textContent=$('roundName').value||'Round';
+ if(!games.length){$('games').innerHTML='<div class="empty">No games loaded. Upload a PGN or load the sample.</div>';return}
+ $('games').innerHTML=games.map((g,i)=>'<article class="board-card"><div class="meta"><strong>BOARD '+(i+1)+'</strong><span>'+esc(g.header.Round||$('roundName').value||'Round')+'</span></div><h2>'+esc(g.header.White||'White')+' <small>vs</small> '+esc(g.header.Black||'Black')+'</h2><div class="meta"><span>'+esc(g.header.Event||$('eventName').value)+'</span><span>'+esc(g.header.Result||'In progress')+'</span></div><div class="notice" style="margin:12px 0">PGN loaded · '+g.moves.length+' plies · Preview only</div><div class="move-list" id="moves-'+i+'">'+g.moves.map((m,j)=>'<span class="move" data-game="'+i+'" data-ply="'+j+'">'+(j%2===0?Math.floor(j/2)+1+'. ':'')+esc(m)+'</span>').join(' ')+'</div><p class="muted">Move list is displayed from the imported PGN. A legal-move board replay is not enabled in this pilot preview.</p></article>').join('');
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('parsePgn').onclick=()=>{const parsed=splitGames($('pgnText').value);if(!parsed.length){$('status').textContent='No PGN games found. Check the file or pasted text.';return}games=parsed;$('status').textContent='Loaded '+games.length+' game(s) for local preview.';render()};
+$('pgnFile').onchange=async()=>{const f=$('pgnFile').files&&$('pgnFile').files[0];if(!f)return;if(f.size>5*1024*1024){$('status').textContent='File is over the 5 MB preview limit.';return} $('pgnText').value=await f.text();$('status').textContent='File loaded. Tap “Load games into preview”.'};
+$('loadSample').onclick=()=>{$('pgnText').value=sample;$('parsePgn').click()};
+$('clearGames').onclick=()=>{games=[];$('pgnText').value='';$('status').textContent='Preview cleared.';render()};
+$('eventName').oninput=render;$('roundName').oninput=render;render();
+})();
+</script></body></html>

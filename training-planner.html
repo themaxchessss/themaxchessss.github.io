@@ -21,6 +21,7 @@ select{background:#081321;color:white;border-color:#506781}
 .lesson-card h3{margin:6px 0;color:#fff;font-size:1.15rem}
 .lesson-card p{margin:8px 0}
 .lesson-example{background:#13263b;border-left:3px solid #f4c95d;border-radius:8px;padding:11px;margin:12px 0}
+.lesson-board{overflow-x:auto;background:#07101b;border:1px solid #405571;border-radius:10px;padding:10px;margin:10px 0;white-space:pre;font:700 clamp(.75rem,2.8vw,.95rem)/1.35 ui-monospace,SFMono-Regular,Consolas,monospace}
 .lesson-quiz{margin-top:12px}
 .lesson-choices{display:grid;gap:8px}
 .lesson-choices button{width:100%;margin:0;text-align:left;min-height:44px}
@@ -226,11 +227,21 @@ select{background:#081321;color:white;border-color:#506781}
 <div class="lesson-kicker">LESSON 9 · TACTICS</div>
 <h3>Use a decoy to lure a piece</h3>
 <p>A <b>decoy</b> is a move that tempts an enemy piece onto a particular square, where a follow-up tactic can work. The target is often the king. A <b>deflection</b> is related, but its main idea is to pull a defender away from an important job.</p>
-<div class="lesson-example"><b>Worked pattern (only the listed pieces are shown; assume all unlisted squares are empty):</b>
-<p><b>White:</b> queen b1, knight d5, bishop c3. <b>Black:</b> king g8, queen d7, pawns f7 and h7.</p>
-<p><b>1. Qxh7+!</b> White's queen captures the h7-pawn and checks the king on g8. In this pattern, h7 is not protected by another White piece, so Black can capture with <b>1...Kxh7</b>. The black pawn on f7 blocks the black queen's path along the seventh rank, so it cannot simply recapture on h7.</p>
-<p><b>2. Nf6+!</b> The knight checks the king on h7 and attacks the queen on d7 at the same time. White's bishop on c3 protects f6, so the king cannot capture the checking knight. After the king moves, White can play <b>Nxd7</b> and win the queen.</p>
-<p><b>Lesson:</b> The queen sacrifice was a decoy: it drew the king onto h7, where a knight fork became possible. In a real game, check every legal reply before sacrificing.</p>
+<div class="lesson-example"><b>Complete sparse training position:</b> All squares not shown below are empty. White is to move.
+<pre class="lesson-board" role="img" aria-label="Chess position: Black king g8, queen d7, pawns f7 and h7; White king a1, queen b1, knight d5, bishop c3. White to move.">8  · · · · · · ♚ ·
+7  · · · ♛ · ♟ · ♟
+6  · · · · · · · ·
+5  · · · ♘ · · · ·
+4  · · · · · · · ·
+3  · · ♗ · · · · ·
+2  · · · · · · · ·
+1  ♔ ♕ · · · · · ·
+   a b c d e f g h</pre>
+<p><b>FEN:</b> <code>6k1/3q1p1p/8/3N4/8/2B5/8/KQ6 w - - 0 1</code></p>
+<p><b>1. Qxh7+!</b> White's queen captures the h7-pawn and checks the king on g8. The king can capture the queen with <b>1...Kxh7</b>; h7 is not protected by White's knight, bishop, or king.</p>
+<p><b>2. Nf6+!</b> The knight checks the king on h7 and attacks the queen on d7 at the same time. The bishop on c3 also protects f6. For example, after <b>2...Kg7</b>, White plays <b>3. Nxd7</b> and wins the queen.</p>
+<p><b>Why the king cannot take the knight:</b> From h7 to f6 is a knight's jump, not a king move. A king moves only one square. The bishop on c3 is an extra defender of f6.</p>
+<p><b>Lesson:</b> The queen sacrifice is a decoy: it draws the king onto h7, where a knight fork attacks the king and queen. Always calculate the opponent's legal replies before sacrificing.</p>
 </div>
 <div class="lesson-quiz" data-lesson-quiz data-success="Correct! A decoy lures a target onto a square where a follow-up tactic can work." data-hint="A decoy is bait: it tries to draw an enemy piece onto a particular square.">
 <p><b>Try it 1:</b> What is the main idea of a decoy?</p>
@@ -241,12 +252,12 @@ select{background:#081321;color:white;border-color:#506781}
 </div>
 <p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
 </div>
-<div class="lesson-quiz" data-lesson-quiz data-success="Exactly. The bishop on c3 protects f6, so the king cannot capture the checking knight. That lets the fork attack the queen on d7." data-hint="Trace the bishop's diagonal: c3–d4–e5–f6. It protects the knight on f6.">
-<p><b>Try it 2:</b> In the example, why can't the black king capture the knight after 2. Nf6+?</p>
+<div class="lesson-quiz" data-lesson-quiz data-success="Correct! A king moves only one square. From h7 it cannot capture a knight on f6; the bishop on c3 also protects f6." data-hint="Compare h7 and f6: they are two files apart. A king cannot move like a knight.">
+<p><b>Try it 2:</b> After 1...Kxh7 2. Nf6+, why can't the king on h7 capture the knight on f6?</p>
 <div class="lesson-choices">
-<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">The bishop on c3 protects f6</button>
-<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">A pawn on h7 protects f6</button>
-<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Kings cannot capture knights</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">A king moves one square; f6 is a knight's jump away</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Kings are never allowed to capture knights</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">The knight is not giving check</button>
 </div>
 <p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
 </div>

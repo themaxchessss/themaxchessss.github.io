@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sign in with MaxChess</title><style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{font:16px/1.6 system-ui,-apple-system,sans-serif;background:#101827;color:#f5f7fb;display:grid;place-items:center;min-height:100vh;margin:0;padding:20px}.card{width:min(520px,100%);background:#1c2940;padding:28px;border-radius:18px}h1{margin-top:0;color:#f2c75c}p{color:#cbd5e1}button{padding:12px 18px;border:0;border-radius:10px;background:#e7bd4d;color:#172033;font-weight:800;cursor:pointer}#status{color:#f5d98a}
+</style></head><body><main class="card"><h1>Sign in to InformationBank</h1><p>This securely uses your verified MaxChess email. Your MaxChess password is never shared with InformationBank.</p><p id="status">Checking your MaxChess sign-in…</p><button id="retry" hidden>Check again</button></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+(async()=>{'use strict';
+const status=document.getElementById('status'),retry=document.getElementById('retry');
+const state=new URLSearchParams(location.search).get('state')||'';
+const target='https://informashonbank.github.io';
+if(!state){status.textContent='This sign-in request is missing. Return to InformationBank and try again.';return;}
+const client=window.supabase.createClient('https://bvukakfhkebpsviehirr.supabase.co','sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2rG',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+async function check(){
+ status.textContent='Checking your MaxChess account…';
+ const {data,error}=await client.auth.getSession();if(error)throw error;
+ if(!data.session){status.textContent='You are not signed in to MaxChess in this browser. Sign in to MaxChess in another tab, then tap Check again.';retry.hidden=false;return;}
+ if(!window.opener){status.textContent='The InformationBank sign-in window is no longer open. Return to InformationBank and start again.';return;}
+ window.opener.postMessage({type:'MAXCHESS_SSO_SESSION',state,access_token:data.session.access_token},target);
+ status.textContent='MaxChess account verified. Return to InformationBank to finish signing in.';
+ setTimeout(()=>window.close(),1000);
+}
+retry.addEventListener('click',()=>check().catch(e=>{status.textContent=e.message||'Could not check sign-in.';}));
+check().catch(e=>{status.textContent=e.message||'Could not check sign-in.';retry.hidden=false;});
+})();
+</script></body></html>

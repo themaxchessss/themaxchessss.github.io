@@ -229,7 +229,7 @@ function renderScoreboard(){
 function formatClock(seconds){var s=Math.max(0,seconds|0);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 function renderClocks(data){
  var w=$('whiteClock'),b=$('blackClock');if(!w||!b)return;
- if(state.demo){w.textContent=formatClock(demoClockSeconds.white);b.textContent=formatClock(demoClockSeconds.black);$('whiteClockName').textContent='MAXCHESS PLAYER A';$('blackClockName').textContent='MAXCHESS PLAYER B';$('clockNote').textContent='Sample countdown · demo only';return}
+ if(state.demo){w.textContent=formatClock(demoClockSeconds.white);b.textContent=formatClock(demoClockSeconds.black);$('whiteClockName').textContent=safeName(state.pairing&&state.pairing.white).toUpperCase();$('blackClockName').textContent=safeName(state.pairing&&state.pairing.black).toUpperCase();$('clockNote').textContent='Sample countdown · demo only';return}
  var wc=data&&(data.whiteClock||data.white_clock||data.clockWhite),bc=data&&(data.blackClock||data.black_clock||data.clockBlack);
  w.textContent=typeof wc==='string'||typeof wc==='number'?String(wc):'—';b.textContent=typeof bc==='string'||typeof bc==='number'?String(bc):'—';
  $('whiteClockName').textContent='WHITE';$('blackClockName').textContent='BLACK';$('clockNote').textContent=(wc!=null||bc!=null)?'Clock values supplied by feed':'DGT clock values are not present in the public game feed';

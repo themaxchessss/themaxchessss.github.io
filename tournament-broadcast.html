@@ -2,90 +2,105 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090d16">
-<title>MaxChess Tournament Broadcast</title>
+<meta name="theme-color" content="#080d16">
+<title>MaxChess Live — Tournament Broadcast</title>
 <style>
-:root{color-scheme:dark;--gold:#f4c95d;--blue:#62b8ff;--line:#405571;--muted:#bdc9d9;--panel:#132238}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#1d3b5e,#080d16 68%);color:#f7f8fb;font:16px/1.5 system-ui,-apple-system,sans-serif}
-main{width:min(1180px,95vw);margin:auto;padding:20px 0 55px}a{color:var(--gold);text-decoration:none}
-header,.panel,.board-card{border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#203651,#111d2e 58%,#0a1320);padding:17px;margin:13px 0;box-shadow:0 12px 30px #0005}
-h1{font-size:clamp(2rem,7vw,3.6rem);line-height:1.04;color:var(--gold);margin:.2em 0}
-.muted,small{color:var(--muted)}.notice{background:#081321;border-left:4px solid var(--blue);padding:12px;border-radius:8px}.warn{border-color:#e6b94f}
-.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}button,.filelabel{font:inherit;font-weight:800;border:1px solid #8b7136;border-radius:10px;padding:10px 13px;background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;cursor:pointer}
-button.secondary{background:#263b54;border-color:#536b86;color:white}button:disabled{opacity:.45;cursor:not-allowed}
-input{font:inherit;color:white;background:#081321;border:1px solid #506781;border-radius:9px;padding:10px;max-width:100%}
-input[type=file]{display:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:12px}
-.board-card h2{color:var(--gold);margin:.1em 0 .5em}.meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
-.chessboard{width:min(100%,390px);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);border:5px solid #b78c39;border-radius:5px;overflow:hidden;margin:12px auto;background:#eee}
-.square{display:grid;place-items:center;font-family:"Arial Unicode MS",serif;font-size:clamp(24px,6vw,43px);line-height:1;user-select:none}
-.light{background:#f0d9b5;color:#171717}.dark{background:#b58863;color:#171717}
-.move-list{max-height:170px;overflow:auto;background:#081321;padding:10px;border-radius:9px;display:flex;flex-wrap:wrap;gap:6px}
-.move{padding:3px 7px;border-radius:5px;background:#203651}.move.active{background:#f4c95d;color:#17120a;font-weight:900}
-.empty{padding:22px;text-align:center;border:1px dashed #526781;border-radius:12px;color:var(--muted)}
-.status{min-height:1.5em;color:#a9d3ff}footer{color:var(--muted);font-size:.88rem;margin-top:24px}
-@media(max-width:560px){main{width:94vw;padding-top:10px}.panel,.board-card,header{padding:13px}.chessboard{border-width:3px}}
+:root{color-scheme:dark;--gold:#f2c65c;--blue:#55b9ff;--muted:#aebbd0;--line:#30465f;--panel:#111c2b}
+*{box-sizing:border-box}body{margin:0;background:#070b12;color:#f5f7fb;font:15px/1.45 Arial,system-ui,sans-serif}
+a{color:var(--gold);text-decoration:none}button,input,textarea{font:inherit}
+.top{height:6px;background:linear-gradient(90deg,#a87820,var(--gold),#fff0a8,#287cc4)}
+.wrap{width:min(1450px,96vw);margin:auto;padding:16px 0 42px}
+.brandbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 3px 16px;border-bottom:1px solid #28384b}
+.brand{font-weight:1000;letter-spacing:2px;color:var(--gold);font-size:22px}.brand span{color:white}.live{font-size:12px;letter-spacing:1.5px;color:#ff7777;font-weight:900}
+.hero{padding:20px 0 15px}.eyebrow{color:var(--blue);font-size:11px;font-weight:900;letter-spacing:2px}.hero h1{font-size:clamp(27px,5vw,48px);line-height:1.03;margin:7px 0;color:white;letter-spacing:-1px}.hero p{color:var(--muted);margin:7px 0}
+.scorebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:linear-gradient(100deg,#182a40,#101925);border:1px solid #31465f;border-left:4px solid var(--gold);padding:13px 16px;border-radius:9px;margin:14px 0}
+.scorebar strong{font-size:17px}.tag{font-size:11px;color:#d5e4f5;border:1px solid #50657c;padding:4px 8px;border-radius:4px;letter-spacing:1px}
+.broadcast-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(270px,.8fr);gap:14px;align-items:start}
+.screen{background:#000;border:1px solid #344a63;border-radius:10px;overflow:hidden;box-shadow:0 16px 45px #0008}
+.screen-head{background:#111d2b;padding:11px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #344a63}
+.screen-head b{color:var(--gold);letter-spacing:1px}.screen-head span{font-size:12px;color:var(--muted)}
+.frame-wrap{width:100%;aspect-ratio:16/10;background:radial-gradient(ellipse,#1b2d42,#080b10);display:grid;place-items:center;position:relative}
+#dgtFrame{width:100%;height:100%;border:0;background:#080b10;display:none}
+#empty{padding:26px;text-align:center;max-width:560px;color:var(--muted)}
+#empty .chessicon{font-size:54px;color:var(--gold)}
+.side{background:#101a28;border:1px solid #30465f;border-radius:10px;overflow:hidden}
+.side h2{font-size:14px;letter-spacing:1px;margin:0;padding:13px;border-bottom:1px solid #30465f;color:var(--gold)}
+.side-content{padding:14px}.side p,.help{color:var(--muted);font-size:13px}
+.panel{background:#101a28;border:1px solid #30465f;border-radius:10px;padding:16px;margin:16px 0}
+.panel h2{font-size:17px;margin:0 0 10px;color:var(--gold)}
+label{display:block;color:#dce6f3;font-size:13px;font-weight:700;margin:9px 0 5px}
+input,textarea{width:100%;background:#070d16;border:1px solid #405a75;color:white;border-radius:7px;padding:11px}
+textarea{min-height:95px;resize:vertical;font:13px/1.45 ui-monospace,monospace}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+button,.filebtn{border:1px solid #98752d;background:linear-gradient(140deg,#ffe18a,#c79532);color:#17120a;font-weight:900;padding:10px 14px;border-radius:7px;cursor:pointer}
+button.alt{background:#243a53;border-color:#536c87;color:white}
+button:focus,input:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:2px}
+#status{color:#9dd5ff;font-size:13px;min-height:20px}
+.instructions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.step{background:#0a1320;border:1px solid #2c4057;border-radius:8px;padding:12px}
+.step b{display:block;color:var(--gold);margin-bottom:5px}.step p{margin:0;color:var(--muted);font-size:13px}
+.footer{border-top:1px solid #26384d;margin-top:25px;padding-top:14px;color:#8596ad;font-size:12px}
+.obs .brandbar,.obs .hero,.obs .panel,.obs .footer,.obs .side{display:none}
+.obs .wrap{width:100%;padding:0}.obs .scorebar{margin:0;border-radius:0}.obs .broadcast-grid{display:block}.obs .screen{border-radius:0}.obs .frame-wrap{aspect-ratio:16/9}
+@media(max-width:850px){.broadcast-grid{grid-template-columns:1fr}.frame-wrap{aspect-ratio:4/3}.instructions{grid-template-columns:1fr}}
 </style>
 </head>
-<body><main>
-<nav><a href="dgt-hub.html">← DGT Hub</a> · <a href="tournament-desk.html">Tournament Desk</a> · <a href="./">MaxChess Home</a></nav>
-<header>
-<p class="muted">MAXCHESS · TOURNAMENT BROADCAST WORKSPACE</p>
-<h1>♛ Live Tournament Broadcast</h1>
-<p>Prepare a broadcast layout and preview tournament PGN games on a phone, tablet, or computer.</p>
-<div class="notice warn"><strong>Important — pilot preview, not yet an official live service.</strong> This page currently previews PGN files on the device that uploads them. It does not yet publish a shared live feed, connect directly to DGT LiveChess, synchronize clocks, or distribute updates to remote spectators. Do not use it as the sole broadcast system for a rated event.</div>
-</header>
-<section class="panel">
-<h2>1. Event details</h2>
-<div class="controls">
-<label>Event name <input id="eventName" maxlength="90" value="MaxChess Tournament Broadcast Preview"></label>
-<label>Round <input id="roundName" maxlength="30" value="Round 1"></label>
+<body><div class="top"></div><main class="wrap">
+<div class="brandbar"><div class="brand">♛ MAX<span>CHESS</span></div><div><span class="live">● LIVE BROADCAST STUDIO</span><br><small><a href="dgt-hub.html">DGT setup guide</a> · <a href="tournament-desk.html">Tournament Desk</a></small></div></div>
+<section class="hero"><div class="eyebrow">FREE CHESS · TOURNAMENT COVERAGE</div><h1 id="eventTitle">MAXCHESS TOURNAMENT LIVE</h1><p id="roundTitle">Official-style game coverage • Live boards • Tournament action</p></section>
+<div class="scorebar"><div><div class="tag">NOW SHOWING</div><strong id="eventBar">MaxChess Tournament</strong><div style="color:var(--muted);font-size:12px" id="roundBar">Round 1 · Main boards</div></div><div style="text-align:right"><span class="live">● ON AIR PREVIEW</span><div class="tag">MAXCHESS BROADCAST</div></div></div>
+<div class="broadcast-grid">
+<section class="screen"><div class="screen-head"><b>LIVE GAME FEED</b><span id="feedStatus">Waiting for DGT LiveChess connection</span></div>
+<div class="frame-wrap"><div id="empty"><div class="chessicon">♜ ♞ ♝ ♛ ♚</div><h2>YOUR TOURNAMENT. LIVE ON MAXCHESS.</h2><p>Connect the tournament feed from DGT LiveChess to show the real boards, players, moves and clocks here.</p></div><iframe id="dgtFrame" title="DGT LiveChess tournament broadcast" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+</section>
+<aside class="side"><h2>♟ BROADCAST INFORMATION</h2><div class="side-content"><p><strong id="sideEvent" style="color:white">MaxChess Tournament</strong></p><p id="sideRound">Round 1</p><p>Source: <strong style="color:#b8dfff">DGT LiveChess Cloud</strong></p><p>Feed status: <strong id="sideStatus" style="color:#f2c65c">Not connected</strong></p><hr style="border-color:#30465f"><p>This broadcast page is designed to be shown as a browser source in OBS and captured in a YouTube livestream.</p><p><a href="https://www.livechesscloud.com/" target="_blank" rel="noopener">Open DGT LiveChess Cloud ↗</a></p></div></aside>
 </div>
-<p class="muted">These labels appear above the game boards in this local preview.</p>
+<section class="panel" id="setup">
+<h2>Connect DGT electronic boards</h2>
+<p class="help">MaxChess receives the tournament display from DGT LiveChess Cloud. The boards connect to the tournament computer running DGT LiveChess; this webpage is the viewer and broadcast layout.</p>
+<div class="instructions">
+<div class="step"><b>1 · Connect the boards</b><p>Connect DGT USB, Bluetooth or Smart Boards to a Windows, Mac or Linux tournament computer and confirm they appear in DGT LiveChess.</p></div>
+<div class="step"><b>2 · Publish from LiveChess</b><p>In DGT LiveChess, set up the tournament and pairings, start recording the boards, then configure Output → LiveChess Cloud export.</p></div>
+<div class="step"><b>3 · Paste the tournament link</b><p>Copy the tournament output/view link generated by DGT LiveChess Cloud and paste it below. The live board feed should appear above if DGT allows embedding that link.</p></div>
+</div>
+<label for="eventInput">Tournament name</label><input id="eventInput" maxlength="100" value="MaxChess Tournament">
+<label for="roundInput">Round / description</label><input id="roundInput" maxlength="100" value="Round 1 · Main boards">
+<label for="dgtUrl">DGT LiveChess Cloud tournament output URL</label><input id="dgtUrl" type="url" placeholder="Paste the https:// LiveChess Cloud tournament link">
+<div class="controls"><button id="connect">Connect DGT feed</button><button class="alt" id="disconnect">Disconnect</button><button class="alt" id="obsCopy">Copy OBS browser-source URL</button></div>
+<div id="status" role="status" aria-live="polite"></div>
+<p class="help">For safety, only HTTPS links on livechesscloud.com are accepted. If the DGT page refuses embedding, use its own viewer link in a browser source or use the PGN preview section below. DGT hardware connection is managed by DGT LiveChess, not by iPad Safari.</p>
 </section>
 <section class="panel">
-<h2>2. Load tournament games</h2>
-<p>Choose a PGN file containing one or more games. Games are parsed and displayed below. You can also paste PGN text.</p>
-<div class="controls"><label class="filelabel" for="pgnFile">Choose PGN file</label><input id="pgnFile" type="file" accept=".pgn,.txt,text/plain"><button id="loadSample" class="secondary">Load sample game</button><button id="clearGames" class="secondary">Clear games</button></div>
-<label for="pgnText">Or paste PGN here</label>
-<textarea id="pgnText" rows="7" style="width:100%;margin:8px 0;padding:12px;border:1px solid #506781;border-radius:10px;background:#081321;color:white;font:14px/1.5 ui-monospace,monospace" placeholder='[Event "Example Open"]&#10;[White "Player A"]&#10;[Black "Player B"]&#10;&#10;1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 *'></textarea>
-<div class="controls"><button id="parsePgn">Load games into preview</button><span id="status" class="status" role="status" aria-live="polite"></span></div>
+<h2>PGN backup preview</h2><p class="help">If you have an exported PGN file, you can load it here as a backup preview. This does not create a live DGT connection.</p>
+<label for="pgnFile">Choose PGN file</label><input id="pgnFile" type="file" accept=".pgn,.txt,text/plain">
+<label for="pgnText">Or paste PGN text</label><textarea id="pgnText" placeholder='[Event "Example"]&#10;[White "Player 1"]&#10;[Black "Player 2"]&#10;&#10;1. e4 e5 2. Nf3 Nc6 *'></textarea>
+<div class="controls"><button id="loadPgn">Read PGN backup</button></div><div id="pgnResult" class="help"></div>
 </section>
-<section class="panel">
-<div class="meta"><h2 id="displayEvent">MaxChess Tournament Broadcast Preview</h2><strong id="displayRound">Round 1</strong></div>
-<div id="games" class="grid"><div class="empty">No games loaded yet. Upload a PGN file or load the sample game to preview the broadcast.</div></div>
-</section>
-<footer>MaxChess Broadcast Preview · Free · Local PGN preview only · Not affiliated with FIDE, US Chess, or DGT</footer>
+<div class="footer">MAXCHESS · FREE TO PLAY · Tournament broadcast interface preview. DGT and LiveChess Cloud are products/services of their respective owners. MaxChess is not affiliated with or endorsed by DGT, FIDE, US Chess, or YouTube.</div>
 </main>
 <script>
 (function(){
-const $=id=>document.getElementById(id);let games=[];
-const sample='[Event "MaxChess Broadcast Demo"]\n[Site "MaxChess"]\n[Round "1.1"]\n[White "Alex Player"]\n[Black "Jordan Player"]\n[Result "*"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 *';
-const initial=['♜','♞','♝','♛','♚','♝','♞','♜','♟','♟','♟','♟','♟','♟','♟','♟','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','♙','♙','♙','♙','♙','♙','♙','♙','♖','♘','♗','♕','♔','♗','♘','♖'];
-function splitGames(src){
- const chunks=src.replace(/\r/g,'').split(/(?=\[Event\s)/i).map(s=>s.trim()).filter(Boolean);
- return chunks.map(chunk=>{const header={};const h=chunk.match(/^(?:\[[^\n]+\]\s*)+/);if(h){for(const m of h[0].matchAll(/\[([^\s]+)\s+"((?:\\.|[^"])*)"/g))header[m[1]]=m[2].replace(/\\"/g,'"')}
- const movetext=chunk.replace(/^(?:\[[^\n]+\]\s*)+/,'').replace(/\{[^}]*\}/g,' ').replace(/;[^\n]*/g,' ').replace(/\([^)]*\)/g,' ').replace(/\$\d+/g,' ');
- const tokens=movetext.split(/\s+/).filter(Boolean).filter(t=>!/^\d+\.{1,3}$/.test(t)&&!/^\d+\.+/.test(t)&&!/^(1-0|0-1|1\/2-1\/2|\*)$/.test(t));
- return {header,moves:tokens.filter(t=>/^[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](=[QRBN])?[+#]?$|^O-O(-O)?[+#]?$/.test(t))};
- }).filter(g=>g.moves.length||Object.keys(g.header).length);
-}
-function positionAfter(moves,count){
- const b=initial.slice();let side=0;
- // Minimal SAN preview engine: board remains at initial setup unless legal-move engine is connected.
- // Moves are always shown accurately as notation; no fake piece positions are generated.
- return {board:b,side:count%2?'Black':'White'};
-}
-function render(){
- $('displayEvent').textContent=$('eventName').value||'Tournament Broadcast';
- $('displayRound').textContent=$('roundName').value||'Round';
- if(!games.length){$('games').innerHTML='<div class="empty">No games loaded. Upload a PGN or load the sample.</div>';return}
- $('games').innerHTML=games.map((g,i)=>'<article class="board-card"><div class="meta"><strong>BOARD '+(i+1)+'</strong><span>'+esc(g.header.Round||$('roundName').value||'Round')+'</span></div><h2>'+esc(g.header.White||'White')+' <small>vs</small> '+esc(g.header.Black||'Black')+'</h2><div class="meta"><span>'+esc(g.header.Event||$('eventName').value)+'</span><span>'+esc(g.header.Result||'In progress')+'</span></div><div class="notice" style="margin:12px 0">PGN loaded · '+g.moves.length+' plies · Preview only</div><div class="move-list" id="moves-'+i+'">'+g.moves.map((m,j)=>'<span class="move" data-game="'+i+'" data-ply="'+j+'">'+(j%2===0?Math.floor(j/2)+1+'. ':'')+esc(m)+'</span>').join(' ')+'</div><p class="muted">Move list is displayed from the imported PGN. A legal-move board replay is not enabled in this pilot preview.</p></article>').join('');
-}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-$('parsePgn').onclick=()=>{const parsed=splitGames($('pgnText').value);if(!parsed.length){$('status').textContent='No PGN games found. Check the file or pasted text.';return}games=parsed;$('status').textContent='Loaded '+games.length+' game(s) for local preview.';render()};
-$('pgnFile').onchange=async()=>{const f=$('pgnFile').files&&$('pgnFile').files[0];if(!f)return;if(f.size>5*1024*1024){$('status').textContent='File is over the 5 MB preview limit.';return} $('pgnText').value=await f.text();$('status').textContent='File loaded. Tap “Load games into preview”.'};
-$('loadSample').onclick=()=>{$('pgnText').value=sample;$('parsePgn').click()};
-$('clearGames').onclick=()=>{games=[];$('pgnText').value='';$('status').textContent='Preview cleared.';render()};
-$('eventName').oninput=render;$('roundName').oninput=render;render();
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search);
+if(params.get('mode')==='obs')document.body.classList.add('obs');
+const allowedHost=h=>h==='livechesscloud.com'||h.endsWith('.livechesscloud.com');
+function setStatus(s){$('status').textContent=s;$('feedStatus').textContent=s;$('sideStatus').textContent=s}
+function labels(){const ev=$('eventInput').value.trim()||'MaxChess Tournament';const rd=$('roundInput').value.trim()||'Round 1';$('eventTitle').textContent=ev.toUpperCase();$('eventBar').textContent=ev;$('sideEvent').textContent=ev;$('roundTitle').textContent=rd+' • Live tournament coverage';$('roundBar').textContent=rd+' · Main boards';$('sideRound').textContent=rd}
+$('eventInput').addEventListener('input',labels);$('roundInput').addEventListener('input',labels);
+$('connect').onclick=()=>{
+ let u;try{u=new URL($('dgtUrl').value.trim())}catch(e){setStatus('Paste the complete DGT LiveChess Cloud HTTPS link first.');return}
+ if(u.protocol!=='https:'||!allowedHost(u.hostname)){setStatus('That link is not accepted. Use the HTTPS tournament link created by DGT LiveChess Cloud.');return}
+ $('dgtFrame').src=u.href;$('dgtFrame').style.display='block';$('empty').style.display='none';
+ $('dgtFrame').onload=()=>setStatus('DGT page loaded. Check that live boards and moves are visible.');
+ $('dgtFrame').onerror=()=>setStatus('The DGT page could not be embedded. Try the DGT viewer URL in OBS or check its sharing settings.');
+ $('dgtUrl').dataset.saved=u.href;labels();setStatus('Opening DGT LiveChess Cloud feed…');
+ try{localStorage.setItem('maxchess-dgt-feed-url',u.href);localStorage.setItem('maxchess-broadcast-event',$('eventInput').value);localStorage.setItem('maxchess-broadcast-round',$('roundInput').value)}catch(e){}
+};
+$('disconnect').onclick=()=>{$('dgtFrame').src='about:blank';$('dgtFrame').style.display='none';$('empty').style.display='block';setStatus('Disconnected · waiting for DGT LiveChess feed')};
+$('obsCopy').onclick=async()=>{const url=location.origin+location.pathname+'?mode=obs';try{await navigator.clipboard.writeText(url);setStatus('OBS browser-source URL copied. Add it as a Browser source in OBS.')}catch(e){setStatus('OBS URL: '+url)}};
+$('pgnFile').onchange=async()=>{const f=$('pgnFile').files&&$('pgnFile').files[0];if(!f)return;if(f.size>5*1024*1024){$('pgnResult').textContent='File exceeds 5 MB.';return}$('pgnText').value=await f.text();$('pgnResult').textContent='PGN file loaded. Tap Read PGN backup.'};
+$('loadPgn').onclick=()=>{const txt=$('pgnText').value;const n=(txt.match(/\[Event\s+"/g)||[]).length||((txt.match(/\d+\./g)||[]).length?1:0);$('pgnResult').textContent=n?'PGN backup detected ('+n+' game header(s)). For live multi-board positions, connect the DGT LiveChess Cloud feed above.':'No PGN game detected. Check the pasted text or file.'};
+try{const saved=localStorage.getItem('maxchess-dgt-feed-url');if(saved){$('dgtUrl').value=saved;$('eventInput').value=localStorage.getItem('maxchess-broadcast-event')||$('eventInput').value;$('roundInput').value=localStorage.getItem('maxchess-broadcast-round')||$('roundInput').value;labels();}}catch(e){}
+labels();
 })();
 </script></body></html>

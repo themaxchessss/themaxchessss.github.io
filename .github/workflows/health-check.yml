@@ -38,9 +38,11 @@ jobs:
       - name: Wait for the current commit to be published
         run: |
           page_url="https://themaxchessss.github.io/training-planner.html?health=${GITHUB_SHA}"
+          broadcast_url="https://themaxchessss.github.io/tournament-broadcast.html?health=${GITHUB_SHA}"
           for attempt in $(seq 1 30); do
-            if curl --fail --silent --location "$page_url" | grep -Fq '.lesson-example code'; then
-              echo "Latest responsive training page is published."
+            if curl --fail --silent --location "$page_url" | grep -Fq '.lesson-example code' && \\
+               curl --fail --silent --location "$broadcast_url" | grep -Fq 'MAXCHESS LIVE'; then
+              echo "Latest training and MaxChess Live broadcast pages are published."
               exit 0
             fi
             echo "Waiting for Pages to publish ${GITHUB_SHA} (attempt ${attempt}/30)..."
@@ -64,6 +66,8 @@ jobs:
             '/maxchess-top-100.html',
             '/chess-clock.html',
             '/dgt-hub.html',
+            '/tournament-broadcast.html',
+            '/tournament-broadcast.html?mode=obs',
             '/team-workspace.html',
             '/workbench.html',
             '/workspace.html',
@@ -144,6 +148,24 @@ jobs:
                   }
                   for (const imageUrl of pageState.brokenImages) {
                     problems.push(`[${device.name} ${route}] Broken image: ${imageUrl}`);
+                  }
+
+                  const routeUrl = new URL(origin + route);
+                  if (routeUrl.pathname === '/tournament-broadcast.html' && routeUrl.searchParams.get('mode') !== 'obs') {
+                    const hasControls = await page.evaluate(() => Boolean(
+                      document.querySelector('#connectBtn') && document.querySelector('#chessBoard') &&
+                      document.querySelector('#roundSelect') && document.querySelector('#connectionStatus')
+                    ));
+                    if (!hasControls) problems.push(`[${device.name} ${route}] Broadcast controls or chessboard are missing`);
+                    else {
+                      await page.locator('#connectBtn').click();
+                      const validation = await page.locator('#connectionStatus').innerText();
+                      if (!validation.includes('link could not be read')) problems.push(`[${device.name} ${route}] Invalid-link validation did not respond to a tap/click`);
+                    }
+                  }
+                  if (routeUrl.pathname === '/tournament-broadcast.html' && routeUrl.searchParams.get('mode') === 'obs') {
+                    const setupHidden = await page.locator('#setup').evaluate(el => getComputedStyle(el).display === 'none');
+                    if (!setupHidden) problems.push(`[${device.name} ${route}] OBS mode did not hide setup controls`);
                   }
 
                   for (const link of pageState.links) {

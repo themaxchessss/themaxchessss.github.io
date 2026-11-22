@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090d16">
+<title>MaxChess DGT Hub — Boards & Clocks</title>
+<style>
+:root{color-scheme:dark;--gold:#f4c95d;--blue:#62b8ff;--line:#405571;--muted:#bdc9d9;--panel:#132238}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,#1d3b5e,#080d16 68%);color:#f7f8fb;font:16px/1.55 system-ui,-apple-system,sans-serif}
+main{width:min(1080px,94vw);margin:auto;padding:22px 0 60px}a{color:var(--gold);text-decoration:none}h1{font-size:clamp(2.2rem,7vw,4rem);line-height:1.02;color:var(--gold);margin:.2em 0}.muted,small{color:var(--muted)}
+.hero,.panel,.device{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#203651,#111d2e 58%,#0a1320);padding:18px;margin:14px 0;box-shadow:0 16px 35px #0006}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px}
+label{display:block;font-weight:800;margin:10px 0 5px}select,button{font:inherit;border-radius:10px;padding:12px;border:1px solid #526b87}
+select{width:100%;background:#081321;color:white}
+button{background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;font-weight:900;cursor:pointer;margin:7px 6px 0 0}
+button.secondary{background:#263b54;border-color:#536b86;color:white}
+.notice{padding:13px;border-left:4px solid var(--blue);background:#081321;border-radius:9px;color:#dce9f8}
+.warn{border-left-color:#e7b84f}.good{border-left-color:#61d69a}
+.tag{display:inline-block;border:1px solid #63758c;border-radius:99px;padding:3px 9px;font-size:.75rem;color:#dce6f3;margin:2px}
+.device h3{color:var(--gold);margin:.2em 0}.status{min-height:1.5em;color:#a9d3ff}
+ul{padding-left:1.25rem}li{margin:.35em 0}
+footer{margin-top:25px;color:var(--muted);font-size:.88rem}
+@media(max-width:600px){.hero,.panel,.device{padding:14px}main{padding-top:14px}}
+</style>
+</head>
+<body><main>
+<nav><a href="workbench.html">← Workbench</a> · <a href="chess-clock.html">MaxChess Clock</a> · <a href="./">MaxChess Home</a></nav>
+<header class="hero">
+<p class="muted">MAXCHESS HARDWARE CONNECTIVITY</p>
+<h1>♛ DGT Hub</h1>
+<p>One place for DGT electronic boards, tournament boards, and DGT chess clocks. Choose your equipment to see the right connection route.</p>
+<div class="notice warn"><strong>Connection status:</strong> Hardware support is being built in stages. This page identifies compatible connection paths; it does not pretend a device is connected until MaxChess has a working device driver and confirms data from it.</div>
+</header>
+
+<section class="panel">
+<h2>Find your equipment</h2>
+<div class="grid">
+<div><label for="board">DGT board</label><select id="board">
+<option value="pegasus">DGT Pegasus</option>
+<option value="usb">USB e-Board (Walnut / Rosewood / Wengé)</option>
+<option value="smart">DGT Smart Board (with or without indices)</option>
+<option value="bluetooth">Bluetooth e-Board (older models)</option>
+<option value="tournament">Tournament e-Board / multi-board setup</option>
+<option value="revelation">DGT Revelation II</option>
+<option value="none">No electronic board / clock only</option>
+</select></div>
+<div><label for="clock">DGT clock</label><select id="clock">
+<option value="na">DGT North American</option>
+<option value="3000">DGT3000</option>
+<option value="2010">DGT2010</option>
+<option value="2500">DGT2500</option>
+<option value="1500">DGT1500</option>
+<option value="1001">DGT1001 / DGT1002</option>
+<option value="echo">DGT Echo</option>
+<option value="xl">DGT XL</option>
+<option value="pi">DGT Pi</option>
+<option value="other">Other DGT clock / not sure</option>
+</select></div>
+</div>
+<button id="showPath">Show my connection plan</button>
+<div id="plan" class="notice" aria-live="polite" style="margin-top:14px">Choose your board and clock, then tap “Show my connection plan.”</div>
+</section>
+
+<section class="panel">
+<h2>Electronic board compatibility</h2>
+<div class="grid">
+<article class="device"><h3>DGT Pegasus</h3><span class="tag">Bluetooth Low Energy</span><span class="tag">iPad route available through supported app/adapter</span><p class="muted">Pegasus is designed for online play and connects over Bluetooth LE. iPad browser access is not the same as DGT Chess app access; MaxChess still needs its own compatible bridge before it can read live moves directly.</p></article>
+<article class="device"><h3>USB e-Boards & Smart Boards</h3><span class="tag">USB-C</span><span class="tag">Desktop bridge required</span><p class="muted">Modern DGT tournament boards and Smart Boards use USB-C. A desktop connection bridge is the practical route. Safari on iPad does not support the Web Serial interface needed by a direct USB browser connection.</p></article>
+<article class="device"><h3>Bluetooth e-Boards</h3><span class="tag">Bluetooth Classic</span><span class="tag">Adapter may be required</span><p class="muted">Older Bluetooth wooden boards need a compatible Bluetooth-to-computer bridge. iPadOS browser restrictions mean a dedicated adapter or companion app may be needed.</p></article>
+<article class="device"><h3>Tournament board strings</h3><span class="tag">Multi-board</span><span class="tag">DGT LiveChess route</span><p class="muted">Tournament boards can be linked in groups and managed with DGT LiveChess on a computer. A MaxChess tournament bridge must receive the board feeds before MaxChess can display each live game.</p></article>
+</div>
+</section>
+
+<section class="panel">
+<h2>DGT clocks: what can connect?</h2>
+<div class="grid">
+<article class="device"><h3>DGT North American</h3><span class="tag">US delay / Fischer bonus</span><span class="tag">Standalone clock</span><p class="muted">This is a physical game timer, not a computer-connected clock in the documented DGT e-Board clock-cable list. It can be used beside MaxChess with matching time settings, but MaxChess cannot claim to read or control it electronically.</p></article>
+<article class="device"><h3>DGT3000</h3><span class="tag">Board clock cable</span><span class="tag">Best DGT clock integration target</span><p class="muted">DGT documents the DGT3000 as connectable to compatible e-Boards. A board/clock bridge can be used to carry game and clock information where supported. This requires a working MaxChess device driver.</p></article>
+<article class="device"><h3>DGT XL / Echo / Pi</h3><span class="tag">Board-linked models</span><p class="muted">DGT lists these models among clocks that connect with its e-Boards. Exact control and display features differ by model; each needs protocol-level testing before MaxChess can mark it fully supported.</p></article>
+<article class="device"><h3>DGT2010 / 2500 / 1500 / 1001 / 1002</h3><span class="tag">Standalone timer family</span><p class="muted">These are useful physical clocks, but a compatible e-Board cable or computer data interface is not documented for this group. Use them as independent timers unless a model-specific interface is verified.</p></article>
+</div>
+<div class="notice warn"><strong>Important:</strong> “DGT clock support” does not mean every DGT clock can be remotely started, paused, or set by a website. MaxChess will only show a connected status after a real device protocol confirms it.</div>
+</section>
+
+<section class="panel">
+<h2>What MaxChess is building toward</h2>
+<ul>
+<li>Read piece movement from compatible DGT boards and convert it into legal MaxChess moves.</li>
+<li>Show the physical board position and the online board position together.</li>
+<li>Support takebacks, new-game setup, orientation, and move synchronization.</li>
+<li>Receive clock information from supported board-and-clock combinations such as a DGT3000 setup.</li>
+<li>Keep standalone clocks such as the DGT North American clearly identified as manual-use devices unless a verified data interface exists.</li>
+<li>Provide a tournament route for multiple DGT boards through a computer running DGT LiveChess.</li>
+</ul>
+<p class="muted">No MaxChess password, DGT account password, or private key should ever be entered into a hardware connection screen.</p>
+</section>
+
+<section class="panel">
+<h2>Official equipment information</h2>
+<ul>
+<li><a href="https://www.dgtnorthamerica.com/products/home-use-e-boards" target="_blank" rel="noopener">DGT North America — electronic boards</a></li>
+<li><a href="https://www.dgtnorthamerica.com/products/chess-clocks" target="_blank" rel="noopener">DGT North America — chess clocks</a></li>
+<li><a href="https://www.dgtnorthamerica.com/faq/general/why-is-dgt-not-selling-tournament-boards-with-serial-connections-anymore" target="_blank" rel="noopener">DGT USB-C board and clock compatibility notes</a></li>
+<li><a href="https://chessconnect.de/dgt-boards/" target="_blank" rel="noopener">Chessconnect — third-party DGT compatibility and iPad adapter notes</a></li>
+</ul>
+</section>
+<footer>MaxChess DGT Hub · Independent community integration guide. MaxChess is not affiliated with or endorsed by DGT.</footer>
+</main>
+<script>
+(function(){
+const board=document.getElementById('board'),clock=document.getElementById('clock'),plan=document.getElementById('plan');
+function show(){
+const b=board.value,c=clock.value;
+let parts=[];
+if(b==='pegasus')parts.push('<strong>Board:</strong> Pegasus uses Bluetooth LE. A companion-app or supported adapter route is needed; MaxChess browser access is not confirmed on iPad.');
+else if(b==='usb'||b==='smart')parts.push('<strong>Board:</strong> Use a computer bridge for USB-C. Direct USB serial access is not available in iPad Safari.');
+else if(b==='bluetooth')parts.push('<strong>Board:</strong> Use a compatible Bluetooth Classic bridge. iPad may require a dedicated adapter/companion app.');
+else if(b==='tournament')parts.push('<strong>Board:</strong> Run DGT LiveChess on a computer and connect its game feed to a MaxChess tournament bridge.');
+else if(b==='revelation')parts.push('<strong>Board:</strong> Requires a model-specific DGT protocol bridge; do not assume USB or Bluetooth support.');
+else parts.push('<strong>Board:</strong> No electronic board selected. You can still use a physical clock alongside MaxChess.');
+if(c==='na')parts.push('<strong>Clock:</strong> DGT North American is a standalone timer. Set the same time control on the physical clock and MaxChess; no electronic clock sync is claimed.');
+else if(c==='3000')parts.push('<strong>Clock:</strong> DGT3000 can connect to compatible DGT e-Boards. The MaxChess bridge must support the board clock channel before live clock sync is available.');
+else if(['echo','xl','pi'].includes(c))parts.push('<strong>Clock:</strong> DGT documents this clock as connectable with compatible e-Boards. Model-specific bridge testing is still required.');
+else if(['2010','2500','1500','1001'].includes(c))parts.push('<strong>Clock:</strong> Treat this as a standalone timer unless a model-specific data connection is verified.');
+else if(c==='1002')parts.push('<strong>Clock:</strong> DGT1002 is a standalone bonus timer; no direct MaxChess data link is confirmed.');
+else parts.push('<strong>Clock:</strong> Check the exact model number before selecting a connection route.');
+parts.push('<strong>Next step:</strong> The MaxChess device driver/bridge is not yet active on this page. This plan is a compatibility guide, not a live connection confirmation.');
+plan.innerHTML=parts.join('<br><br>');
+}
+document.getElementById('showPath').addEventListener('click',show);
+if(/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1)){
+const n=document.createElement('div');n.className='notice warn';n.style.marginTop='12px';n.textContent='You appear to be using an iPad or iPhone. Direct USB Web Serial connections are not supported in Safari on iPadOS. Pegasus and adapter-based routes need separate app/bridge support.';document.querySelector('header.hero').appendChild(n);
+}
+})();
+</script>
+</body></html>

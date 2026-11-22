@@ -23,6 +23,30 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+      - name: Smoke-check MaxChess Live broadcast page
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const vm = require('node:vm');
+          const html = fs.readFileSync('tournament-broadcast.html', 'utf8');
+          const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(m => m[1]);
+          const refs = [...html.matchAll(/\\$\\(['"]([^'"]+)['"]\\)/g)].map(m => m[1]);
+          const missing = [...new Set(refs.filter(id => !ids.includes(id)))];
+          if (missing.length) throw new Error('Missing broadcast DOM IDs: ' + missing.join(', '));
+          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)]
+            .map(m => m[1]).filter(s => s.trim());
+          if (!scripts.length) throw new Error('No inline broadcast script found');
+          scripts.forEach(script => new vm.Script(script));
+          for (const required of [
+            'DGT LiveChess Cloud', 'round-'+String.fromCharCode(36)+'{state.round}',
+            'function startBoardCycle()', 'mode','obs','livechesscloud.com',
+            'dgtViewer', 'cycleSeconds', 'function parseTournamentId'
+          ]) {
+            if (!html.includes(required)) throw new Error('Missing required broadcast feature: ' + required);
+          }
+          if (!html.includes("u.protocol!=='https:'")) throw new Error('DGT URL validation must require HTTPS');
+          console.log('MaxChess Live smoke check passed: script syntax, DOM IDs, DGT feed, OBS mode and board rotation.');
+          NODE
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload website files

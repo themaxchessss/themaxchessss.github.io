@@ -67,7 +67,7 @@ footer{margin-top:25px;color:var(--muted);font-size:.88rem}
 <article class="device"><h3>DGT Pegasus</h3><span class="tag">Bluetooth Low Energy</span><span class="tag">iPad route available through supported app/adapter</span><p class="muted">Pegasus is designed for online play and connects over Bluetooth LE. iPad browser access is not the same as DGT Chess app access; MaxChess still needs its own compatible bridge before it can read live moves directly.</p></article>
 <article class="device"><h3>USB e-Boards & Smart Boards</h3><span class="tag">USB-C</span><span class="tag">Desktop bridge required</span><p class="muted">Modern DGT tournament boards and Smart Boards use USB-C. A desktop connection bridge is the practical route. Safari on iPad does not support the Web Serial interface needed by a direct USB browser connection.</p></article>
 <article class="device"><h3>Bluetooth e-Boards</h3><span class="tag">Bluetooth Classic</span><span class="tag">Adapter may be required</span><p class="muted">Older Bluetooth wooden boards need a compatible Bluetooth-to-computer bridge. iPadOS browser restrictions mean a dedicated adapter or companion app may be needed.</p></article>
-<article class="device"><h3>Tournament board strings</h3><span class="tag">Multi-board</span><span class="tag">DGT LiveChess route</span><p class="muted">Tournament boards can be linked in groups and managed with DGT LiveChess on a computer. A MaxChess tournament bridge must receive the board feeds before MaxChess can display each live game.</p></article>
+<article class="device"><h3>Tournament board strings</h3><span class="tag">Multi-board</span><span class="tag">DGT LiveChess route</span><p class="muted">Tournament boards can be linked in groups and managed with DGT LiveChess on a computer. Publish the event with LiveChess Cloud, then open MaxChess Live and paste the tournament viewer link to display its boards and move feeds.</p></article>
 </div>
 </section>
 
@@ -115,7 +115,7 @@ let parts=[];
 if(b==='pegasus')parts.push('<strong>Board:</strong> Pegasus uses Bluetooth LE. A companion-app or supported adapter route is needed; MaxChess browser access is not confirmed on iPad.');
 else if(b==='usb'||b==='smart')parts.push('<strong>Board:</strong> Use a computer bridge for USB-C. Direct USB serial access is not available in iPad Safari.');
 else if(b==='bluetooth')parts.push('<strong>Board:</strong> Use a compatible Bluetooth Classic bridge. iPad may require a dedicated adapter/companion app.');
-else if(b==='tournament')parts.push('<strong>Board:</strong> Run DGT LiveChess on a computer and connect its game feed to a MaxChess tournament bridge.');
+else if(b==='tournament')parts.push('<strong>Board:</strong> Run DGT LiveChess on the tournament computer, publish the event to LiveChess Cloud, then <a href="tournament-broadcast.html">open MaxChess Live</a> and paste the viewer link. The boards are read by the DGT computer; MaxChess reads the published game feed.');
 else if(b==='revelation')parts.push('<strong>Board:</strong> Requires a model-specific DGT protocol bridge; do not assume USB or Bluetooth support.');
 else parts.push('<strong>Board:</strong> No electronic board selected. You can still use a physical clock alongside MaxChess.');
 if(c==='na')parts.push('<strong>Clock:</strong> DGT North American is a standalone timer. Set the same time control on the physical clock and MaxChess; no electronic clock sync is claimed.');
@@ -124,7 +124,7 @@ else if(['echo','xl','pi'].includes(c))parts.push('<strong>Clock:</strong> DGT d
 else if(['2010','2500','1500','1001'].includes(c))parts.push('<strong>Clock:</strong> Treat this as a standalone timer unless a model-specific data connection is verified.');
 else if(c==='1002')parts.push('<strong>Clock:</strong> DGT1002 is a standalone bonus timer; no direct MaxChess data link is confirmed.');
 else parts.push('<strong>Clock:</strong> Check the exact model number before selecting a connection route.');
-parts.push('<strong>Next step:</strong> The MaxChess device driver/bridge is not yet active on this page. This plan is a compatibility guide, not a live connection confirmation.');
+parts.push('<strong>Next step:</strong> For multi-board tournaments, use the MaxChess Live Cloud-feed connection. Direct USB/Bluetooth device drivers inside the MaxChess webpage are a separate project and are not claimed as complete.');
 plan.innerHTML=parts.join('<br><br>');
 }
 document.getElementById('showPath').addEventListener('click',show);

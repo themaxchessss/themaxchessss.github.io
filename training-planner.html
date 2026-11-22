@@ -30,6 +30,26 @@ select{background:#081321;color:white;border-color:#506781}
 .lesson-feedback.is-correct{color:#8be3a4}
 .lesson-feedback.is-try-again{color:#ffd27a}
 
+/* Lesson 9 interactive decoy board */
+.decoy-trainer{margin:14px 0;padding:14px;border:1px solid #536b86;border-radius:12px;background:#0b1725}
+.decoy-trainer-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#f4c95d;font-weight:850}
+.decoy-board{width:min(100%,440px);aspect-ratio:1;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));border:3px solid #d6b45a;border-radius:8px;overflow:hidden;margin:12px auto;touch-action:manipulation}
+.decoy-square{position:relative;display:grid;place-items:center;min-width:0;min-height:0;padding:0;margin:0;border:0;border-radius:0;font-size:clamp(1.45rem,8vw,3rem);line-height:1;cursor:pointer}
+.decoy-square.light{background:#e8d9b5;color:#18202a}.decoy-square.dark{background:#718b68;color:#101a12}
+.decoy-square .piece-white{color:#fffdf4;text-shadow:0 1px 2px #18202a,1px 0 1px #18202a,-1px 0 1px #18202a}
+.decoy-square .piece-black{color:#17202a;text-shadow:0 1px 1px #fff8}
+.decoy-square.is-selected{box-shadow:inset 0 0 0 4px #f4c95d;z-index:1}
+.decoy-square.is-target:after{content:"";position:absolute;width:22%;height:22%;border-radius:50%;background:#f4c95d99;pointer-events:none}
+.decoy-square.is-capture:after{content:"";position:absolute;inset:4px;border:4px solid #f4c95dcc;border-radius:50%;pointer-events:none}
+.decoy-square:focus-visible{outline:4px solid #ffdf78;outline-offset:-4px;z-index:2}
+.decoy-coord{position:absolute;left:3px;bottom:1px;font:700 9px/1 system-ui,sans-serif;opacity:.7}
+.decoy-controls{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}.decoy-controls button{margin:0;min-height:44px}
+.decoy-moves{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.decoy-moves button{margin:0;padding:7px 9px;background:#263b54;color:#fff;border-color:#536b86}
+.decoy-moves button.is-current{background:#f4c95d;color:#15120b;border-color:#f4c95d}
+.decoy-explanation{min-height:3.2em;padding:10px;border-left:3px solid #f4c95d;background:#13263b;border-radius:7px}
+.decoy-status{min-height:1.5em;color:#8bd7ff}
+@media(max-width:600px){.decoy-trainer{padding:9px}.decoy-square{font-size:clamp(1.35rem,9vw,2.7rem)}}
 @media(max-width:600px){.hero,.panel{padding:15px}.mission{padding:13px}button{min-height:44px}}
 </style>
 </head>
@@ -227,20 +247,21 @@ select{background:#081321;color:white;border-color:#506781}
 <div class="lesson-kicker">LESSON 9 · TACTICS</div>
 <h3>Use a decoy to lure a piece</h3>
 <p>A <b>decoy</b> is a move that tempts an enemy piece onto a particular square, where a follow-up tactic can work. The target is often the king. A <b>deflection</b> is related, but its main idea is to pull a defender away from an important job.</p>
-<div class="lesson-example"><b>Complete sparse training position:</b> All squares not shown below are empty. White is to move.
-<pre class="lesson-board" role="img" aria-label="Chess position: Black king g8, queen d7, pawns f7 and h7; White king a1, queen b1, knight d5, bishop c3. White to move.">8  · · · · · · ♚ ·
-7  · · · ♛ · ♟ · ♟
-6  · · · · · · · ·
-5  · · · ♘ · · · ·
-4  · · · · · · · ·
-3  · · ♗ · · · · ·
-2  · · · · · · · ·
-1  ♔ ♕ · · · · · ·
-   a b c d e f g h</pre>
+<div class="lesson-example"><b>Complete sparse training position:</b> All squares not shown are empty. White is to move.
 <p><b>FEN:</b> <code>6k1/3q1p1p/8/3N4/8/2B5/8/KQ6 w - - 0 1</code></p>
+<div class="decoy-trainer" id="decoyTrainer">
+ <div class="decoy-trainer-head"><span>♛ Interactive decoy puzzle</span><span id="decoyTurn">White to move</span></div>
+ <div class="decoy-board" id="decoyBoard" role="group" aria-label="Interactive chessboard. Select a piece, then a highlighted legal destination."></div>
+ <div class="decoy-controls"><button type="button" id="decoyReplay">▶ Replay solution</button><button type="button" class="secondary" id="decoyPrevious">◀ Previous</button><button type="button" class="secondary" id="decoyNext">Next ▶</button><button type="button" class="secondary" id="decoyReset">Reset board</button></div>
+ <div class="decoy-moves" id="decoyMoves" aria-label="Move-by-move replay"></div>
+ <p class="decoy-explanation" id="decoyExplanation" role="status" aria-live="polite">Find a forcing move. Select a white piece to see its legal moves.</p>
+ <p class="decoy-status" id="decoyStatus" role="status" aria-live="polite">Loading the legal-move chessboard…</p>
+</div>
+<p><b>Solution:</b> <b>1. Qxh7+! Kxh7 2. Nf6+! Kg6 3. Nxd7</b></p>
 <p><b>1. Qxh7+!</b> White's queen captures the h7-pawn and checks the king on g8. The king can capture the queen with <b>1...Kxh7</b>; h7 is not protected by White's knight, bishop, or king.</p>
-<p><b>2. Nf6+!</b> The knight checks the king on h7 and attacks the queen on d7 at the same time. The bishop on c3 also protects f6. For example, after <b>2...Kg7</b>, White plays <b>3. Nxd7</b> and wins the queen.</p>
-<p><b>Why the king cannot take the knight:</b> From h7 to f6 is a knight's jump, not a king move. A king moves only one square. The bishop on c3 is an extra defender of f6.</p>
+<p><b>2. Nf6+!</b> The knight checks the king on h7 and attacks the queen on d7 at the same time. The bishop on c3 protects f6.</p>
+<p><b>2...Kg6!</b> This is a legal king reply. <b>2...Kg7 is illegal</b> because the bishop on c3 attacks g7 along the diagonal c3–d4–e5–f6–g7.</p>
+<p><b>3. Nxd7</b> The knight captures the queen. The king on g6 does not protect d7, so White wins the queen.</p>
 <p><b>Lesson:</b> The queen sacrifice is a decoy: it draws the king onto h7, where a knight fork attacks the king and queen. Always calculate the opponent's legal replies before sacrificing.</p>
 </div>
 <div class="lesson-quiz" data-lesson-quiz data-success="Correct! A decoy lures a target onto a square where a follow-up tactic can work." data-hint="A decoy is bait: it tries to draw an enemy piece onto a particular square.">
@@ -325,6 +346,7 @@ select{background:#081321;color:white;border-color:#506781}
 </div><button class="secondary" id="export">Download my training summary</button></section>
 <footer class="muted">MaxChess is free. Progress is stored only in this browser unless you choose to download it.</footer>
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"><\/script>
 <script>
 (function(){
 const KEY='maxchess_daily_training_v1',today=new Date().toLocaleDateString('en-CA');
@@ -358,5 +380,62 @@ document.querySelectorAll('[data-lesson-quiz]').forEach(quiz=>{
 });
 
 paint();showTime();
+})();
+/* Interactive Lesson 9 board: chess.js validates every legal move. */
+(function(){
+ const root=document.getElementById('decoyTrainer');if(!root)return;
+ const FEN='6k1/3q1p1p/8/3N4/8/2B5/8/KQ6 w - - 0 1';
+ const SOLUTION=[{from:'b1',to:'h7'},{from:'g8',to:'h7'},{from:'d5',to:'f6'},{from:'h7',to:'g6'},{from:'f6',to:'d7'}];
+ const EXPECTED=['Qxh7+','Kxh7','Nf6+','Kg6','Nxd7'];
+ const EXPLANATIONS=[
+ 'White to move. Find a forcing check that tempts the black king onto a vulnerable square.',
+ '1. Qxh7+! The queen captures the h7-pawn and checks the king on g8. The queen is offered as a decoy.',
+ '1...Kxh7. Black accepts the queen. The king has been drawn from g8 to h7.',
+ '2. Nf6+! The knight checks the king on h7 and attacks the queen on d7. The bishop on c3 protects f6.',
+ '2...Kg6. This is a legal escape square. Kg7 would be illegal because the bishop on c3 attacks g7.',
+ '3. Nxd7. The knight captures the queen. The king on g6 is not close enough to protect d7, so White wins the queen.'
+ ];
+ const glyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
+ const boardEl=document.getElementById('decoyBoard'),turnEl=document.getElementById('decoyTurn'),movesEl=document.getElementById('decoyMoves'),explanationEl=document.getElementById('decoyExplanation'),statusEl=document.getElementById('decoyStatus'),previousBtn=document.getElementById('decoyPrevious'),nextBtn=document.getElementById('decoyNext');
+ let game=null,moveStack=[],ply=0,selected=null,legalTargets=[],replayTimer=null;
+ function stopReplay(){if(replayTimer){clearInterval(replayTimer);replayTimer=null;}}
+ function solutionPrefix(){if(ply>SOLUTION.length)return false;for(let i=0;i<ply;i++)if(moveStack[i].from!==SOLUTION[i].from||moveStack[i].to!==SOLUTION[i].to)return false;return true;}
+ function rebuild(){game=new Chess(FEN);for(let i=0;i<ply;i++){if(!game.move(moveStack[i]))throw new Error('Illegal replay move '+(i+1));}selected=null;legalTargets=[];render();}
+ function render(){
+  const rows=game.board();boardEl.textContent='';
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+   const sq='abcdefgh'[c]+(8-r),piece=rows[r][c],button=document.createElement('button');button.type='button';button.className='decoy-square '+((r+c)%2===0?'light':'dark');button.dataset.square=sq;
+   const target=legalTargets.find(m=>m.to===sq);if(selected===sq)button.classList.add('is-selected');if(target)button.classList.add(piece?'is-capture':'is-target');
+   const label=piece?((piece.color==='w'?'White ':'Black ')+({k:'king',q:'queen',r:'rook',b:'bishop',n:'knight',p:'pawn'}[piece.type])):'empty';
+   button.setAttribute('aria-label',sq+', '+label+(target?', legal destination':''));
+   if(piece){const span=document.createElement('span');span.className=piece.color==='w'?'piece-white':'piece-black';span.textContent=glyph[piece.color+piece.type];button.appendChild(span);}
+   if(c===0||r===7){const coord=document.createElement('span');coord.className='decoy-coord';coord.textContent=(c===0?String(8-r):'')+(r===7?'abcdefgh'[c]:'');button.appendChild(coord);}
+   boardEl.appendChild(button);
+  }
+  turnEl.textContent=(game.turn()==='w'?'White':'Black')+' to move'+(game.in_check()?' · CHECK':'');
+  previousBtn.disabled=ply===0;nextBtn.disabled=ply>=moveStack.length;movesEl.textContent='';
+  const notationGame=new Chess(FEN);
+  for(let i=0;i<moveStack.length;i++){const result=notationGame.move(moveStack[i]);if(!result)break;const item=document.createElement('button');item.type='button';item.textContent=(i%2===0?(Math.floor(i/2)+1)+'. ':'')+result.san;if(i===ply-1)item.classList.add('is-current');item.addEventListener('click',()=>{stopReplay();ply=i+1;rebuild();});movesEl.appendChild(item);}
+  explanationEl.textContent=solutionPrefix()?(EXPLANATIONS[ply]||'Solution complete.'):(game.in_check()?'The side to move is in check. Find a legal way to answer it.':'Position after '+ply+' half-move(s). Select a piece to inspect its legal moves.');
+  statusEl.textContent=(ply===SOLUTION.length&&solutionPrefix())?'Solution complete: the decoy led to a knight fork that wins Black’s queen.':'Select a piece belonging to the side to move. Highlighted squares are legal destinations.';
+ }
+ boardEl.addEventListener('click',event=>{
+  const button=event.target.closest('[data-square]');if(!button||!game||replayTimer)return;const square=button.dataset.square;
+  if(selected&&legalTargets.some(m=>m.to===square)){
+   const piece=game.get(selected),move={from:selected,to:square};if(piece&&piece.type==='p'&&(square[1]==='1'||square[1]==='8'))move.promotion='q';
+   if(game.move(move)){moveStack=moveStack.slice(0,ply);moveStack.push(move);ply++;selected=null;legalTargets=[];render();}return;
+  }
+  const piece=game.get(square);if(piece&&piece.color===game.turn()){selected=square;legalTargets=game.moves({square:square,verbose:true});render();}else{selected=null;legalTargets=[];render();}
+ });
+ document.getElementById('decoyReset').addEventListener('click',()=>{stopReplay();moveStack=[];ply=0;rebuild();});
+ previousBtn.addEventListener('click',()=>{if(ply>0){stopReplay();ply--;rebuild();}});
+ nextBtn.addEventListener('click',()=>{if(ply<moveStack.length){stopReplay();ply++;rebuild();}});
+ document.getElementById('decoyReplay').addEventListener('click',()=>{stopReplay();moveStack=SOLUTION.map(m=>Object.assign({},m));ply=0;rebuild();replayTimer=setInterval(()=>{if(ply>=moveStack.length){stopReplay();render();return;}ply++;rebuild();},900);});
+ try{
+  if(typeof Chess!=='function')throw new Error('The chess rules library did not load. Check the internet connection and reload this lesson.');
+  const verifier=new Chess(FEN),verified=[];SOLUTION.forEach((move,i)=>{const result=verifier.move(move);if(!result)throw new Error('Solution move '+(i+1)+' is illegal.');verified.push(result.san);});
+  if(verified.join('|')!==EXPECTED.join('|'))throw new Error('Move notation mismatch: '+verified.join(' '));
+  game=new Chess(FEN);render();statusEl.textContent='All 5 solution moves verified as legal. Play either side, inspect legal moves, or replay the solution.';
+ }catch(error){boardEl.textContent='Interactive board unavailable.';statusEl.textContent=error.message;explanationEl.textContent='The corrected move sequence is shown above. Reload when the chess rules library is available.';}
 })();
 </script></body></html>

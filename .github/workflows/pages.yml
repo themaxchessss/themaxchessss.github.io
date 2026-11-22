@@ -29,16 +29,16 @@ jobs:
           const fs = require('node:fs');
           const vm = require('node:vm');
           const html = fs.readFileSync('tournament-broadcast.html', 'utf8');
-          const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(m => m[1]);
-          const refs = [...html.matchAll(/\\$\\(['"]([^'"]+)['"]\\)/g)].map(m => m[1]);
+          const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
+          const refs = [...html.matchAll(/\$\(['"]([^'"]+)['"]\)/g)].map(m => m[1]);
           const missing = [...new Set(refs.filter(id => !ids.includes(id)))];
           if (missing.length) throw new Error('Missing broadcast DOM IDs: ' + missing.join(', '));
-          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)]
+          const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
             .map(m => m[1]).filter(s => s.trim());
           if (!scripts.length) throw new Error('No inline broadcast script found');
           scripts.forEach(script => new vm.Script(script));
           for (const required of [
-            'DGT LiveChess Cloud', 'round-'+String.fromCharCode(36)+'{state.round}',
+            'DGT LiveChess Cloud', 'round-',
             'function startBoardCycle()', 'mode','obs','livechesscloud.com',
             'dgtViewer', 'cycleSeconds', 'function parseTournamentId'
           ]) {

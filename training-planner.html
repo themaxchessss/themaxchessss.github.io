@@ -257,11 +257,11 @@ select{background:#081321;color:white;border-color:#506781}
  <p class="decoy-explanation" id="decoyExplanation" role="status" aria-live="polite">Find a forcing move. Select a white piece to see its legal moves.</p>
  <p class="decoy-status" id="decoyStatus" role="status" aria-live="polite">Loading the legal-move chessboard…</p>
 </div>
-<p><b>Solution:</b> <b>1. Qxh7+! Kxh7 2. Nf6+! Kg7 3. Nxd7</b></p>
+<p><b>Solution:</b> <b>1. Qxh7+! Kxh7 2. Nf6+! Kg7 3. Nxd7+!</b></p>
 <p><b>1. Qxh7+!</b> White's queen captures the h7-pawn and checks the king on g8. The king can capture the queen with <b>1...Kxh7</b>; h7 is not protected by White's knight, bishop, or king.</p>
 <p><b>2. Nf6+!</b> The knight checks the king on h7 and attacks the queen on d7 at the same time. The bishop on c3 protects f6.</p>
 <p><b>2...Kg7!</b> This is a legal king reply. After the knight moves to f6, it blocks the bishop's diagonal from c3 to g7, so the king can safely move there.</p>
-<p><b>3. Nxd7</b> The knight captures the queen. The king on g7 does not protect d7, so White wins the queen.</p>
+<p><b>3. Nxd7+!</b> The knight captures the queen and uncovers a bishop check along c3–d4–e5–f6–g7. White wins the queen with check.</p>
 <p><b>Lesson:</b> The queen sacrifice is a decoy: it draws the king onto h7, where a knight fork attacks the king and queen. Always calculate the opponent's legal replies before sacrificing.</p>
 </div>
 <div class="lesson-quiz" data-lesson-quiz data-success="Correct! A decoy lures a target onto a square where a follow-up tactic can work." data-hint="A decoy is bait: it tries to draw an enemy piece onto a particular square.">
@@ -386,14 +386,14 @@ paint();showTime();
  const root=document.getElementById('decoyTrainer');if(!root)return;
  const FEN='6k1/3q1p1p/8/3N4/8/2B5/8/KQ6 w - - 0 1';
  const SOLUTION=[{from:'b1',to:'h7'},{from:'g8',to:'h7'},{from:'d5',to:'f6'},{from:'h7',to:'g7'},{from:'f6',to:'d7'}];
- const EXPECTED=['Qxh7+','Kxh7','Nf6+','Kg7','Nxd7'];
+ const EXPECTED=['Qxh7+','Kxh7','Nf6+','Kg7','Nxd7+'];
  const EXPLANATIONS=[
  'White to move. Find a forcing check that tempts the black king onto a vulnerable square.',
  '1. Qxh7+! The queen captures the h7-pawn and checks the king on g8. The queen is offered as a decoy.',
  '1...Kxh7. Black accepts the queen. The king has been drawn from g8 to h7.',
  '2. Nf6+! The knight checks the king on h7 and attacks the queen on d7. The bishop on c3 protects f6.',
  '2...Kg7. The knight on f6 blocks the bishop diagonal to g7, leaving that square safe.',
- '3. Nxd7. The knight captures the queen. The king on g7 is not close enough to protect d7, so White wins the queen.'
+ '3. Nxd7+! The knight captures the queen and uncovers the bishop check along c3–d4–e5–f6–g7. White wins the queen with check.'
  ];
  const glyph={wk:'♔',wq:'♕',wr:'♖',wb:'♗',wn:'♘',wp:'♙',bk:'♚',bq:'♛',br:'♜',bb:'♝',bn:'♞',bp:'♟'};
  const boardEl=document.getElementById('decoyBoard'),turnEl=document.getElementById('decoyTurn'),movesEl=document.getElementById('decoyMoves'),explanationEl=document.getElementById('decoyExplanation'),statusEl=document.getElementById('decoyStatus'),previousBtn=document.getElementById('decoyPrevious'),nextBtn=document.getElementById('decoyNext');
@@ -417,7 +417,7 @@ paint();showTime();
   const notationGame=new Chess(FEN);
   for(let i=0;i<moveStack.length;i++){const result=notationGame.move(moveStack[i]);if(!result)break;const item=document.createElement('button');item.type='button';item.textContent=(i%2===0?(Math.floor(i/2)+1)+'. ':'')+result.san;if(i===ply-1)item.classList.add('is-current');item.addEventListener('click',()=>{stopReplay();ply=i+1;rebuild();});movesEl.appendChild(item);}
   explanationEl.textContent=solutionPrefix()?(EXPLANATIONS[ply]||'Solution complete.'):(game.in_check()?'The side to move is in check. Find a legal way to answer it.':'Position after '+ply+' half-move(s). Select a piece to inspect its legal moves.');
-  statusEl.textContent=(ply===SOLUTION.length&&solutionPrefix())?'Solution complete: the decoy led to a knight fork that wins Black’s queen.':'Select a piece belonging to the side to move. Highlighted squares are legal destinations.';
+  statusEl.textContent=(ply===SOLUTION.length&&solutionPrefix())?'Solution complete: the decoy wins the queen with a discovered bishop check.':'Select a piece belonging to the side to move. Highlighted squares are legal destinations.';
  }
  boardEl.addEventListener('click',event=>{
   const button=event.target.closest('[data-square]');if(!button||!game||replayTimer)return;const square=button.dataset.square;

@@ -30,6 +30,8 @@ jobs:
         with:
           path: .
           name: github-pages-${{ github.run_attempt }}
+      - name: Wait for Pages artifact metadata
+        run: sleep 10
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4

@@ -35,6 +35,20 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
 
+      - name: Wait for the current commit to be published
+        run: |
+          page_url="https://themaxchessss.github.io/training-planner.html?health=${GITHUB_SHA}"
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --location "$page_url" | grep -Fq '.lesson-example code'; then
+              echo "Latest responsive training page is published."
+              exit 0
+            fi
+            echo "Waiting for Pages to publish ${GITHUB_SHA} (attempt ${attempt}/30)..."
+            sleep 2
+          done
+          echo "GitHub Pages did not publish the current training page commit in time."
+          exit 1
+
       - name: Smoke-test published pages on desktop, tablet and touch
         id: smoke
         run: |

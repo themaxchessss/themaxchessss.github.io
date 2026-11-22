@@ -150,7 +150,7 @@ var obsMode=params.get('mode')==='obs';
 if(obsMode)document.body.classList.add('obs');
 var POOL='https://1.pool.livechesscloud.com/get/';
 var UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,loading:false,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white'};
+var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,loading:false,gameToken:0,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white'};
 var pieces={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
 function say(message){$('connectionStatus').textContent=message}
 function safeName(p){if(!p)return'Unknown player';var parts=[p.fname,p.mname,p.lname].filter(function(x){return typeof x==='string'&&x.trim()});return parts.join(' ')||'Unknown player'}
@@ -264,7 +264,7 @@ function renderBoardList(){
  });
 }
 async function fetchRound(round){
- clearTimeout(state.pollTimer);state.round=Number(round)||1;state.game=null;
+ state.gameToken++;state.loading=false;clearTimeout(state.pollTimer);state.round=Number(round)||1;state.game=null;
  $('roundName').textContent='Loading round '+state.round+'…';
  say('Loading round '+state.round+' pairings…');
  var index=await getJson(apiUrl('round-'+state.round+'/index.json'));
@@ -283,7 +283,7 @@ async function fetchRound(round){
  if(chosen)await selectBoard(chosen);else{state.board=0;renderGame(null);say('No games are listed in this round.')}
 }
 async function selectBoard(number){
- state.board=number;state.pairing=state.index&&state.index.pairings[number-1]||null;
+ state.gameToken++;state.loading=false;state.board=number;state.pairing=state.index&&state.index.pairings[number-1]||null;
  renderBoardList();
  if(!state.pairing)return;
  renderGame({moves:[],live:!!state.pairing.live,result:state.pairing.result});
@@ -291,25 +291,26 @@ async function selectBoard(number){
 }
 async function pollGame(){
  if(!state.id||!state.round||!state.board||state.loading)return;
+ var token=state.gameToken,round=state.round,board=state.board;
  state.loading=true;
  try{
-  var data=await getJson(apiUrl('round-'+state.round+'/game-'+state.board+'.json?poll'));
+  var data=await getJson(apiUrl('round-'+round+'/game-'+board+'.json?poll'));
+  if(token!==state.gameToken)return;
   if(!data||!Array.isArray(data.moves))throw new Error('Game feed did not include a move list.');
   state.lastUpdate=formatTime();renderGame(data);say('Connected · last update '+state.lastUpdate);
  }catch(e){
-  say('Feed temporarily unavailable: '+e.message+' · retrying');
-  $('airStatus').textContent='● RECONNECTING';$('airStatus').style.color='var(--red)';
+  if(token===state.gameToken){say('Feed temporarily unavailable: '+e.message+' · retrying');$('airStatus').textContent='● RECONNECTING';$('airStatus').style.color='var(--red)';}
  }finally{
-  state.loading=false;
-  clearTimeout(state.pollTimer);
-  state.pollTimer=setTimeout(pollGame,3000);
+  if(token===state.gameToken){
+   state.loading=false;clearTimeout(state.pollTimer);state.pollTimer=setTimeout(pollGame,3000);
+  }
  }
 }
 async function connect(raw){
  var id=parseTournamentId(raw);
  if(!id){say('That link could not be read. Paste the HTTPS view.livechesscloud.com/#… URL or the tournament ID.');return}
  clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);
- state.id=id;state.board=0;state.round=0;state.index=null;state.tournament=null;state.game=null;
+ state.gameToken++;state.loading=false;state.id=id;state.board=0;state.round=0;state.index=null;state.tournament=null;state.game=null;
  say('Connecting to DGT LiveChess Cloud…');$('airStatus').textContent='● CONNECTING';$('airStatus').style.color='var(--gold)';
  try{
   var tournament=await getJson(apiUrl('tournament.json'));

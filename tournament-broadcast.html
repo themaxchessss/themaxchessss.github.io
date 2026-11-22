@@ -161,7 +161,7 @@ function parseTournamentId(raw){
  if(UUID.test(value))return value.toLowerCase();
  try{
   var u=new URL(value);
-  if(u.protocol!=='https:'||!(u.hostname==='view.livechesscloud.com'||u.hostname==='livechesscloud.com'||u.hostname==='www.livechesscloud.com'))return'';
+  if((u.protocol!=='https:'&&u.protocol!=='http:')||!(u.hostname==='view.livechesscloud.com'||u.hostname==='livechesscloud.com'||u.hostname==='www.livechesscloud.com'))return'';
   var candidates=[u.hash.replace(/^#/,'').split(/[/?&]/)[0],u.searchParams.get('id'),u.pathname.split('/').filter(Boolean).pop()];
   for(var i=0;i<candidates.length;i++){if(candidates[i]&&UUID.test(candidates[i]))return candidates[i].toLowerCase()}
  }catch(e){}
@@ -380,7 +380,7 @@ function startDemo(){
  ]};
  $('tournamentLink').value='';$('roundSelect').textContent='';
  var option=document.createElement('option');option.value='1';option.textContent='Round 1 · DEMO';$('roundSelect').appendChild(option);
- setConnected(true);$('copyObsBtn').disabled=true;$('openDgtBtn').disabled=true;
+ setConnected(true);$('refreshBtn').disabled=true;$('copyObsBtn').disabled=true;$('openDgtBtn').disabled=true;
  updateHeader();$('roundName').textContent='Round 1 · DEMO PREVIEW';
  $('airStatus').textContent='● DEMO PREVIEW';$('airStatus').style.color='var(--blue)';
  $('updated').textContent='DEMO';renderBoardList();selectBoard(1);

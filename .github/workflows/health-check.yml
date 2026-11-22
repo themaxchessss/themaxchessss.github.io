@@ -40,8 +40,7 @@ jobs:
           page_url="https://themaxchessss.github.io/training-planner.html?health=${GITHUB_SHA}"
           broadcast_url="https://themaxchessss.github.io/tournament-broadcast.html?health=${GITHUB_SHA}"
           for attempt in $(seq 1 30); do
-            if curl --fail --silent --location "$page_url" | grep -Fq '.lesson-example code' && \\
-               curl --fail --silent --location "$broadcast_url" | grep -Fq 'MAXCHESS LIVE'; then
+            if curl --fail --silent --location "$page_url" | grep -Fq '.lesson-example code' && curl --fail --silent --location "$broadcast_url" | grep -Fq 'MAXCHESS LIVE'; then
               echo "Latest training and MaxChess Live broadcast pages are published."
               exit 0
             fi

@@ -1,106 +1,368 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080d16">
 <title>MaxChess Live — Tournament Broadcast</title>
 <style>
-:root{color-scheme:dark;--gold:#f2c65c;--blue:#55b9ff;--muted:#aebbd0;--line:#30465f;--panel:#111c2b}
-*{box-sizing:border-box}body{margin:0;background:#070b12;color:#f5f7fb;font:15px/1.45 Arial,system-ui,sans-serif}
-a{color:var(--gold);text-decoration:none}button,input,textarea{font:inherit}
-.top{height:6px;background:linear-gradient(90deg,#a87820,var(--gold),#fff0a8,#287cc4)}
-.wrap{width:min(1450px,96vw);margin:auto;padding:16px 0 42px}
-.brandbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 3px 16px;border-bottom:1px solid #28384b}
-.brand{font-weight:1000;letter-spacing:2px;color:var(--gold);font-size:22px}.brand span{color:white}.live{font-size:12px;letter-spacing:1.5px;color:#ff7777;font-weight:900}
-.hero{padding:20px 0 15px}.eyebrow{color:var(--blue);font-size:11px;font-weight:900;letter-spacing:2px}.hero h1{font-size:clamp(27px,5vw,48px);line-height:1.03;margin:7px 0;color:white;letter-spacing:-1px}.hero p{color:var(--muted);margin:7px 0}
-.scorebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:linear-gradient(100deg,#182a40,#101925);border:1px solid #31465f;border-left:4px solid var(--gold);padding:13px 16px;border-radius:9px;margin:14px 0}
-.scorebar strong{font-size:17px}.tag{font-size:11px;color:#d5e4f5;border:1px solid #50657c;padding:4px 8px;border-radius:4px;letter-spacing:1px}
-.broadcast-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(270px,.8fr);gap:14px;align-items:start}
-.screen{background:#000;border:1px solid #344a63;border-radius:10px;overflow:hidden;box-shadow:0 16px 45px #0008}
-.screen-head{background:#111d2b;padding:11px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #344a63}
-.screen-head b{color:var(--gold);letter-spacing:1px}.screen-head span{font-size:12px;color:var(--muted)}
-.frame-wrap{width:100%;aspect-ratio:16/10;background:radial-gradient(ellipse,#1b2d42,#080b10);display:grid;place-items:center;position:relative}
-#dgtFrame{width:100%;height:100%;border:0;background:#080b10;display:none}
-#empty{padding:26px;text-align:center;max-width:560px;color:var(--muted)}
-#empty .chessicon{font-size:54px;color:var(--gold)}
-.side{background:#101a28;border:1px solid #30465f;border-radius:10px;overflow:hidden}
-.side h2{font-size:14px;letter-spacing:1px;margin:0;padding:13px;border-bottom:1px solid #30465f;color:var(--gold)}
-.side-content{padding:14px}.side p,.help{color:var(--muted);font-size:13px}
-.panel{background:#101a28;border:1px solid #30465f;border-radius:10px;padding:16px;margin:16px 0}
-.panel h2{font-size:17px;margin:0 0 10px;color:var(--gold)}
-label{display:block;color:#dce6f3;font-size:13px;font-weight:700;margin:9px 0 5px}
-input,textarea{width:100%;background:#070d16;border:1px solid #405a75;color:white;border-radius:7px;padding:11px}
-textarea{min-height:95px;resize:vertical;font:13px/1.45 ui-monospace,monospace}
-.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
-button,.filebtn{border:1px solid #98752d;background:linear-gradient(140deg,#ffe18a,#c79532);color:#17120a;font-weight:900;padding:10px 14px;border-radius:7px;cursor:pointer}
-button.alt{background:#243a53;border-color:#536c87;color:white}
-button:focus,input:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:2px}
-#status{color:#9dd5ff;font-size:13px;min-height:20px}
-.instructions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.step{background:#0a1320;border:1px solid #2c4057;border-radius:8px;padding:12px}
-.step b{display:block;color:var(--gold);margin-bottom:5px}.step p{margin:0;color:var(--muted);font-size:13px}
-.footer{border-top:1px solid #26384d;margin-top:25px;padding-top:14px;color:#8596ad;font-size:12px}
-.obs .brandbar,.obs .hero,.obs .panel,.obs .footer,.obs .side{display:none}
-.obs .wrap{width:100%;padding:0}.obs .scorebar{margin:0;border-radius:0}.obs .broadcast-grid{display:block}.obs .screen{border-radius:0}.obs .frame-wrap{aspect-ratio:16/9}
-@media(max-width:850px){.broadcast-grid{grid-template-columns:1fr}.frame-wrap{aspect-ratio:4/3}.instructions{grid-template-columns:1fr}}
+:root{color-scheme:dark;--gold:#f3c45b;--gold2:#a97920;--blue:#5bbdff;--ink:#070b12;--panel:#101a29;--line:#30465f;--muted:#aab8ca;--green:#55db99;--red:#ff7777}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--ink);color:#f5f7fb;font:15px/1.45 Arial,system-ui,sans-serif}
+body{background:radial-gradient(ellipse at 45% -15%,#1b3552 0,#0a111c 48%,#05080e 100%)}
+a{color:var(--gold);text-decoration:none}button,input,select{font:inherit}
+.goldline{height:6px;background:linear-gradient(90deg,#805415,var(--gold),#fff0a6,#2973b9)}
+.wrap{width:min(1560px,96vw);margin:auto;padding:12px 0 32px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #27384d;padding:8px 3px 14px}
+.brand{font-size:22px;font-weight:1000;letter-spacing:2px;color:var(--gold)}.brand span{color:#fff}
+.toplinks{font-size:12px;color:var(--muted);text-align:right}.toplinks a{margin-left:12px}
+.kicker{font-size:11px;letter-spacing:2px;color:var(--blue);font-weight:900}
+.hero{padding:16px 3px 12px}.hero h1{font-size:clamp(28px,4vw,48px);line-height:1.04;letter-spacing:-1.2px;margin:5px 0;color:white}.hero p{margin:5px 0;color:var(--muted)}
+.summary{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(100deg,#172b42,#101925);border:1px solid #314a65;border-left:4px solid var(--gold);border-radius:9px;padding:12px 15px;margin:10px 0 14px}
+.summary strong{font-size:18px}.summary small{color:var(--muted)}.liveword{font-size:11px;letter-spacing:1.5px;color:var(--red);font-weight:900}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start}
+.stage{min-width:0;background:#080d15;border:1px solid #344a63;border-radius:10px;overflow:hidden;box-shadow:0 18px 50px #0009}
+.stagehead{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#111d2b;padding:10px 14px;border-bottom:1px solid #344a63}
+.stagehead b{letter-spacing:1px;color:var(--gold)}.stagehead span{font-size:12px;color:var(--muted)}
+.players{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:linear-gradient(90deg,#142235,#0c1420);padding:13px 15px;border-bottom:1px solid #2a3e55}
+.player{min-width:0}.player.black{text-align:right}.player strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(14px,2vw,20px)}.player small{color:var(--muted)}.versus{color:var(--gold);font-size:12px;font-weight:900;letter-spacing:1px}
+.board-zone{display:grid;grid-template-columns:minmax(220px, min(54vw,620px)) minmax(160px,1fr);gap:15px;padding:16px;align-items:start;background:radial-gradient(ellipse at 28% 48%,#172538,#080d15 70%)}
+.board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:5px solid #b58a3c;border-radius:4px;box-shadow:0 10px 25px #0009;overflow:hidden;background:#d8c7a5}
+.square{display:grid;place-items:center;position:relative;font-family:"Arial Unicode MS",serif;font-size:clamp(23px,4vw,54px);line-height:1;user-select:none}
+.square.light{background:#eee2c5;color:#111}.square.dark{background:#8c6748;color:#111}
+.square .coord{position:absolute;left:3px;top:2px;font:9px Arial,sans-serif;color:#765c3c;opacity:.8}
+.square.dark .coord{color:#f2e3ca}.square .piece{filter:drop-shadow(0 2px 1px #0005)}
+.board-note{display:flex;flex-direction:column;gap:10px;min-width:0}
+.info-card{border:1px solid #2e435b;border-radius:8px;background:#0e1826;padding:11px}
+.info-label{font-size:10px;color:var(--blue);font-weight:900;letter-spacing:1.5px}
+.info-value{font-size:19px;font-weight:900;color:white;margin-top:3px;overflow-wrap:anywhere}
+.info-sub{font-size:12px;color:var(--muted)}
+.moves{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.move{background:#18283b;border:1px solid #344d68;border-radius:5px;padding:4px 7px;font-size:12px;color:#e6edf7}
+.move.latest{background:#4a3815;border-color:#b38b3f;color:#ffe6a2}
+.side{background:#101a29;border:1px solid #30465f;border-radius:9px;overflow:hidden}
+.side h2{font-size:13px;letter-spacing:1.3px;color:var(--gold);margin:0;padding:12px 13px;border-bottom:1px solid #30465f}
+.sidebody{padding:12px}
+.sidebody p{font-size:13px;color:var(--muted);margin:5px 0 11px}
+.sidebody label,.setup label{display:block;font-size:12px;font-weight:800;color:#dce7f4;margin:9px 0 5px}
+input,select{width:100%;background:#070d16;color:white;border:1px solid #405a75;border-radius:7px;padding:10px;min-width:0}
+button{border:1px solid #9b762d;background:linear-gradient(140deg,#ffe28b,#c39231);color:#17120a;font-weight:900;padding:10px 12px;border-radius:7px;cursor:pointer}
+button.secondary{background:#233a54;border-color:#536b86;color:white}
+button.ghost{background:#101b29;border-color:#465e78;color:#e8eef8}
+button:disabled{opacity:.5;cursor:not-allowed}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.status{min-height:19px;font-size:12px;color:#a8d8ff;margin-top:9px;overflow-wrap:anywhere}
+.boards{display:grid;gap:6px;margin-top:8px;max-height:350px;overflow:auto}
+.board-choice{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;background:#0b1420;border:1px solid #30465f;color:#edf3fa;padding:8px 9px;border-radius:6px}
+.board-choice.active{border-color:var(--gold);background:#2b2619}
+.board-choice .names{min-width:0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.board-choice .num{color:var(--gold);font-size:11px;font-weight:900;white-space:nowrap}
+.pill{display:inline-block;font-size:10px;font-weight:900;letter-spacing:.8px;padding:3px 7px;border-radius:20px;background:#213247;color:#dceaff}
+.pill.live{background:#402025;color:#ffb9b9;border:1px solid #92505a}.pill.done{background:#17372b;color:#a8f4cd;border:1px solid #387b5e}
+.setup{background:#101a29;border:1px solid #30465f;border-radius:9px;padding:15px;margin:15px 0}
+.setup h2{font-size:17px;color:var(--gold);margin:0 0 5px}.hint{font-size:12px;color:var(--muted);margin:6px 0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.step{background:#0a1320;border:1px solid #2b4058;border-radius:7px;padding:10px}.step b{display:block;color:var(--gold);font-size:12px}.step span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.footer{border-top:1px solid #27384d;margin-top:22px;padding-top:12px;color:#8596ac;font-size:11px}
+.emptyboard{display:grid;place-items:center;min-height:300px;text-align:center;padding:20px;color:var(--muted)}
+.emptyboard b{display:block;color:var(--gold);font-size:20px;margin:8px}
+.obs .wrap{width:100%;padding:0}.obs .topbar,.obs .hero,.obs .side,.obs .setup,.obs .footer{display:none}
+.obs .summary{margin:0;border-radius:0;border-left-width:5px;padding:12px 20px}
+.obs .layout{display:block}.obs .stage{border-radius:0;border:0;box-shadow:none}
+.obs .stagehead{padding:12px 20px}.obs .players{padding:15px 22px}
+.obs .board-zone{grid-template-columns:minmax(260px, min(57vw,780px)) minmax(220px,1fr);justify-content:center;gap:28px;padding:20px 4vw}
+.obs .square{font-size:clamp(26px,4.1vw,66px)}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.board-zone{grid-template-columns:minmax(230px,1fr) minmax(145px,.8fr)}.side{display:grid;grid-template-columns:1fr 1fr}.side h2{grid-column:1/-1}}
+@media(max-width:560px){.wrap{width:100%;padding-top:0}.topbar{padding:10px 12px}.hero{padding:14px 12px}.summary{margin:8px 8px 12px}.layout{gap:9px}.stage{border-radius:0}.board-zone{grid-template-columns:1fr;padding:10px}.board{max-width:440px;margin:auto}.board-note{display:grid;grid-template-columns:1fr 1fr}.info-card.moves-card{grid-column:1/-1}.side{margin:0 8px;display:block}.sidebody{padding:12px}.steps{grid-template-columns:1fr}.obs .board-zone{grid-template-columns:1fr;padding:10px}.obs .board{max-width:min(90vw,650px)}.obs .board-note{display:grid;grid-template-columns:1fr 1fr}.obs .players{padding:10px}.obs .stagehead{padding:9px 12px}}
 </style>
 </head>
-<body><div class="top"></div><main class="wrap">
-<div class="brandbar"><div class="brand">♛ MAX<span>CHESS</span></div><div><span class="live">● LIVE BROADCAST STUDIO</span><br><small><a href="dgt-hub.html">DGT setup guide</a> · <a href="tournament-desk.html">Tournament Desk</a></small></div></div>
-<section class="hero"><div class="eyebrow">FREE CHESS · TOURNAMENT COVERAGE</div><h1 id="eventTitle">MAXCHESS TOURNAMENT LIVE</h1><p id="roundTitle">Official-style game coverage • Live boards • Tournament action</p></section>
-<div class="scorebar"><div><div class="tag">NOW SHOWING</div><strong id="eventBar">MaxChess Tournament</strong><div style="color:var(--muted);font-size:12px" id="roundBar">Round 1 · Main boards</div></div><div style="text-align:right"><span class="live">● ON AIR PREVIEW</span><div class="tag">MAXCHESS BROADCAST</div></div></div>
-<div class="broadcast-grid">
-<section class="screen"><div class="screen-head"><b>LIVE GAME FEED</b><span id="feedStatus">Waiting for DGT LiveChess connection</span></div>
-<div class="frame-wrap"><div id="empty"><div class="chessicon">♜ ♞ ♝ ♛ ♚</div><h2>YOUR TOURNAMENT. LIVE ON MAXCHESS.</h2><p>Connect the tournament feed from DGT LiveChess to show the real boards, players, moves and clocks here.</p></div><iframe id="dgtFrame" title="DGT LiveChess tournament broadcast" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+<body>
+<div class="goldline"></div>
+<main class="wrap">
+<header class="topbar">
+ <div class="brand">♛ MAX<span>CHESS</span></div>
+ <div class="toplinks"><span class="liveword">● LIVE TOURNAMENT BROADCAST</span><br><a href="dgt-hub.html">DGT Hub</a><a href="tournament-desk.html">Tournament Desk</a><a href="./">MaxChess Home</a></div>
+</header>
+<section class="hero">
+ <div class="kicker">FREE CHESS · OFFICIAL-STYLE COVERAGE</div>
+ <h1 id="pageTitle">MAXCHESS LIVE</h1>
+ <p id="eventDetails">Live boards · Player names · Move-by-move replay · Tournament coverage</p>
 </section>
-<aside class="side"><h2>♟ BROADCAST INFORMATION</h2><div class="side-content"><p><strong id="sideEvent" style="color:white">MaxChess Tournament</strong></p><p id="sideRound">Round 1</p><p>Source: <strong style="color:#b8dfff">DGT LiveChess Cloud</strong></p><p>Feed status: <strong id="sideStatus" style="color:#f2c65c">Not connected</strong></p><hr style="border-color:#30465f"><p>This broadcast page is designed to be shown as a browser source in OBS and captured in a YouTube livestream.</p><p><a href="https://www.livechesscloud.com/" target="_blank" rel="noopener">Open DGT LiveChess Cloud ↗</a></p></div></aside>
+<div class="summary">
+ <div><div class="kicker">TOURNAMENT</div><strong id="eventName">Connect a DGT LiveChess Cloud tournament</strong><br><small id="roundName">Waiting for tournament feed</small></div>
+ <div style="text-align:right"><span id="airStatus" class="liveword">● NOT CONNECTED</span><br><span class="pill" id="updated">NO LIVE DATA</span></div>
 </div>
-<section class="panel" id="setup">
-<h2>Connect DGT electronic boards</h2>
-<p class="help">MaxChess receives the tournament display from DGT LiveChess Cloud. The boards connect to the tournament computer running DGT LiveChess; this webpage is the viewer and broadcast layout.</p>
-<div class="instructions">
-<div class="step"><b>1 · Connect the boards</b><p>Connect DGT USB, Bluetooth or Smart Boards to a Windows, Mac or Linux tournament computer and confirm they appear in DGT LiveChess.</p></div>
-<div class="step"><b>2 · Publish from LiveChess</b><p>In DGT LiveChess, set up the tournament and pairings, start recording the boards, then configure Output → LiveChess Cloud export.</p></div>
-<div class="step"><b>3 · Paste the tournament link</b><p>Copy the tournament output/view link generated by DGT LiveChess Cloud and paste it below. The live board feed should appear above if DGT allows embedding that link.</p></div>
+<div class="layout">
+<section class="stage">
+ <div class="stagehead"><b>♟ FEATURED LIVE GAME</b><span id="boardMeta">BOARD — · ROUND —</span></div>
+ <div class="players">
+  <div class="player"><strong id="whiteName">White player</strong><small id="whiteDetail">White</small></div>
+  <div class="versus">VS</div>
+  <div class="player black"><strong id="blackName">Black player</strong><small id="blackDetail">Black</small></div>
+ </div>
+ <div class="board-zone">
+  <div id="chessBoard" class="board" aria-label="Live chessboard"></div>
+  <div class="board-note">
+   <div class="info-card"><div class="info-label">GAME STATUS</div><div class="info-value" id="gameStatus">WAITING</div><div class="info-sub" id="gameResult">Connect a tournament feed</div></div>
+   <div class="info-card"><div class="info-label">LATEST MOVE</div><div class="info-value" id="lastMove">—</div><div class="info-sub" id="moveCount">0 moves recorded</div></div>
+   <div class="info-card moves-card"><div class="info-label">RECENT MOVES</div><div id="movesList" class="moves"><span class="hint">Moves will appear here.</span></div></div>
+   <div class="info-card"><div class="info-label">FEED UPDATE</div><div class="info-value" id="feedTime">—</div><div class="info-sub">MaxChess Live feed monitor</div></div>
+   <div class="info-card"><div class="info-label">SOURCE</div><div class="info-value" style="font-size:14px">DGT LIVECHESS</div><div class="info-sub">LiveChess Cloud game data</div></div>
+  </div>
+ </div>
+</section>
+<aside class="side">
+ <h2>♜ TOURNAMENT BOARDS</h2>
+ <div class="sidebody">
+  <label for="roundSelect">Select round</label><select id="roundSelect" disabled><option>Connect a tournament first</option></select>
+  <p id="boardCount">Choose a round to see available boards.</p>
+  <div id="boardList" class="boards"><span class="hint">No tournament connected.</span></div>
+ </div>
+</aside>
 </div>
-<label for="eventInput">Tournament name</label><input id="eventInput" maxlength="100" value="MaxChess Tournament">
-<label for="roundInput">Round / description</label><input id="roundInput" maxlength="100" value="Round 1 · Main boards">
-<label for="dgtUrl">DGT LiveChess Cloud tournament output URL</label><input id="dgtUrl" type="url" placeholder="Paste the https:// LiveChess Cloud tournament link">
-<div class="controls"><button id="connect">Connect DGT feed</button><button class="alt" id="disconnect">Disconnect</button><button class="alt" id="obsCopy">Copy OBS browser-source URL</button></div>
-<div id="status" role="status" aria-live="polite"></div>
-<p class="help">For safety, only HTTPS links on livechesscloud.com are accepted. If the DGT page refuses embedding, use its own viewer link in a browser source or use the PGN preview section below. DGT hardware connection is managed by DGT LiveChess, not by iPad Safari.</p>
+<section class="setup" id="setup">
+ <h2>Connect a DGT tournament</h2>
+ <p class="hint">Paste the tournament viewer link created by DGT LiveChess Cloud. MaxChess will read the tournament, pairing and game feeds and draw its own board view. You do not need to paste a private DGT password.</p>
+ <div class="steps">
+  <div class="step"><b>1 · Connect the boards</b><span>On a Windows, Mac or Linux tournament computer, run DGT LiveChess and connect the physical DGT e-Boards.</span></div>
+  <div class="step"><b>2 · Publish the games</b><span>In DGT LiveChess, start recording the selected boards and add the LiveChess Cloud exporter under Output.</span></div>
+  <div class="step"><b>3 · Share the viewer link</b><span>Copy the tournament URL from LiveChess Cloud and paste it below. A UUID copied from the link also works.</span></div>
+ </div>
+ <label for="tournamentLink">DGT LiveChess Cloud tournament link or ID</label>
+ <input id="tournamentLink" type="url" placeholder="https://view.livechesscloud.com/#your-tournament-id">
+ <div class="controls">
+  <button id="connectBtn">Connect tournament</button>
+  <button class="secondary" id="refreshBtn" disabled>Refresh now</button>
+  <button class="secondary" id="copyObsBtn" disabled>Copy YouTube / OBS link</button>
+  <button class="ghost" id="openDgtBtn" disabled>Open DGT viewer</button>
+ </div>
+ <div id="connectionStatus" class="status" role="status" aria-live="polite"></div>
+ <p class="hint">MaxChess reads the public JSON feed from LiveChess Cloud. This is a community-observed feed format rather than a published DGT developer API. If DGT changes the feed or blocks browser requests, the connection will show an error instead of pretending to be live.</p>
 </section>
-<section class="panel">
-<h2>PGN backup preview</h2><p class="help">If you have an exported PGN file, you can load it here as a backup preview. This does not create a live DGT connection.</p>
-<label for="pgnFile">Choose PGN file</label><input id="pgnFile" type="file" accept=".pgn,.txt,text/plain">
-<label for="pgnText">Or paste PGN text</label><textarea id="pgnText" placeholder='[Event "Example"]&#10;[White "Player 1"]&#10;[Black "Player 2"]&#10;&#10;1. e4 e5 2. Nf3 Nc6 *'></textarea>
-<div class="controls"><button id="loadPgn">Read PGN backup</button></div><div id="pgnResult" class="help"></div>
-</section>
-<div class="footer">MAXCHESS · FREE TO PLAY · Tournament broadcast interface preview. DGT and LiveChess Cloud are products/services of their respective owners. MaxChess is not affiliated with or endorsed by DGT, FIDE, US Chess, or YouTube.</div>
+<div class="footer">MAXCHESS · FREE TO PLAY · Independent tournament display. DGT, LiveChess Cloud, FIDE, US Chess and YouTube are respective third-party names and services; MaxChess is not affiliated with or endorsed by them.</div>
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script>
 (function(){
-const $=id=>document.getElementById(id);
-const params=new URLSearchParams(location.search);
-if(params.get('mode')==='obs')document.body.classList.add('obs');
-const allowedHost=h=>h==='livechesscloud.com'||h.endsWith('.livechesscloud.com');
-function setStatus(s){$('status').textContent=s;$('feedStatus').textContent=s;$('sideStatus').textContent=s}
-function labels(){const ev=$('eventInput').value.trim()||'MaxChess Tournament';const rd=$('roundInput').value.trim()||'Round 1';$('eventTitle').textContent=ev.toUpperCase();$('eventBar').textContent=ev;$('sideEvent').textContent=ev;$('roundTitle').textContent=rd+' • Live tournament coverage';$('roundBar').textContent=rd+' · Main boards';$('sideRound').textContent=rd}
-$('eventInput').addEventListener('input',labels);$('roundInput').addEventListener('input',labels);
-$('connect').onclick=()=>{
- let u;try{u=new URL($('dgtUrl').value.trim())}catch(e){setStatus('Paste the complete DGT LiveChess Cloud HTTPS link first.');return}
- if(u.protocol!=='https:'||!allowedHost(u.hostname)){setStatus('That link is not accepted. Use the HTTPS tournament link created by DGT LiveChess Cloud.');return}
- $('dgtFrame').src=u.href;$('dgtFrame').style.display='block';$('empty').style.display='none';
- $('dgtFrame').onload=()=>setStatus('DGT page loaded. Check that live boards and moves are visible.');
- $('dgtFrame').onerror=()=>setStatus('The DGT page could not be embedded. Try the DGT viewer URL in OBS or check its sharing settings.');
- $('dgtUrl').dataset.saved=u.href;labels();setStatus('Opening DGT LiveChess Cloud feed…');
- try{localStorage.setItem('maxchess-dgt-feed-url',u.href);localStorage.setItem('maxchess-broadcast-event',$('eventInput').value);localStorage.setItem('maxchess-broadcast-round',$('roundInput').value)}catch(e){}
-};
-$('disconnect').onclick=()=>{$('dgtFrame').src='about:blank';$('dgtFrame').style.display='none';$('empty').style.display='block';setStatus('Disconnected · waiting for DGT LiveChess feed')};
-$('obsCopy').onclick=async()=>{const url=location.origin+location.pathname+'?mode=obs';try{await navigator.clipboard.writeText(url);setStatus('OBS browser-source URL copied. Add it as a Browser source in OBS.')}catch(e){setStatus('OBS URL: '+url)}};
-$('pgnFile').onchange=async()=>{const f=$('pgnFile').files&&$('pgnFile').files[0];if(!f)return;if(f.size>5*1024*1024){$('pgnResult').textContent='File exceeds 5 MB.';return}$('pgnText').value=await f.text();$('pgnResult').textContent='PGN file loaded. Tap Read PGN backup.'};
-$('loadPgn').onclick=()=>{const txt=$('pgnText').value;const n=(txt.match(/\[Event\s+"/g)||[]).length||((txt.match(/\d+\./g)||[]).length?1:0);$('pgnResult').textContent=n?'PGN backup detected ('+n+' game header(s)). For live multi-board positions, connect the DGT LiveChess Cloud feed above.':'No PGN game detected. Check the pasted text or file.'};
-try{const saved=localStorage.getItem('maxchess-dgt-feed-url');if(saved){$('dgtUrl').value=saved;$('eventInput').value=localStorage.getItem('maxchess-broadcast-event')||$('eventInput').value;$('roundInput').value=localStorage.getItem('maxchess-broadcast-round')||$('roundInput').value;labels();}}catch(e){}
-labels();
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var params=new URLSearchParams(location.search);
+var obsMode=params.get('mode')==='obs';
+if(obsMode)document.body.classList.add('obs');
+var POOL='https://1.pool.livechesscloud.com/get/';
+var UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+var state={id:'',tournament:null,round:0,index:null,board:0,game:null,pairing:null,pollTimer:null,refreshTimer:null,loading:false,engineOk:typeof window.Chess==='function',lastUpdate:null,orientation:'white'};
+var pieces={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
+function say(message){$('connectionStatus').textContent=message}
+function safeName(p){if(!p)return'Unknown player';var parts=[p.fname,p.mname,p.lname].filter(function(x){return typeof x==='string'&&x.trim()});return parts.join(' ')||'Unknown player'}
+function resultText(r){if(r==='WHITEWIN')return'1–0';if(r==='BLACKWIN')return'0–1';if(r==='DRAW')return'½–½';return'In progress'}
+function moveSan(raw){return String(raw||'').trim().split(/\s+/)[0]||''}
+function parseTournamentId(raw){
+ var value=String(raw||'').trim();
+ if(UUID.test(value))return value.toLowerCase();
+ try{
+  var u=new URL(value);
+  if(u.protocol!=='https:'||!(u.hostname==='view.livechesscloud.com'||u.hostname==='livechesscloud.com'||u.hostname==='www.livechesscloud.com'))return'';
+  var candidates=[u.hash.replace(/^#/,'').split(/[/?&]/)[0],u.searchParams.get('id'),u.pathname.split('/').filter(Boolean).pop()];
+  for(var i=0;i<candidates.length;i++){if(candidates[i]&&UUID.test(candidates[i]))return candidates[i].toLowerCase()}
+ }catch(e){}
+ return'';
+}
+async function getJson(url){
+ var response=await fetch(url,{method:'GET',cache:'no-store',mode:'cors',credentials:'omit'});
+ if(!response.ok)throw new Error('LiveChess Cloud returned HTTP '+response.status);
+ return await response.json();
+}
+function apiUrl(path){return POOL+encodeURIComponent(state.id)+'/'+path}
+function formatTime(){return new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+function setConnected(on){
+ $('refreshBtn').disabled=!on;$('copyObsBtn').disabled=!on;$('openDgtBtn').disabled=!on;
+ $('roundSelect').disabled=!on;
+}
+function updateHeader(){
+ var t=state.tournament||{};
+ var name=t.name||'MaxChess Tournament';
+ $('pageTitle').textContent=name.toUpperCase();
+ $('eventName').textContent=name;
+ $('eventDetails').textContent=[t.location,t.country,t.timecontrol].filter(Boolean).join(' · ')||'Live boards · Player names · Move-by-move replay';
+ $('roundName').textContent=state.round?'Round '+state.round+' · '+(state.index&&state.index.date||'Tournament games'):'Waiting for round data';
+}
+function drawBoard(position){
+ var board=$('chessBoard');board.textContent='';
+ var valid=Array.isArray(position)&&position.length===8;
+ var rows=valid?position:null;
+ for(var r=0;r<8;r++){
+  for(var c=0;c<8;c++){
+   var square=document.createElement('div');square.className='square '+(((r+c)%2===0)?'light':'dark');
+   var rank=8-r,file=String.fromCharCode(97+c);
+   if(c===0){var coord=document.createElement('span');coord.className='coord';coord.textContent=rank;square.appendChild(coord)}
+   var pc=valid?rows[r][c]:null;
+   if(pc){var glyph=document.createElement('span');glyph.className='piece';glyph.textContent=(pieces[pc.color]||{})[pc.type]||'';square.appendChild(glyph)}
+   if(r===7){var fileLabel=document.createElement('span');fileLabel.className='coord';fileLabel.style.left='auto';fileLabel.style.top='auto';fileLabel.style.right='3px';fileLabel.style.bottom='2px';fileLabel.textContent=file;square.appendChild(fileLabel)}
+   square.title=file+rank;
+   board.appendChild(square);
+  }
+ }
+}
+function setStartingBoard(){drawBoard(null)}
+function renderMoves(moves){
+ var list=$('movesList');list.textContent='';
+ var arr=Array.isArray(moves)?moves.map(moveSan).filter(Boolean):[];
+ if(!arr.length){var empty=document.createElement('span');empty.className='hint';empty.textContent='No moves recorded yet.';list.appendChild(empty);return}
+ var start=Math.max(0,arr.length-16);
+ for(var i=start;i<arr.length;i++){
+  if(i%2===0){var num=document.createElement('span');num.className='move';num.textContent=Math.floor(i/2)+1+'.';list.appendChild(num)}
+  var el=document.createElement('span');el.className='move'+(i===arr.length-1?' latest':'');el.textContent=arr[i];list.appendChild(el)
+ }
+}
+function renderGame(data){
+ state.game=data||null;
+ var pairing=state.pairing||{};
+ $('whiteName').textContent=safeName(pairing.white);
+ $('blackName').textContent=safeName(pairing.black);
+ $('whiteDetail').textContent=pairing.white&&pairing.white.title||'White';
+ $('blackDetail').textContent=pairing.black&&pairing.black.title||'Black';
+ var moves=data&&Array.isArray(data.moves)?data.moves:[];
+ var tokens=moves.map(moveSan).filter(Boolean);
+ var live=!!((data&&data.live)||(pairing&&pairing.live));
+ $('gameStatus').textContent=live?'LIVE':(data&&data.result&&data.result!=='*'?'FINISHED':'WAITING');
+ $('gameResult').textContent=resultText(data&&data.result||pairing.result);
+ $('lastMove').textContent=tokens.length?tokens[tokens.length-1]:'—';
+ $('moveCount').textContent=tokens.length+' half-moves recorded';
+ $('boardMeta').textContent='BOARD '+(state.board||'—')+' · ROUND '+(state.round||'—');
+ $('airStatus').textContent=live?'● LIVE FEED':'● FEED CONNECTED';
+ $('airStatus').style.color=live?'var(--red)':'var(--green)';
+ $('updated').textContent=live?'LIVE':'CONNECTED';
+ $('feedTime').textContent=state.lastUpdate||'—';
+ renderMoves(moves);
+ var canBuild=state.engineOk&&!(data&&data.chess960&&data.chess960!==518);
+ if(canBuild){
+  try{
+   var chess=new window.Chess();
+   for(var i=0;i<tokens.length;i++){
+    var applied=chess.move(tokens[i],{sloppy:true});
+    if(!applied)throw new Error('Could not replay move '+tokens[i]);
+   }
+   drawBoard(chess.board());
+  }catch(err){setStartingBoard();$('gameResult').textContent='Move replay paused: '+err.message}
+ }else{
+  setStartingBoard();
+  if(!state.engineOk)$('gameResult').textContent='Chess position library did not load; move list is still available.';
+  else if(data&&data.chess960&&data.chess960!==518)$('gameResult').textContent='Chess960 game: move feed connected; this board renderer is standard-chess only.';
+ }
+}
+function renderBoardList(){
+ var list=$('boardList');list.textContent='';
+ var pairs=state.index&&Array.isArray(state.index.pairings)?state.index.pairings:[];
+ $('boardCount').textContent=pairs.length+' pairing'+(pairs.length===1?'':'s')+' in round '+state.round;
+ if(!pairs.length){var none=document.createElement('span');none.className='hint';none.textContent='No pairings were published for this round.';list.appendChild(none);return}
+ pairs.forEach(function(p,i){
+  var btn=document.createElement('button');btn.type='button';btn.className='board-choice'+(state.board===i+1?' active':'');
+  var names=document.createElement('span');names.className='names';names.textContent=safeName(p.white)+' vs '+safeName(p.black);
+  var num=document.createElement('span');num.className='num';num.textContent='B'+(i+1)+(p.live?' · LIVE':'');
+  btn.appendChild(names);btn.appendChild(num);btn.addEventListener('click',function(){selectBoard(i+1)});
+  list.appendChild(btn);
+ });
+}
+async function fetchRound(round){
+ clearTimeout(state.pollTimer);state.round=Number(round)||1;state.game=null;
+ $('roundName').textContent='Loading round '+state.round+'…';
+ say('Loading round '+state.round+' pairings…');
+ var index=await getJson(apiUrl('round-'+state.round+'/index.json'));
+ if(!index||!Array.isArray(index.pairings))throw new Error('The round feed did not contain pairings.');
+ state.index=index;
+ var opts=$('roundSelect');opts.textContent='';
+ (state.tournament.rounds||[]).forEach(function(r,i){
+  if(r&&(Number(r.count)>0||Number(r.live)>0||i+1===state.round)){
+   var o=document.createElement('option');o.value=String(i+1);o.textContent='Round '+(i+1)+(Number(r.live)>0?' · LIVE':'');opts.appendChild(o)
+  }
+ });
+ opts.value=String(state.round);renderBoardList();updateHeader();
+ var requested=Number(params.get('board'))||0;
+ var firstLive=index.pairings.findIndex(function(p){return p&&p.live});
+ var chosen=(requested>0&&requested<=index.pairings.length)?requested:(firstLive>=0?firstLive+1:(index.pairings.length?1:0));
+ if(chosen)await selectBoard(chosen);else{state.board=0;renderGame(null);say('No games are listed in this round.')}
+}
+async function selectBoard(number){
+ state.board=number;state.pairing=state.index&&state.index.pairings[number-1]||null;
+ renderBoardList();
+ if(!state.pairing)return;
+ renderGame({moves:[],live:!!state.pairing.live,result:state.pairing.result});
+ await pollGame();
+}
+async function pollGame(){
+ if(!state.id||!state.round||!state.board||state.loading)return;
+ state.loading=true;
+ try{
+  var data=await getJson(apiUrl('round-'+state.round+'/game-'+state.board+'.json?poll'));
+  if(!data||!Array.isArray(data.moves))throw new Error('Game feed did not include a move list.');
+  state.lastUpdate=formatTime();renderGame(data);say('Connected · last update '+state.lastUpdate);
+ }catch(e){
+  say('Feed temporarily unavailable: '+e.message+' · retrying');
+  $('airStatus').textContent='● RECONNECTING';$('airStatus').style.color='var(--red)';
+ }finally{
+  state.loading=false;
+  clearTimeout(state.pollTimer);
+  state.pollTimer=setTimeout(pollGame,3000);
+ }
+}
+async function connect(raw){
+ var id=parseTournamentId(raw);
+ if(!id){say('That link could not be read. Paste the HTTPS view.livechesscloud.com/#… URL or the tournament ID.');return}
+ clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);
+ state.id=id;state.board=0;state.round=0;state.index=null;state.tournament=null;state.game=null;
+ say('Connecting to DGT LiveChess Cloud…');$('airStatus').textContent='● CONNECTING';$('airStatus').style.color='var(--gold)';
+ try{
+  var tournament=await getJson(apiUrl('tournament.json'));
+  if(!tournament||!Array.isArray(tournament.rounds))throw new Error('Tournament details were not returned.');
+  state.tournament=tournament;localStorage.setItem('maxchess-livechess-id',id);
+  $('tournamentLink').value='https://view.livechesscloud.com/#'+id;
+  setConnected(true);updateHeader();
+  var roundRows=tournament.rounds||[];
+  var rounds=roundRows.map(function(r,i){return{round:i+1,live:Number(r&&r.live)||0,count:Number(r&&r.count)||0}}).filter(function(r){return r.count>0||r.live>0});
+  var preferred=Number(params.get('round'))||0;
+  var liveRound=rounds.filter(function(r){return r.live>0}).pop();
+  var latest=rounds.length?rounds[rounds.length-1]:{round:1};
+  var selected=preferred|| (liveRound?liveRound.round:latest.round);
+  await fetchRound(selected);
+  say('Tournament connected · MaxChess is reading the LiveChess Cloud feed.');
+  state.refreshTimer=setInterval(async function(){
+   if(document.hidden||!state.id)return;
+   try{
+    var fresh=await getJson(apiUrl('round-'+state.round+'/index.json'));
+    if(fresh&&Array.isArray(fresh.pairings)){
+     state.index=fresh;renderBoardList();
+     if(state.board&&fresh.pairings[state.board-1])state.pairing=fresh.pairings[state.board-1];
+    }
+   }catch(e){}
+  },12000);
+ }catch(e){
+  setConnected(false);say('Could not connect: '+e.message+'. Check that the DGT tournament is published and that the link is correct.');
+  $('airStatus').textContent='● NOT CONNECTED';$('airStatus').style.color='var(--red)';
+ }
+}
+function makeObsUrl(){
+ if(!state.id)return'';
+ var u=new URL(location.href);u.search='';u.searchParams.set('mode','obs');u.searchParams.set('tournament',state.id);
+ if(state.round)u.searchParams.set('round',String(state.round));
+ if(state.board)u.searchParams.set('board',String(state.board));
+ return u.toString();
+}
+$('connectBtn').addEventListener('click',function(){connect($('tournamentLink').value)});
+$('refreshBtn').addEventListener('click',function(){if(state.id)connect(state.id)});
+$('roundSelect').addEventListener('change',function(){fetchRound(Number(this.value)).catch(function(e){say('Could not load round: '+e.message)})});
+$('copyObsBtn').addEventListener('click',async function(){
+ var url=makeObsUrl();
+ try{await navigator.clipboard.writeText(url);say('YouTube / OBS browser-source link copied. Use it in OBS as a Browser source at 1920 × 1080.')}
+ catch(e){say('Copy was blocked by this browser. OBS link: '+url)}
+});
+$('openDgtBtn').addEventListener('click',function(){if(state.id)window.open('https://view.livechesscloud.com/#'+state.id,'_blank','noopener')});
+$('tournamentLink').addEventListener('keydown',function(e){if(e.key==='Enter')connect(this.value)});
+var initial=params.get('tournament')||'';
+if(!initial){try{initial=localStorage.getItem('maxchess-livechess-id')||''}catch(e){}}
+if(initial){$('tournamentLink').value=initial;connect(initial)}
+else{setStartingBoard();setConnected(false)}
+window.addEventListener('beforeunload',function(){clearTimeout(state.pollTimer);clearInterval(state.refreshTimer)});
 })();
-</script></body></html>
+</script>
+</body>
+</html>

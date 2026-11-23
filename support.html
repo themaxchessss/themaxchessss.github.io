@@ -7,11 +7,11 @@
 <meta name="theme-color" content="#090b10">
 <title>Support MaxChess</title>
 <style>
-:root{color-scheme:dark;--bg:#080a0f;--panel:#141923;--gold:#f3c85b;--gold2:#ffe7a0;--text:#f7f7fa;--muted:#b9c1ce;--line:#414958}
+:root{color-scheme:dark;--gold:#f3c85b;--gold2:#ffe7a0;--text:#f7f7fa;--muted:#b9c1ce}
 *{box-sizing:border-box}
 html,body{writing-mode:horizontal-tb!important;text-orientation:mixed!important}
 body{min-width:320px;overflow-x:hidden;margin:0;background:radial-gradient(ellipse at 50% 0%,#28200d 0,#080a0f 55%);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
-body *:not(iframe){word-break:normal!important;overflow-wrap:anywhere;hyphens:none!important}
+body *{word-break:normal!important;overflow-wrap:anywhere;hyphens:none!important}
 header{padding:18px 20px;border-bottom:1px solid #303744;background:#10141c}
 header a{color:var(--gold);text-decoration:none;font-weight:900;letter-spacing:.1em}
 main{max-width:850px;margin:35px auto;padding:0 18px 60px}
@@ -22,23 +22,21 @@ h2{color:var(--gold2);font-size:1.35rem;margin:0 0 12px}
 p,li{color:var(--muted)}
 .panel{min-width:0;padding:24px;border:1px solid #c9cdd4;border-radius:18px;background:#fff;color:#000;margin:22px 0;box-shadow:0 12px 34px #0005}
 .panel h2,.panel p,.panel li,.panel .small,.panel .note{color:#000!important}
-.panel a{color:#000!important;text-decoration:underline}
+.panel a:not(.paypal-button){color:#000!important;text-decoration:underline}
 .center{text-align:center}
+.paypal-button{display:inline-flex;align-items:center;justify-content:center;min-height:54px;max-width:100%;margin:18px auto;padding:13px 22px;border:2px solid #111;border-radius:10px;background:#ffc439;color:#111!important;font-size:1rem;font-weight:800;text-align:center;text-decoration:none;touch-action:manipulation}
+.paypal-button:focus-visible{outline:3px solid #2459a6;outline-offset:3px}
 .trophy{max-width:280px;margin:8px auto 14px;padding:22px;border-radius:20px;border:1px solid #a98131;background:radial-gradient(circle at 50% 30%,#594319,#17130b 72%);text-align:center}
 .queen{font-size:76px;color:var(--gold);line-height:1.2;text-shadow:0 0 22px #f4c34e99}
 .trophy-name{font-weight:950;letter-spacing:.09em;color:var(--gold2);font-size:1.15rem}
 .ribbon{display:inline-block;background:linear-gradient(90deg,#9d6a16,#ffe28a,#a8751b);color:#17120a;font-weight:950;padding:6px 18px;border-radius:5px;margin-top:10px}
-#paypal-container-5RFCQCTP2M9BL{display:block;position:relative;z-index:1;width:100%;max-width:440px;min-height:58px;margin:18px auto;padding:8px;background:#fff;border-radius:10px;color-scheme:light;overflow:visible;touch-action:manipulation}
-#paypal-container-5RFCQCTP2M9BL iframe{display:block;position:relative;z-index:2;max-width:100%;color-scheme:light!important;pointer-events:auto}
-.paypal-fallback{display:inline-block;margin:8px auto 2px;padding:10px 16px;border:1px solid #222;border-radius:8px;background:#fff;color:#000!important;font-weight:700;text-decoration:underline}
 .small{font-size:.9rem}
 .note{border-left:3px solid var(--gold);padding-left:13px}
 a{color:var(--gold2)}
 footer{border-top:1px solid #303744;padding:22px;text-align:center;color:#929cab}
 footer a{margin:0 9px}
-@media(max-width:480px){.panel{padding:18px 14px}#paypal-container-5RFCQCTP2M9BL{padding:4px}}
+@media(max-width:480px){.panel{padding:18px 14px}.paypal-button{width:100%}}
 </style>
-<script src="https://www.paypal.com/sdk/js?client-id=BAAd70Zk2rJMe1CQv8enIkisSZcAYE1nCCvfS25z68ZvivJAtZwM22vHph_pQqhVViqbjxRjzeLbP9FX3I&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
 </head>
 <body>
 <header><a href="/">♛ MAXCHESS</a></header>
@@ -47,10 +45,8 @@ footer a{margin:0 9px}
 <section class="panel center" aria-labelledby="donate-title">
 <h2 id="donate-title">♥ Make a Donation</h2>
 <p>Every contribution is voluntary and helps support the MaxChess project. MaxChess remains free to play. Donations do not unlock paid features, improve ratings, or provide a playing advantage.</p>
-<div id="paypal-container-5RFCQCTP2M9BL" aria-label="PayPal donation button"></div>
-<a class="paypal-fallback" href="https://www.paypal.com/donate/?hosted_button_id=5RFCQCTP2M9BL" target="_blank" rel="noopener noreferrer">Open PayPal donation page</a>
-<p id="paypal-status" class="small" role="status">Loading secure PayPal button…</p>
-<p class="small">If the amount box will not accept typing inside the embedded form on iPad, use “Open PayPal donation page” to enter it directly on PayPal. PayPal handles the payment. Check the recipient before confirming. A parent or guardian must approve and manage donations.</p>
+<a class="paypal-button" href="https://www.paypal.com/donate/?hosted_button_id=5RFCQCTP2M9BL" target="_blank" rel="noopener noreferrer">Choose Donation Amount on PayPal</a>
+<p class="small">The amount entry now opens directly on PayPal instead of using an embedded box, which can have typing and keyboard problems on iPad. Enter the amount on PayPal, review the recipient and amount, and only then confirm. A parent or guardian must approve and manage donations.</p>
 </section>
 <section class="panel center" aria-labelledby="reward-title">
 <h2 id="reward-title">A Digital Thank-You Gift</h2>
@@ -62,20 +58,5 @@ footer a{margin:0 9px}
 <section class="panel"><h2>Thank you for supporting free chess</h2><p>Your support helps MaxChess grow while keeping the game free for every player.</p><p><a href="/">Return to MaxChess</a></p></section>
 </main>
 <footer><a href="/">MaxChess home</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a></footer>
-<script>
-(function(){
- const status=document.getElementById("paypal-status");
- const target="#paypal-container-5RFCQCTP2M9BL";
- function render(){
-   if(!window.paypal || !window.paypal.HostedButtons){status.textContent="PayPal could not load. Use the Open PayPal donation page link above.";return;}
-   try{
-     window.paypal.HostedButtons({hostedButtonId:"5RFCQCTP2M9BL"}).render(target)
-       .then(function(){status.textContent="Secure PayPal donation button ready.";})
-       .catch(function(){status.textContent="Embedded PayPal unavailable. Use the Open PayPal donation page link above.";});
-   }catch(e){status.textContent="Embedded PayPal unavailable. Use the Open PayPal donation page link above.";}
- }
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render,{once:true});else render();
-})();
-</script>
 </body>
 </html>

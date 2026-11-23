@@ -9,12 +9,9 @@
 <style>
 :root{color-scheme:dark;--bg:#080a0f;--panel:#141923;--gold:#f3c85b;--gold2:#ffe7a0;--text:#f7f7fa;--muted:#b9c1ce;--line:#414958}
 *{box-sizing:border-box}
-html,body{writing-mode:horizontal-tb!important;text-orientation:mixed!important;}
-body{min-width:320px;overflow-x:auto;}
-body,body *:not(iframe){word-break:normal!important;overflow-wrap:normal!important;hyphens:none!important;}
-header,main,footer,.hero,.panel{min-width:0;}
-header a,h1,h2,p,li,.trophy-name,.ribbon{white-space:normal;}
-body{margin:0;background:radial-gradient(ellipse at 50% 0%,#28200d 0,#080a0f 55%);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+html,body{writing-mode:horizontal-tb!important;text-orientation:mixed!important}
+body{min-width:320px;overflow-x:hidden;margin:0;background:radial-gradient(ellipse at 50% 0%,#28200d 0,#080a0f 55%);color:var(--text);font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+body *:not(iframe){word-break:normal!important;overflow-wrap:anywhere;hyphens:none!important}
 header{padding:18px 20px;border-bottom:1px solid #303744;background:#10141c}
 header a{color:var(--gold);text-decoration:none;font-weight:900;letter-spacing:.1em}
 main{max-width:850px;margin:35px auto;padding:0 18px 60px}
@@ -23,59 +20,46 @@ main{max-width:850px;margin:35px auto;padding:0 18px 60px}
 h1{color:var(--gold);font-size:clamp(2.1rem,7vw,3.2rem);line-height:1.12;margin:16px 0 10px}
 h2{color:var(--gold2);font-size:1.35rem;margin:0 0 12px}
 p,li{color:var(--muted)}
-.panel{padding:24px;border:1px solid #c9cdd4;border-radius:18px;background:#fff;color:#111;margin:22px 0;box-shadow:0 12px 34px #0005}\n.panel h2,.panel p,.panel li,.panel .small,.panel .note{color:#111!important}\n.panel a{color:#111!important;text-decoration:underline}
+.panel{min-width:0;padding:24px;border:1px solid #c9cdd4;border-radius:18px;background:#fff;color:#000;margin:22px 0;box-shadow:0 12px 34px #0005}
+.panel h2,.panel p,.panel li,.panel .small,.panel .note{color:#000!important}
+.panel a{color:#000!important;text-decoration:underline}
 .center{text-align:center}
 .trophy{max-width:280px;margin:8px auto 14px;padding:22px;border-radius:20px;border:1px solid #a98131;background:radial-gradient(circle at 50% 30%,#594319,#17130b 72%);text-align:center}
 .queen{font-size:76px;color:var(--gold);line-height:1.2;text-shadow:0 0 22px #f4c34e99}
 .trophy-name{font-weight:950;letter-spacing:.09em;color:var(--gold2);font-size:1.15rem}
 .ribbon{display:inline-block;background:linear-gradient(90deg,#9d6a16,#ffe28a,#a8751b);color:#17120a;font-weight:950;padding:6px 18px;border-radius:5px;margin-top:10px}
-#paypal-container-5RFCQCTP2M9BL{display:flex;justify-content:center;min-height:48px;margin:18px auto}
-/* PayPal hosts its amount-entry form in an embedded frame. Request a light form
-   appearance so typed amounts remain readable on this dark support page. */
-#paypal-container-5RFCQCTP2M9BL{color-scheme:light;background:#fff;border-radius:10px;padding:8px;max-width:440px}
-#paypal-container-5RFCQCTP2M9BL iframe{color-scheme:light!important}
+#paypal-container-5RFCQCTP2M9BL{display:block;position:relative;z-index:1;width:100%;max-width:440px;min-height:58px;margin:18px auto;padding:8px;background:#fff;border-radius:10px;color-scheme:light;overflow:visible;touch-action:manipulation}
+#paypal-container-5RFCQCTP2M9BL iframe{display:block;position:relative;z-index:2;max-width:100%;color-scheme:light!important;pointer-events:auto}
+.paypal-fallback{display:inline-block;margin:8px auto 2px;padding:10px 16px;border:1px solid #222;border-radius:8px;background:#fff;color:#000!important;font-weight:700;text-decoration:underline}
 .small{font-size:.9rem}
 .note{border-left:3px solid var(--gold);padding-left:13px}
 a{color:var(--gold2)}
 footer{border-top:1px solid #303744;padding:22px;text-align:center;color:#929cab}
 footer a{margin:0 9px}
+@media(max-width:480px){.panel{padding:18px 14px}#paypal-container-5RFCQCTP2M9BL{padding:4px}}
 </style>
 <script src="https://www.paypal.com/sdk/js?client-id=BAAd70Zk2rJMe1CQv8enIkisSZcAYE1nCCvfS25z68ZvivJAtZwM22vHph_pQqhVViqbjxRjzeLbP9FX3I&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
 </head>
 <body>
 <header><a href="/">♛ MAXCHESS</a></header>
 <main>
-<section class="hero">
-<div class="heart" aria-hidden="true">♥</div>
-<h1>Support MaxChess</h1>
-<p>Help us keep free chess fun, welcoming, and available for everyone.</p>
-</section>
-
+<section class="hero"><div class="heart" aria-hidden="true">♥</div><h1>Support MaxChess</h1><p>Help us keep free chess fun, welcoming, and available for everyone.</p></section>
 <section class="panel center" aria-labelledby="donate-title">
 <h2 id="donate-title">♥ Make a Donation</h2>
 <p>Every contribution is voluntary and helps support the MaxChess project. MaxChess remains free to play. Donations do not unlock paid features, improve ratings, or provide a playing advantage.</p>
 <div id="paypal-container-5RFCQCTP2M9BL" aria-label="PayPal donation button"></div>
+<a class="paypal-fallback" href="https://www.paypal.com/donate/?hosted_button_id=5RFCQCTP2M9BL" target="_blank" rel="noopener noreferrer">Open PayPal donation page</a>
 <p id="paypal-status" class="small" role="status">Loading secure PayPal button…</p>
-<p class="small">PayPal handles the payment. Check the recipient shown by PayPal before confirming. A parent or guardian must approve and manage donations.</p>
+<p class="small">If the amount box will not accept typing inside the embedded form on iPad, use “Open PayPal donation page” to enter it directly on PayPal. PayPal handles the payment. Check the recipient before confirming. A parent or guardian must approve and manage donations.</p>
 </section>
-
 <section class="panel center" aria-labelledby="reward-title">
 <h2 id="reward-title">A Digital Thank-You Gift</h2>
-<div class="trophy" role="img" aria-label="Gold chess queen supporter trophy concept">
-<div class="queen">♛</div>
-<div class="trophy-name">MAXCHESS</div>
-<div class="ribbon">GOLD SUPPORTER</div>
-</div>
+<div class="trophy" role="img" aria-label="Gold chess queen supporter trophy concept"><div class="queen">♛</div><div class="trophy-name">MAXCHESS</div><div class="ribbon">GOLD SUPPORTER</div></div>
 <p>After a donation is confirmed, supporters can request a personalized Gold Supporter digital trophy, a certificate, and a supporter badge.</p>
 <p class="small">This is a thank-you gift, not a purchase of chess benefits. The reward is currently handled manually; it is not automatically issued by PayPal yet.</p>
 <p class="note small">To request the gift after payment, ask a parent or guardian to contact <a href="mailto:maxchess.help@gmail.com">maxchess.help@gmail.com</a> with the supporter display name and PayPal transaction reference. Never email card numbers, passwords, or payment login details.</p>
 </section>
-
-<section class="panel">
-<h2>Thank you for supporting free chess</h2>
-<p>Your support helps MaxChess grow while keeping the game free for every player.</p>
-<p><a href="/">Return to MaxChess</a></p>
-</section>
+<section class="panel"><h2>Thank you for supporting free chess</h2><p>Your support helps MaxChess grow while keeping the game free for every player.</p><p><a href="/">Return to MaxChess</a></p></section>
 </main>
 <footer><a href="/">MaxChess home</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a></footer>
 <script>
@@ -83,15 +67,12 @@ footer a{margin:0 9px}
  const status=document.getElementById("paypal-status");
  const target="#paypal-container-5RFCQCTP2M9BL";
  function render(){
-   if(!window.paypal || !window.paypal.HostedButtons){
-     status.textContent="PayPal could not load. Please refresh or try again later.";
-     return;
-   }
+   if(!window.paypal || !window.paypal.HostedButtons){status.textContent="PayPal could not load. Use the Open PayPal donation page link above.";return;}
    try{
      window.paypal.HostedButtons({hostedButtonId:"5RFCQCTP2M9BL"}).render(target)
        .then(function(){status.textContent="Secure PayPal donation button ready.";})
-       .catch(function(){status.textContent="The PayPal button could not be displayed. Please try again later.";});
-   }catch(e){status.textContent="The PayPal button could not be displayed. Please try again later.";}
+       .catch(function(){status.textContent="Embedded PayPal unavailable. Use the Open PayPal donation page link above.";});
+   }catch(e){status.textContent="Embedded PayPal unavailable. Use the Open PayPal donation page link above.";}
  }
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render,{once:true});else render();
 })();

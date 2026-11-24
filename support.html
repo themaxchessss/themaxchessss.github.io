@@ -45,14 +45,30 @@ footer a{margin:0 9px}
 <section class="panel center" aria-labelledby="donate-title">
 <h2 id="donate-title">♥ Make a Donation</h2>
 <p>Every contribution is voluntary and helps support the MaxChess project. MaxChess remains free to play. Donations do not unlock paid features, improve ratings, or provide a playing advantage.</p>
-<script 
-  src="https://www.paypal.com/sdk/js?client-id=BAAd70Zk2rJMe1CQv8enIkisSZcAYE1nCCvfS25z68ZvivJAtZwM22vHph_pQqhVViqbjxRjzeLbP9FX3I&components=hosted-buttons&enable-funding=venmo&currency=USD">
-</script>
-<div id="paypal-container-5RFCQCTP2M9BL"></div>
+<div id="paypal-container-5RFCQCTP2M9BL" aria-live="polite">
+  <p>Loading secure PayPal donation options…</p>
+</div>
 <script>
-paypal.HostedButtons({
-hostedButtonId: "5RFCQCTP2M9BL",
-}).render("#paypal-container-5RFCQCTP2M9BL")
+(function () {
+  var container = document.getElementById("paypal-container-5RFCQCTP2M9BL");
+  var sdk = document.createElement("script");
+  sdk.src = "https://www.paypal.com/sdk/js?client-id=BAAd70Zk2rJMe1CQv8enIkisSZcAYE1nCCvfS25z68ZvivJAtZwM22vHph_pQqhVViqbjxRjzeLbP9FX3I&components=hosted-buttons&enable-funding=venmo&currency=USD";
+  sdk.onload = function () {
+    if (!window.paypal || typeof window.paypal.HostedButtons !== "function") {
+      container.textContent = "PayPal donation options could not be loaded. Please try again later.";
+      return;
+    }
+    window.paypal.HostedButtons({
+      hostedButtonId: "5RFCQCTP2M9BL"
+    }).render("#paypal-container-5RFCQCTP2M9BL").catch(function () {
+      container.textContent = "PayPal could not display the donation button. Please try again later.";
+    });
+  };
+  sdk.onerror = function () {
+    container.textContent = "PayPal could not connect. Check your connection or content blockers, then try again.";
+  };
+  document.head.appendChild(sdk);
+})();
 </script>
 </section>
 <section class="panel center" aria-labelledby="reward-title">

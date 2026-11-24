@@ -382,6 +382,49 @@ main { width:min(980px, calc(100% - 32px)); min-width:0; }
 <p class="muted">Training note: These are concept-based decision puzzles, not engine-verified board positions. On a real board, always confirm that the check or threat is legal and that your material remains safe.</p>
 </section>
 
+<section class="panel" id="pawnSquareLesson">
+<h2>♙ Endgame lesson · The square of the pawn</h2>
+<p class="muted">When a passed pawn races toward promotion, the square rule helps you decide whether the enemy king can catch it. Count the pawn's moves to promotion, then imagine a square with that many steps on each side.</p>
+<div class="grid">
+<article class="lesson-card">
+<div class="lesson-kicker">LESSON 11 · ENDGAMES</div>
+<h3>Can the king catch the pawn?</h3>
+<p>Assume a White pawn is on a4 and has already moved. It needs four moves— a5, a6, a7, and a8=Q—to promote.</p>
+<div class="lesson-example"><b>Draw the square:</b> Its corners are a4, e4, a8, and e8. A Black king well inside this square can catch the pawn; a king outside it cannot catch the pawn by itself before promotion.</div>
+<pre class="lesson-board" role="img" aria-label="Chessboard with a white pawn on a4 and a black king on f8, just outside the pawn's promotion square.">8 | . . . . . k . .
+7 | . . . . . . . .
+6 | . . . . . . . .
+5 | . . . . . . . .
+4 | P . . . . . . .
+3 | . . . . . . . .
+2 | . . . . . . . .
+1 | . . . . . . . .
+    a b c d e f g h</pre>
+<p>Here, the Black king on f8 is just outside the square. If White is to move, the pawn can race: <b>1. a5 Ke7 2. a6 Kd6 3. a7 Kc6 4. a8=Q+</b>. The new queen checks the king along the diagonal.</p>
+<p>Compare an inside king on d8: <b>1. a5 Kc7 2. a6 Kb6 3. a7 Kxa7</b>. Black captures the pawn before it can promote.</p>
+<div class="lesson-quiz" data-lesson-quiz data-success="Correct! The king on f8 is outside the square a4–e8. White can advance: 1. a5 Ke7 2. a6 Kd6 3. a7 Kc6 4. a8=Q+." data-hint="Count four pawn moves from a4 to a8. The square reaches file e, so f8 is outside it.">
+<p><b>Try it:</b> White has a pawn on a4, Black has a king on f8, and White is to move. What is the best plan?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">Advance the pawn; the king is outside the square</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Wait and move the pawn later</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Stop the pawn because the king is already beside it</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Yes! From d8 the king can play 1. a5 Kc7 2. a6 Kb6 3. a7 Kxa7, capturing the pawn before promotion." data-hint="The king on d8 is inside the square. It can reach b6 in time to capture a pawn on a7.">
+<p><b>Bonus check:</b> If Black's king were on d8 instead of f8, could it catch the pawn?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">No; a king can never capture a pawn</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">Yes; it can reach b6 and capture on a7</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">No; d8 is outside the square</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+</div>
+<p class="muted">This is a simplified pawn race with no other pieces. A supporting king, blockers, checks, or a pawn still on its starting rank can change the calculation—always examine the full board.</p>
+</section>
+
 <section class="panel"><h2>Useful MaxChess places</h2><div class="grid">
 <div><b>♟ Puzzles</b><p class="muted">Practise tactics and calculation.</p><a href="./">Open MaxChess</a></div>
 <div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="#quickLessons">Jump to quick lessons</a></div>

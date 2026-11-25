@@ -141,6 +141,8 @@ input,select{border-radius:4px;background:#070d16;border-color:#42566d}
 button{border-radius:4px;letter-spacing:.3px}
 button.secondary,button.ghost{border-radius:4px}
 .footer{font-size:10px;letter-spacing:.2px}
+.watch-section{margin:18px 0;background:linear-gradient(145deg,#111e2d,#09111c);border:1px solid #3b5066;border-radius:5px;overflow:hidden;box-shadow:0 12px 35px #0005}.watch-heading{padding:14px 17px;border-bottom:1px solid #34495f;background:linear-gradient(90deg,#17283b,#0b1420)}.watch-heading h2{margin:0;color:var(--gold);font-size:15px;letter-spacing:1.5px}.watch-heading p{margin:4px 0 0;color:var(--muted);font-size:12px}.watch-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(240px,1fr);gap:14px;padding:14px}.watch-video{min-width:0}.watch-video iframe{display:block;width:100%;aspect-ratio:16/9;border:1px solid #34495f;background:#05080e}.watch-match{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:14px;background:#0a1420;border:1px solid #30465f}.watch-match h3{margin:0;color:#fff;font-size:20px}.watch-match p{margin:0;color:var(--muted);font-size:12px}.watch-actions{display:flex;gap:8px;flex-wrap:wrap}.watch-actions a{display:inline-block;padding:9px 11px;border:1px solid #9b762d;background:linear-gradient(140deg,#ffe28b,#c39231);color:#17120a;font-size:12px;font-weight:900;border-radius:4px}.watch-actions a.secondary{background:#233a54;border-color:#536b86;color:white}.watch-more{padding:0 14px 14px;color:var(--muted);font-size:12px}.watch-more a{font-weight:800}@media(max-width:700px){.watch-grid{grid-template-columns:1fr}.watch-match h3{font-size:18px}}
+
 .obs .stage{box-shadow:none}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.side{display:block}.side h2{grid-column:auto}}
 @media(max-width:560px){.wrap{width:100%;padding-top:0}.topbar{border-radius:0;padding:11px 13px}.toplinks{font-size:9px}.hero{padding:16px 13px}.summary{border-radius:0;margin:8px 0 12px}.board-zone{padding:12px}.broadcast-lower{padding:10px 12px}.setup{margin:12px 8px}.side{margin:0 8px}}
@@ -197,6 +199,14 @@ button.secondary,button.ghost{border-radius:4px}
  </div>
 </aside>
 </div>
+<section class="watch-section" aria-labelledby="watchHeading">
+ <div class="watch-heading"><h2 id="watchHeading">♟ WATCH LIVE CHESS</h2><p>Follow major chess matches, official broadcasts and live boards — free to watch.</p></div>
+ <div class="watch-grid">
+  <div class="watch-video"><iframe src="https://www.youtube.com/embed/live_stream?channel=UC9B47GnzCRFHTT1BIBWvStQ" title="Official FIDE Chess live stream" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><p class="hint">Official FIDE Chess channel. If no stream is live, open the channel to see upcoming and recent broadcasts.</p></div>
+  <div class="watch-match"><span class="pill">FEATURED MATCH</span><h3>Gukesh D vs Javokhir Sindarov</h3><p>2026 FIDE World Championship · Geneva</p><p>Watch the official video coverage or follow the official move-by-move board and match schedule.</p><div class="watch-actions"><a href="https://worldchampionship.fide.com/" target="_blank" rel="noopener noreferrer">Live game board</a><a class="secondary" href="https://www.youtube.com/@FIDE_chess" target="_blank" rel="noopener noreferrer">FIDE on YouTube</a></div></div>
+ </div>
+ <div class="watch-more">Looking for more events? <a href="https://lichess.org/broadcast" target="_blank" rel="noopener noreferrer">Browse live chess broadcasts on Lichess</a>.</div>
+</section>
 <section class="setup" id="setup">
  <h2>Connect a DGT tournament</h2>
  <p class="hint">Paste the tournament viewer link created by DGT LiveChess Cloud. MaxChess will read the tournament, pairing and game feeds and draw its own board view. You do not need to paste a private DGT password.</p>

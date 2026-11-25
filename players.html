@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080d1b">
+  <title>MaxChess Player Count</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; color: #f5f7ff; background: radial-gradient(circle at top, #172747, #080d1b 65%); }
+    main { width: min(100%, 560px); padding: 34px 24px; text-align: center; border: 1px solid #b58a35; border-radius: 22px; background: rgba(10,17,34,.94); box-shadow: 0 18px 60px #0008; }
+    .crown { color: #e7bd58; font-size: 42px; }
+    h1 { margin: 8px 0; letter-spacing: .08em; color: #f1cb68; }
+    p { color: #b9c4d9; }
+    #count { margin: 24px 0 4px; color: #fff; font-size: clamp(48px, 14vw, 76px); line-height: 1.1; font-weight: 800; font-variant-numeric: tabular-nums; }
+    #status { min-height: 24px; font-size: 14px; }
+    button, a { display: inline-block; margin: 12px 6px 0; padding: 12px 18px; border-radius: 999px; font: inherit; font-weight: 700; text-decoration: none; }
+    button { border: 0; color: #101522; background: #e7bd58; cursor: pointer; }
+    a { border: 1px solid #71809c; color: #f5f7ff; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    small { display: block; margin-top: 22px; color: #8795ad; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="crown" aria-hidden="true">♛</div>
+    <h1>MAXCHESS</h1>
+    <p>Players registered on MaxChess</p>
+    <div id="count" aria-live="polite">—</div>
+    <p id="status" role="status">Loading player count…</p>
+    <button id="refresh" type="button">Refresh count</button>
+    <a href="/">Back to MaxChess</a>
+    <small>This counts registered accounts, not people currently online. Updates automatically every 60 seconds.</small>
+  </main>
+  <script>
+    const endpoint = "https://bvukakfhkebpsviehirr.supabase.co/functions/v1/public-player-count";
+    const countNode = document.getElementById("count");
+    const statusNode = document.getElementById("status");
+    const refreshButton = document.getElementById("refresh");
+
+    async function loadCount() {
+      refreshButton.disabled = true;
+      statusNode.textContent = "Updating…";
+      try {
+        const response = await fetch(endpoint, { method: "GET", cache: "no-store" });
+        if (!response.ok) throw new Error("Count service returned " + response.status);
+        const data = await response.json();
+        const total = Number(data.registered_players);
+        if (!Number.isSafeInteger(total) || total < 0) throw new Error("Invalid count response");
+        countNode.textContent = total.toLocaleString();
+        statusNode.textContent = "Player count updated.";
+      } catch (error) {
+        statusNode.textContent = "Player count is temporarily unavailable. Please try again.";
+      } finally {
+        refreshButton.disabled = false;
+      }
+    }
+
+    refreshButton.addEventListener("click", loadCount);
+    loadCount();
+    setInterval(loadCount, 60000);
+  </script>
+</body>
+</html>

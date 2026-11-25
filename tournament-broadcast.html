@@ -249,6 +249,55 @@ button.secondary,button.ghost{border-radius:4px}
 .control-heading span{color:#f0cc78;font-size:11px;font-weight:1000;letter-spacing:1.8px}
 .control-heading p{margin:0;color:#9fb0c3;font-size:11px}
 @media(max-width:760px){.wrap{width:min(100% - 20px,720px);padding-top:8px}.topbar{align-items:flex-start;flex-direction:column;gap:9px}.toplinks{justify-content:flex-start;max-width:none;gap:7px 14px}.toplinks .liveword{text-align:left}.watch-heading{padding:18px 15px}.watch-grid{padding:14px}.mc-desk{margin:0 12px 14px}.control-heading{align-items:flex-start;flex-direction:column;gap:4px}}
+
+/* Final spectator-first cleanup: remove empty video tile and idle operator dashboard */
+.watch-grid{display:none!important}
+.hero{display:none!important}
+.summary,.layout{display:none!important}
+body.feed-connected .summary{display:flex!important}
+body.feed-connected .layout{display:grid!important}
+.control-heading{margin:0 0 12px;padding:16px 19px;background:#101c2a;border:1px solid #31465d;border-left:3px solid #d9b45e;border-radius:7px}
+.control-heading span{font-size:10px;letter-spacing:1.7px}
+.setup{margin:0 0 24px;padding:22px 24px;background:#0d1724;border:1px solid #34495f;border-radius:8px;box-shadow:0 12px 30px #0005}
+.setup h2{font-size:21px;color:#f1d18a;letter-spacing:.1px}
+.setup>.hint{max-width:850px;font-size:13px;line-height:1.65;color:#b0bfd0}
+.steps{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.step{padding:13px;background:#111f30;border:1px solid #2e435a;border-radius:6px}
+.step b{font-size:11px;letter-spacing:.3px}
+.step span{font-size:11px;line-height:1.5}
+.setup label{margin-top:17px;font-size:11px;letter-spacing:.5px}
+.setup input{min-height:46px;background:#070e17;border-color:#455c75}
+.setup .controls{gap:9px;margin-top:13px}
+.setup button{min-height:42px;padding:10px 15px}
+.setup .broadcast-tools{max-width:260px;margin-top:12px}
+.setup>.hint:last-child{margin-top:14px;padding-top:12px;border-top:1px solid #26394f;font-size:10px}
+.watch-section{margin:22px 0 28px;border-radius:8px;box-shadow:0 18px 48px #0007}
+.watch-heading{padding:24px 28px}
+.mc-desk{margin:0 20px 20px;border-radius:7px;box-shadow:none}
+.mc-desk-head{padding:18px 21px}
+.mc-desk-grid{grid-template-columns:minmax(280px,1.05fr) minmax(280px,.95fr);gap:18px;padding:18px}
+.mc-board-panel,.mc-desk-card{border-radius:5px;background:#101c2a}
+.mc-desk-board{width:min(100%,620px);border:4px solid #9c7b43;box-shadow:0 10px 28px #0008}
+.mc-desk-controls button{min-width:74px;min-height:38px}
+.mc-desk-notation{max-height:560px}
+.watch-footer{padding:14px 22px}
+@media(max-width:760px){
+ .watch-section{margin:12px 0 20px}
+ .watch-heading{padding:17px 15px}
+ .mc-desk{margin:0 9px 12px}
+ .mc-desk-grid{grid-template-columns:1fr;padding:10px}
+ .mc-desk-board{width:min(100%,560px)}
+ .steps{grid-template-columns:1fr 1fr}
+ .setup{padding:16px;margin-bottom:18px}
+ .control-heading{padding:13px}
+ body.feed-connected .layout{grid-template-columns:1fr}
+}
+@media(max-width:430px){
+ .steps{grid-template-columns:1fr}
+ .mc-desk-controls button{min-width:calc(50% - 6px)}
+ .mc-desk-meta{align-items:flex-start}
+}
+
 </style>
 </head>
 <body>
@@ -382,6 +431,7 @@ function formatTime(){return new Date().toLocaleTimeString([], {hour:'2-digit',m
 function setConnected(on){
  $('refreshBtn').disabled=!on;$('copyObsBtn').disabled=!on;$('openDgtBtn').disabled=!on;
  $('roundSelect').disabled=!on;
+ document.body.classList.toggle('feed-connected',!!on);
 }
 function updateHeader(){
  var t=state.tournament||{};

@@ -687,6 +687,15 @@ body{background:linear-gradient(135deg,#101426 0%,#17152f 54%,#20172d 100%);back
 .hero .tc-grid{grid-template-columns:repeat(6,1fr);gap:8px;max-width:540px;margin:0}
 .tc-btn{background:var(--panel);border:1px solid var(--line);padding:10px 4px}
 .tc-btn:hover{background:var(--panel2);border-color:var(--green)}
+.maxchess-live-stats{display:flex;align-items:center;gap:18px;flex-wrap:wrap;max-width:540px;margin:14px 0 0;padding:11px 13px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.maxchess-live-stat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.maxchess-live-stat strong{color:var(--strong);font-size:15px;font-variant-numeric:tabular-nums}
+.maxchess-live-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#65c75a;box-shadow:0 0 0 3px #65c75a25,0 0 10px #65c75a88}
+.maxchess-live-dot.is-offline{background:var(--muted);box-shadow:none}
+@media(max-width:640px){.maxchess-live-stats{gap:12px;padding:10px}.maxchess-live-stat{font-size:12px}}
+@media(prefers-reduced-motion:no-preference){.maxchess-live-dot:not(.is-offline){animation:maxchessLivePulse 2s ease-in-out infinite}}
+@keyframes maxchessLivePulse{50%{box-shadow:0 0 0 5px #65c75a10,0 0 14px #65c75a99}}
+
 .tc-btn b{font-size:16px;font-weight:800}
 .hero-art{transform:rotate(3deg);max-width:430px;width:100%;margin:0 auto}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1080px;margin:8px auto 16px}
@@ -1290,6 +1299,10 @@ input[type="number"]{
      <button type="button" class="tc-btn" data-tc="180:i2"><b>3 + 2</b><small>Bonus</small></button>
      <button type="button" class="tc-btn" data-tc="600:i5"><b>10 + 5</b><small>Bonus</small></button>
      <button type="button" class="tc-btn" data-tc="0"><b>∞</b><small>No clock</small></button>
+   </div>
+   <div class="maxchess-live-stats" id="maxchessLiveStats" aria-label="Live MaxChess activity">
+    <div class="maxchess-live-stat"><span class="maxchess-live-dot" id="maxchessOnlineDot" aria-hidden="true"></span><span>Players online</span><strong id="maxchessOnlineCount" aria-live="polite">Connecting…</strong></div>
+    <div class="maxchess-live-stat"><span aria-hidden="true">♟</span><span>Games in play</span><strong id="maxchessGamesCount" aria-live="polite">…</strong></div>
    </div>
   </div>
   <div class="hero-art"><div class="home-board-art" aria-hidden="true"></div></div>
@@ -2044,6 +2057,61 @@ if(el.classList&&el.classList.contains("navtop")){var group=el.closest(".navgrou
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chess.js@0.10.3/chess.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script id="maxchess-live-home-stats">
+(function(){
+ const onlineEl=document.getElementById('maxchessOnlineCount');
+ const gamesEl=document.getElementById('maxchessGamesCount');
+ const dot=document.getElementById('maxchessOnlineDot');
+ if(!onlineEl||!gamesEl||!dot||!window.supabase?.createClient)return;
+ let client,channel,gameRefreshBusy=false;
+ try{
+  client=window.supabase.createClient(
+   'https://bvukakfhkebpsviehirr.supabase.co',
+   'sb_publishable_YTyppUkZGBFHmaNOg2ZSMg_xiFJw2r',
+   {auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}}
+  );
+ }catch(_){onlineEl.textContent='—';gamesEl.textContent='—';dot.classList.add('is-offline');return}
+ function showOnline(){
+  if(!channel)return;
+  const state=channel.presenceState()||{};
+  const count=Object.values(state).reduce((total,entries)=>total+(Array.isArray(entries)?entries.length:0),0);
+  onlineEl.textContent=count.toLocaleString();
+  dot.classList.remove('is-offline');
+ }
+ function offline(){onlineEl.textContent='—';dot.classList.add('is-offline')}
+ channel=client.channel('maxchess-live-presence-v1');
+ channel
+  .on('presence',{event:'sync'},showOnline)
+  .on('presence',{event:'join'},showOnline)
+  .on('presence',{event:'leave'},showOnline)
+  .subscribe(async status=>{
+   if(status==='SUBSCRIBED'){
+    try{await channel.track({site:'maxchess',started_at:new Date().toISOString()});showOnline()}
+    catch(_){offline()}
+   }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){offline()}
+  });
+ async function refreshGames(){
+  if(gameRefreshBusy)return;
+  gameRefreshBusy=true;
+  try{
+   const {data,error}=await client.rpc('maxchess_active_game_count');
+   if(error)throw error;
+   gamesEl.textContent=Number(data||0).toLocaleString();
+   gamesEl.removeAttribute('title');
+  }catch(_){
+   gamesEl.textContent='—';
+   gamesEl.title='Live game count is temporarily unavailable';
+  }finally{gameRefreshBusy=false}
+ }
+ refreshGames();
+ const gameTimer=window.setInterval(refreshGames,30000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshGames()});
+ window.addEventListener('pagehide',()=>{
+  window.clearInterval(gameTimer);
+  if(channel)client.removeChannel(channel).catch(()=>{});
+ },{once:true});
+})();
+</script>
 <script>
 (function(){
 const palettes={

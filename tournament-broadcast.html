@@ -644,7 +644,7 @@ a{color:#8eb8ed}
 <main class="wrap">
 <header class="topbar">
  <div class="brand">♛ MAX<span>CHESS</span></div>
- <div class="toplinks"><span class="liveword">● TOURNAMENT BROADCAST</span><br><a href="#watchHeading">Watch</a><a href="#maxchessBroadcastDesk">Broadcast Desk</a><a href="dgt-hub.html">DGT Hub</a><a href="tournament-desk.html">Tournament Desk</a><a href="./">MaxChess Home</a></div>
+ <div class="toplinks"><span class="liveword">● TOURNAMENT BROADCAST</span><br><a href="#watchHeading">Watch</a><a href="#maxchessBroadcastDesk">Broadcast Desk</a><a href="dgt-hub.html">DGT Hub</a><a href="tournament-desk.html">Tournament Desk</a><a href="maxchess-world.html">World & Clubs</a><a href="./">MaxChess Home</a></div>
 </header>
 <section class="watch-section" aria-labelledby="watchHeading">
  <div class="watch-heading"><div><span class="watch-eyebrow">MAXCHESS TV</span><h2 id="watchHeading">WATCH CHESS</h2><p>Live tournament coverage and complete game replays, all in one place.</p></div><span class="watch-free">FREE · MAXCHESS</span></div>
@@ -1090,5 +1090,15 @@ window.addEventListener('beforeunload',function(){if(demoClockTimer)clearInterva
 })();
 </script>
 
+<style id="maxchess-watch-board-size-fix">
+/* Large, readable replay board — especially on iPad and phones */
+.mc-desk-grid{grid-template-columns:minmax(0,1fr) minmax(250px,.72fr)!important;gap:22px!important}
+.mc-board-panel{min-width:0!important}
+.mc-desk-board{width:min(100%,900px)!important;max-width:900px!important;margin:0 auto!important}
+.mc-desk-square{font-size:clamp(34px,7.8vw,104px)!important}
+.mc-desk-square span{font-size:inherit!important}
+@media(max-width:760px){.mc-desk-grid{grid-template-columns:1fr!important;padding:12px!important}.mc-desk-board{width:min(100%,min(94vw,760px))!important;max-width:760px!important}.mc-desk-square{font-size:clamp(32px,10vw,82px)!important}.mc-desk-notation{max-height:260px!important}}
+@media(min-width:761px) and (max-width:1050px){.mc-desk-grid{grid-template-columns:minmax(0,1fr) minmax(210px,.7fr)!important}.mc-desk-board{max-width:760px!important}}
+</style>
 </body>
 </html>

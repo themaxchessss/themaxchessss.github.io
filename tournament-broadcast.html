@@ -177,6 +177,62 @@ button.secondary,button.ghost{border-radius:4px}
 .mc-desk-note{padding:10px 16px;color:#aebed1;font-size:11px;border-top:1px solid #30465f;background:#080f19}
 @media(max-width:760px){.mc-desk-grid{grid-template-columns:1fr;padding:11px}.mc-desk-board{max-width:540px;margin:auto}.mc-desk-notation{max-height:330px}.mc-desk-side{display:grid;grid-template-columns:1fr}.mc-desk-head,.mc-desk-meta{padding:11px 12px}}
 
+
+/* Refined MaxChess Watch and broadcast desk */
+.watch-section{margin:24px 0 30px;background:#0b1420;border:1px solid #34485f;border-radius:10px;overflow:hidden;box-shadow:0 16px 42px #0006}
+.watch-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:23px 26px;background:linear-gradient(110deg,#1a2b40,#0d1725);border-bottom:1px solid #34485f}
+.watch-eyebrow{display:block;color:#d5ad58;font-size:10px;font-weight:900;letter-spacing:2px;margin-bottom:5px}
+.watch-heading h2{margin:0;color:#f7f1e4;font-size:clamp(22px,3vw,30px);letter-spacing:1px}
+.watch-heading p{margin:6px 0 0;color:#aebed1;font-size:13px}
+.watch-free,.mc-desk-status{white-space:nowrap;border:1px solid #806b3e;border-radius:30px;padding:7px 11px;color:#f1cd7a;font-size:10px;font-weight:900;letter-spacing:1px}
+.watch-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,.8fr);gap:18px;padding:20px 22px}
+.watch-video iframe{display:block;width:100%;aspect-ratio:16/9;border:1px solid #3a4b60;border-radius:7px;background:#05080e}
+.watch-caption{margin:8px 0 0;color:#93a5ba;font-size:11px;line-height:1.5}
+.watch-match{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:11px;padding:22px;background:linear-gradient(145deg,#17283b,#0e1927);border:1px solid #3a4e65;border-radius:8px}
+.watch-match-label{color:#d5ad58;font-size:10px;font-weight:900;letter-spacing:1.8px}
+.watch-match h3{margin:0;color:#fff;font-size:clamp(23px,3vw,31px);line-height:1.1}
+.watch-event{margin:0;color:#aebed1;font-size:12px}
+.watch-score{display:flex;align-items:center;gap:12px;margin:4px 0 5px}
+.watch-score strong{color:#f4d27c;font-size:27px}.watch-score span{color:#aebed1;font-size:10px;font-weight:800;letter-spacing:1px}
+.watch-primary{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 14px;border-radius:5px;background:linear-gradient(120deg,#f2d58b,#c39136);color:#15120c;font-size:11px;font-weight:1000;letter-spacing:.7px}
+.watch-primary span{font-size:17px}
+.watch-secondary{color:#c3d0df;font-size:11px;text-decoration:underline;text-underline-offset:3px}
+.mc-desk{margin:2px 22px 20px;border:1px solid #3b5068;border-radius:9px;overflow:hidden;background:#0a111b;box-shadow:0 10px 28px #0005}
+.mc-desk-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:17px 20px;background:#142338;border-bottom:1px solid #344b63}
+.mc-desk-head small{color:#d5ad58;font-size:10px;font-weight:900;letter-spacing:1.8px}
+.mc-desk-head h2{margin:4px 0;color:#fff;font-size:clamp(20px,2.5vw,26px)}
+.mc-desk-head p{margin:0;color:#aabbd0;font-size:12px}
+.mc-desk-meta{display:flex;align-items:center;gap:17px;flex-wrap:wrap;padding:14px 20px;background:#0e1a29;border-bottom:1px solid #293d53}
+.mc-player{display:flex;flex-direction:column;gap:4px}.mc-player strong{color:#f4f6fa;font-size:14px}.mc-player span{color:#d5ad58;font-size:9px;font-weight:900;letter-spacing:1.3px}
+.mc-player-black span{color:#9fb5d0}.mc-versus{color:#647990;font-size:10px;font-weight:900}
+.mc-result{margin-left:auto;color:#f3d58e;font-size:22px;font-weight:900}
+.mc-event-meta{padding-left:16px;border-left:1px solid #34485f;color:#91a5bc;font-size:10px;line-height:1.6}
+.mc-desk-grid{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(260px,.9fr);gap:16px;padding:18px;background:#0b1420}
+.mc-board-panel,.mc-desk-card{min-width:0;padding:13px;background:#111e2d;border:1px solid #2e435a;border-radius:7px}
+.mc-panel-title,.mc-desk-label{margin-bottom:9px;color:#d5ad58;font-size:10px;font-weight:900;letter-spacing:1.4px}
+.mc-desk-board{width:min(100%,560px);margin:0 auto;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:4px solid #9d7b42;box-shadow:0 0 0 1px #e4c77f,0 8px 24px #0008;overflow:hidden}
+.mc-desk-square{display:grid;place-items:center;position:relative;font-family:"Arial Unicode MS",serif;font-size:clamp(22px,4vw,49px);line-height:1;user-select:none}
+.mc-desk-controls{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:13px}
+.mc-desk-controls button{min-width:72px;padding:9px 10px;font-size:10px;font-weight:900}
+.mc-desk-side{min-width:0;display:flex;flex-direction:column;gap:12px}
+.mc-desk-card{padding:14px}
+.mc-position-card{background:linear-gradient(120deg,#17283b,#111e2d)}
+.mc-desk-current{color:#fff;font-size:19px;font-weight:900;margin:2px 0 5px}
+.mc-desk-card small{color:#9eb0c4;font-size:11px}
+.mc-notation-heading{margin-bottom:8px}.mc-notation-heading .mc-desk-label{margin:0 0 3px}
+.mc-notation-heading small{display:block}
+.mc-desk-notation{max-height:440px;overflow:auto;border:1px solid #293d53;border-radius:5px}
+.mc-desk-notation table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.mc-desk-notation th,.mc-desk-notation td{padding:7px 8px;border-bottom:1px solid #293d53;text-align:left}
+.mc-desk-notation th{color:#d5ad58;font-size:10px;position:sticky;top:0;background:#142338}
+.mc-desk-notation button{width:100%;padding:7px 8px;background:transparent;border:1px solid transparent;color:#edf3fa;text-align:left;border-radius:4px;font-size:13px}
+.mc-desk-notation button:hover{background:#20334a}.mc-desk-notation button.active{background:#4b3916;border-color:#d5ad58;color:#ffe5a0}
+.mc-desk-note{padding:12px 17px;color:#91a5bc;font-size:10px;line-height:1.6;border-top:1px solid #293d53;background:#0d1724}
+.watch-footer{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:14px 22px;border-top:1px solid #2d4055;background:#0d1724}
+.watch-footer span{color:#d5ad58;font-size:9px;font-weight:900;letter-spacing:1.4px}
+.watch-footer a{color:#b8c9dc;font-size:11px}.watch-footer a:first-of-type{color:#f2d58b;font-weight:800}
+@media(max-width:760px){.watch-heading{padding:18px 15px}.watch-grid{grid-template-columns:1fr;padding:14px}.watch-match{padding:18px}.mc-desk{margin:0 12px 14px}.mc-desk-grid{grid-template-columns:1fr;padding:12px}.mc-desk-board{max-width:500px}.mc-desk-side{display:grid;grid-template-columns:1fr}.mc-desk-notation{max-height:300px}.mc-desk-meta{gap:11px;padding:12px 14px}.mc-event-meta{width:100%;padding:8px 0 0;border-left:0;border-top:1px solid #34485f}.watch-footer{padding:13px 15px;gap:12px}}
+@media(max-width:430px){.watch-free{display:none}.mc-desk-head{padding:14px}.mc-desk-status{font-size:8px}.mc-desk-controls button{min-width:64px;padding:8px 7px}.mc-desk-square{font-size:clamp(20px,7vw,34px)}.mc-result{margin-left:auto}}
 </style>
 </head>
 <body>
@@ -230,51 +286,21 @@ button.secondary,button.ghost{border-radius:4px}
 </aside>
 </div>
 <section class="watch-section" aria-labelledby="watchHeading">
- <div class="watch-heading"><h2 id="watchHeading">♟ WATCH LIVE CHESS</h2><p>Follow major chess matches, official broadcasts and live boards — free to watch.</p></div>
+ <div class="watch-heading"><div><span class="watch-eyebrow">MAXCHESS TV</span><h2 id="watchHeading">WATCH CHESS</h2><p>Live tournament coverage and complete game replays, all in one place.</p></div><span class="watch-free">FREE · MAXCHESS</span></div>
  <div class="watch-grid">
-  <div class="watch-video"><iframe src="https://www.youtube.com/embed/live_stream?channel=UC9B47GnzCRFHTT1BIBWvStQ" title="Official FIDE Chess live stream" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><p class="hint">Official FIDE Chess channel. If no stream is live, open the channel to see upcoming and recent broadcasts.</p></div>
-  <div class="watch-match"><span class="pill">FEATURED MATCH</span><h3>Gukesh D vs Javokhir Sindarov</h3><p>2026 FIDE World Championship · Geneva</p><p>Watch the official video coverage or follow the official move-by-move board and match schedule.</p><div class="watch-actions"><a href="#maxchessBroadcastDesk">Replay Game 1 on the MaxChess board</a><a class="secondary" href="https://worldchampionship.fide.com/" target="_blank" rel="noopener noreferrer">Official match site</a><a class="secondary" href="https://www.youtube.com/@FIDE_chess" target="_blank" rel="noopener noreferrer">FIDE on YouTube</a></div></div>
+  <div class="watch-video"><iframe src="https://www.youtube.com/embed/live_stream?channel=UC9B47GnzCRFHTT1BIBWvStQ" title="Official FIDE Chess live stream" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><p class="watch-caption">Official FIDE Chess broadcast. If no stream is live, visit the channel for recent coverage.</p></div>
+  <div class="watch-match"><span class="watch-match-label">FEATURED REPLAY</span><h3>Sindarov vs Gukesh</h3><p class="watch-event">FIDE World Championship 2026 · Game 1</p><div class="watch-score"><strong>½ – ½</strong><span>DRAW · 38 MOVES</span></div><a class="watch-primary" href="#maxchessBroadcastDesk">WATCH THE FULL REPLAY <span>↓</span></a><a class="watch-secondary" href="https://worldchampionship.fide.com/" target="_blank" rel="noopener noreferrer">Official event website ↗</a></div>
  </div>
- <div class="tournament-directory" aria-labelledby="tournamentDirectoryHeading">
-  <div class="directory-title"><h3 id="tournamentDirectoryHeading">WATCH TOURNAMENT GAMES ON MAXCHESS</h3><span>Stay on this page</span></div>
-  <div class="embedded-tournaments">
-   <div class="embedded-event"><b>FIDE WORLD CHESS CHAMPIONSHIP 2026 · GAME 1</b><p>Javokhir Sindarov (White) vs Gukesh D (Black) · Draw, ½–½ · 38 moves</p><p>The completed game is replayable on the MaxChess board below, with the full move notation and move-by-move controls.</p><a class="watch-actions" href="#maxchessBroadcastDesk">Go to the MaxChess broadcast desk ↓</a></div>
+ <section class="mc-desk" id="maxchessBroadcastDesk" aria-labelledby="mcDeskTitle">
+  <header class="mc-desk-head"><div><small>MAXCHESS GAME REPLAY</small><h2 id="mcDeskTitle">Sindarov vs Gukesh</h2><p>Game 1 · Move-by-move board and notation</p></div><span class="mc-desk-status">COMPLETED GAME</span></header>
+  <div class="mc-desk-meta"><div class="mc-player"><strong>Javokhir Sindarov</strong><span>WHITE</span></div><div class="mc-versus">VS</div><div class="mc-player mc-player-black"><strong>Gukesh D</strong><span>BLACK</span></div><div class="mc-result">½ – ½</div><div class="mc-event-meta">FIDE World Championship 2026<br>24 November · 38 moves</div></div>
+  <div class="mc-desk-grid">
+   <div class="mc-board-panel"><div class="mc-panel-title">GAME BOARD</div><div id="gukeshGameBoard" class="mc-desk-board" role="img" aria-label="MaxChess chessboard showing Sindarov versus Gukesh, Game 1"></div><div class="mc-desk-controls" aria-label="Game replay controls"><button type="button" id="gukeshFirst" class="secondary" aria-label="First position">|◀ FIRST</button><button type="button" id="gukeshPrev" class="secondary" aria-label="Previous move">◀ PREV</button><button type="button" id="gukeshNext" aria-label="Next move">NEXT ▶</button><button type="button" id="gukeshLast" class="secondary" aria-label="Final position">LAST ▶|</button></div></div>
+   <div class="mc-desk-side"><div class="mc-desk-card mc-position-card"><div class="mc-desk-label">CURRENT POSITION</div><div class="mc-desk-current" id="gukeshPosition">Final position · 38...Kg8</div><small id="gukeshMoveCount">76 half-moves · Draw</small></div><div class="mc-desk-card"><div class="mc-notation-heading"><div class="mc-desk-label">GAME NOTATION</div><small>Select any move to jump to that position</small></div><div class="mc-desk-notation"><table><thead><tr><th>#</th><th>WHITE</th><th>BLACK</th></tr></thead><tbody id="gukeshNotation"></tbody></table></div></div></div>
   </div>
-  <p class="directory-note">No third-party “game has not started” placeholder: the MaxChess board below shows the completed Game 1 score and notation.</p>
- </div>
- <div class="watch-more">Replay Game 1 below on the MaxChess board, or use the official FIDE links for event coverage.</div>
-
-
-<section class="mc-desk" id="maxchessBroadcastDesk" aria-labelledby="mcDeskTitle">
- <header class="mc-desk-head">
-  <div><small>📺 MAXCHESS TV · BROADCAST DESK</small><h2 id="mcDeskTitle">Sindarov vs Gukesh — Game 1</h2></div>
-  <span class="pill done">GAME FINISHED</span>
- </header>
- <div class="mc-desk-meta">
-  <div><strong>Javokhir Sindarov <small>WHITE</small></strong><br><small>vs</small><br><strong>Gukesh D <small>BLACK</small></strong></div>
-  <div class="result">½ – ½</div>
-  <small>FIDE World Championship 2026 · 24 November · 38 moves</small>
- </div>
- <div class="mc-desk-grid">
-  <div>
-   <div id="gukeshGameBoard" class="mc-desk-board" role="img" aria-label="MaxChess chessboard showing Sindarov versus Gukesh, Game 1"></div>
-   <div class="mc-desk-controls" aria-label="Game replay controls">
-    <button type="button" id="gukeshFirst" class="secondary" aria-label="First position">|◀</button>
-    <button type="button" id="gukeshPrev" class="secondary" aria-label="Previous move">◀</button>
-    <button type="button" id="gukeshNext" aria-label="Next move">▶</button>
-    <button type="button" id="gukeshLast" aria-label="Final position">▶|</button>
-   </div>
-  </div>
-  <div class="mc-desk-side">
-   <div class="mc-desk-card"><div class="mc-desk-label">REPLAY POSITION</div><div class="mc-desk-current" id="gukeshPosition">Final position · 38...Kg8</div><small id="gukeshMoveCount">76 half-moves · Draw</small></div>
-   <div class="mc-desk-card"><div class="mc-desk-label">GAME NOTATION · CLICK A MOVE TO REPLAY</div>
-    <div class="mc-desk-notation"><table><thead><tr><th>#</th><th>White</th><th>Black</th></tr></thead><tbody id="gukeshNotation"></tbody></table></div>
-   </div>
-  </div>
- </div>
- <div class="mc-desk-note">MaxChess board replay with the complete published score. White: Javokhir Sindarov · Black: Gukesh D · Result: draw. This is the completed Game 1 replay, not a live game.</div>
-</section>
-
+  <div class="mc-desk-note">This is the completed Game 1 replay. The board and notation show the published moves; live tournament games appear when a real broadcast feed is connected below.</div>
+ </section>
+ <div class="watch-footer"><span>MORE TOURNAMENTS</span><a href="#setup">Connect a live DGT tournament on MaxChess →</a><a href="https://www.youtube.com/@FIDE_chess" target="_blank" rel="noopener noreferrer">FIDE Chess on YouTube ↗</a></div>
 </section>
 <section class="setup" id="setup">
  <h2>Connect a DGT tournament</h2>

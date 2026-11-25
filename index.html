@@ -1948,6 +1948,25 @@ input[type="number"]{
      </div>
      <div style="max-width:760px;width:100%;margin:12px auto">
       <label for="tournamentGameSelect" class="desc" style="display:block;text-align:center;margin:8px 0">Choose championship game</label><select id="tournamentGameSelect" aria-label="Choose championship game" style="display:block;max-width:320px;width:100%;margin:0 auto 12px;padding:10px;border-radius:8px"><option value="1">Game 1 · Sindarov vs Gukesh</option><option value="2">Game 2 · Sindarov vs Gukesh</option></select>
+      <div id="watchTournamentClock" class="lesson" style="margin:14px 0;padding:14px;border:1px solid var(--gold);border-radius:12px;background:var(--card)">
+       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><h3 style="margin:0">⏱ Tournament chess clock</h3><span class="desc">Manual spectator clock</span></div>
+       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0">
+        <div id="watchClockWhite" style="padding:14px 8px;text-align:center;border:2px solid var(--gold);border-radius:10px;background:#f5f0df;color:#171717"><div style="font-weight:700;font-size:13px">WHITE</div><div id="watchClockWhiteTime" style="font:700 clamp(30px,7vw,48px)/1.2 ui-monospace,monospace;font-variant-numeric:tabular-nums">90:00</div></div>
+        <div id="watchClockBlack" style="padding:14px 8px;text-align:center;border:2px solid var(--line);border-radius:10px;background:#242a35;color:#fff"><div style="font-weight:700;font-size:13px">BLACK</div><div id="watchClockBlackTime" style="font:700 clamp(30px,7vw,48px)/1.2 ui-monospace,monospace;font-variant-numeric:tabular-nums">90:00</div></div>
+       </div>
+       <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:10px 0">
+        <label for="watchClockPreset" class="desc">Time control</label><select id="watchClockPreset" style="padding:9px;border-radius:8px"><option value="90,30">90 min + 30 sec</option><option value="60,0">60 min + 0 sec</option><option value="30,0">30 min + 0 sec</option><option value="15,10">15 min + 10 sec</option><option value="10,5">10 min + 5 sec</option><option value="5,0">5 min + 0 sec</option></select>
+       </div>
+       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="greenbtn" id="watchClockStart" type="button" style="width:auto;margin:0">▶ Start</button>
+        <button class="greenbtn" id="watchClockPause" type="button" style="width:auto;margin:0">Ⅱ Pause</button>
+        <button class="greenbtn" id="watchClockWhiteMove" type="button" style="width:auto;margin:0">White moved</button>
+        <button class="greenbtn" id="watchClockBlackMove" type="button" style="width:auto;margin:0">Black moved</button>
+        <button class="greenbtn" id="watchClockReset" type="button" style="width:auto;margin:0">↻ Reset</button>
+       </div>
+       <p id="watchClockStatus" class="desc" role="status" aria-live="polite" style="text-align:center;margin:10px 0 0">Ready · White to move. Start the clock when the game begins.</p>
+       <p class="desc" style="text-align:center;margin:6px 0 0">This is a MaxChess manual clock for following or practicing tournament time controls. It is not connected to the official players’ clocks.</p>
+      </div>
       <div id="watchTournamentBoard" role="img" aria-label="MaxChess tournament chessboard" style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));aspect-ratio:1/1;border:3px solid #b78b35;border-radius:8px;overflow:hidden;box-shadow:0 5px 18px #0002"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0"><button class="greenbtn" id="tournamentReplayStart" type="button" style="width:auto;margin:0">⏮ Start</button><button class="greenbtn" id="tournamentReplayPrev" type="button" style="width:auto;margin:0">← Previous</button><button class="greenbtn" id="tournamentReplayNext" type="button" style="width:auto;margin:0">Next →</button><button class="greenbtn" id="tournamentReplayEnd" type="button" style="width:auto;margin:0">End ⏭</button><button class="greenbtn" id="tournamentFollowLive" type="button" style="width:auto;margin:0">↻ Follow live</button></div>
       <p id="tournamentBoardStatus" class="desc" role="status" aria-live="polite">Loading the featured game…</p>
@@ -4294,5 +4313,54 @@ window.dispatchEvent(new Event("maxchess:ready"));
 #page-watch .watch-grid{align-items:start}
 @media(max-width:600px){#page-watch #watchTournamentBoard,#page-watch #watchGameBoard{width:100%;max-width:100%;}#page-watch .watch-grid{grid-template-columns:minmax(0,1fr)!important}}
 </style>
+<script id="maxchess-watch-tournament-clock">
+(()=> {
+ const byId=id=>document.getElementById(id);
+ const white=byId('watchClockWhiteTime'), black=byId('watchClockBlackTime');
+ const whiteBox=byId('watchClockWhite'), blackBox=byId('watchClockBlack');
+ const status=byId('watchClockStatus'), preset=byId('watchClockPreset');
+ if(!white||!black||!status||!preset||byId('watchClockStart').dataset.ready) return;
+ const startBtn=byId('watchClockStart'), pauseBtn=byId('watchClockPause');
+ const whiteMove=byId('watchClockWhiteMove'), blackMove=byId('watchClockBlackMove'), resetBtn=byId('watchClockReset');
+ [startBtn,pauseBtn,whiteMove,blackMove,resetBtn].forEach(b=>b.dataset.ready='1');
+ let initial=90*60, increment=30, remaining={white:initial,black:initial}, active='white', running=false, interval=null, last=0, flagged='';
+ const fmt=n=>{n=Math.max(0,Math.ceil(n));return Math.floor(n/60)+':'+String(n%60).padStart(2,'0')};
+ const draw=()=>{
+  white.textContent=fmt(remaining.white); black.textContent=fmt(remaining.black);
+  whiteBox.style.borderColor=active==='white'&&running?'#d6a83e':'var(--line)';
+  blackBox.style.borderColor=active==='black'&&running?'#d6a83e':'var(--line)';
+  whiteBox.style.boxShadow=active==='white'&&running?'0 0 0 2px #d6a83e':'none';
+  blackBox.style.boxShadow=active==='black'&&running?'0 0 0 2px #d6a83e':'none';
+ };
+ const stop=()=>{running=false;if(interval){clearInterval(interval);interval=null;}};
+ const tick=()=>{
+  const now=Date.now(); if(!running)return;
+  remaining[active]-=(now-last)/1000; last=now;
+  if(remaining[active]<=0){remaining[active]=0;flagged=active;stop();status.textContent=(active==='white'?'White':'Black')+' ran out of time.';}
+  draw();
+ };
+ const start=()=>{if(flagged)return; if(!running){running=true;last=Date.now();interval=setInterval(tick,100);status.textContent=(active==='white'?'White':'Black')+' to move · clock running.';draw();}};
+ const move=side=>{
+  if(flagged)return;
+  if(!running){status.textContent='Tap Start first, then tap the button for the player who moved.';return;}
+  if(active!==side){status.textContent='It is '+(active==='white'?'White':'Black')+"'s turn on this clock.";return;}
+  tick(); if(flagged)return;
+  remaining[side]+=increment; active=side==='white'?'black':'white'; last=Date.now();
+  status.textContent=(active==='white'?'White':'Black')+' to move · clock running.';draw();
+ };
+ const reset=()=>{
+  stop(); const parts=preset.value.split(',').map(Number);
+  initial=parts[0]*60;increment=parts[1];remaining={white:initial,black:initial};active='white';flagged='';
+  status.textContent='Reset · White to move. Start the clock when the game begins.';draw();
+ };
+ startBtn.addEventListener('click',start);
+ pauseBtn.addEventListener('click',()=>{tick();stop();if(!flagged)status.textContent='Paused · '+(active==='white'?'White':'Black')+' to move.';draw();});
+ whiteMove.addEventListener('click',()=>move('white'));
+ blackMove.addEventListener('click',()=>move('black'));
+ resetBtn.addEventListener('click',reset);
+ preset.addEventListener('change',reset);
+ draw();
+})();
+</script>
 </body>
 </html>

@@ -75,17 +75,17 @@ table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}th,t
 const $=id=>document.getElementById(id),KEY='maxchess-tournament-desk-v1';
 const fresh=()=>({name:'MaxChess Friendly Tournament',time:'10 + 0 Rapid',roundLimit:5,players:[],rounds:[]});
 let data=fresh();
-let clock={white:600,black:600,active:null,last:0,increment:0,timer:null};
+let clock={white:600,black:600,active:null,pausedSide:null,last:0,increment:0,timer:null};
 function clockConfig(){const m=String(data.time||"10 + 0").match(/(\\d+)\\s*\\+\\s*(\\d+)/);return{base:(m?Number(m[1]):10)*60,inc:m?Number(m[2]):0}}
 function clockFormat(n){n=Math.max(0,Math.ceil(n));return Math.floor(n/60)+":"+String(n%60).padStart(2,"0")}
 function clockPaint(){ $("whiteTime").textContent=clockFormat(clock.white);$("blackTime").textContent=clockFormat(clock.black);
 $("whiteTime").style.color=clock.active==="white"?"#fff0a6":"#f4c95d";$("blackTime").style.color=clock.active==="black"?"#fff0a6":"#f4c95d";
 }
-function clockPause(){if(clock.timer){clearInterval(clock.timer);clock.timer=null}clock.active=null;$("clockStatus").textContent="Paused";clockPaint()}
+function clockPause(){if(clock.timer){clearInterval(clock.timer);clock.timer=null}if(clock.active)clock.pausedSide=clock.active;clock.active=null;$("clockStatus").textContent="Paused";clockPaint()}
 function clockTick(){if(!clock.active)return;const now=Date.now();const elapsed=(now-clock.last)/1000;clock.last=now;clock[clock.active]=Math.max(0,clock[clock.active]-elapsed);if(clock[clock.active]<=0){const side=clock.active;clockPause();$("clockStatus").textContent=(side==="white"?"White":"Black")+" ran out of time."; }clockPaint()}
-function clockStart(){if(clock.active)return;clock.active="white";clock.last=Date.now();clock.timer=setInterval(clockTick,100);$("clockStatus").textContent="Running · White to move";clockPaint()}
-function clockMove(side){if(!clock.active){$("clockStatus").textContent="Start the clock first.";return}if(clock.active!==side){$("clockStatus").textContent="It is "+(clock.active==="white"?"White":"Black")+"'s turn.";return}clock[side]+=clock.increment;clock.active=side==="white"?"black":"white";clock.last=Date.now();$("clockStatus").textContent="Running · "+(clock.active==="white"?"White":"Black")+" to move";clockPaint()}
-function clockReset(){clockPause();const cfg=clockConfig();clock.white=cfg.base;clock.black=cfg.base;clock.increment=cfg.inc;$("clockStatus").textContent="Ready · "+cfg.base/60+" minutes + "+cfg.inc+" seconds";clockPaint()}
+function clockStart(){if(clock.active)return;clock.active=clock.pausedSide||"white";clock.pausedSide=null;clock.last=Date.now();clock.timer=setInterval(clockTick,100);$("clockStatus").textContent="Running · "+(clock.active==="white"?"White":"Black")+" to move";clockPaint()}
+function clockMove(side){if(!clock.active){$("clockStatus").textContent="Start the clock first.";return}if(clock.active!==side){$("clockStatus").textContent="It is "+(clock.active==="white"?"White":"Black")+"'s turn.";return}clock[side]+=clock.increment;clock.active=side==="white"?"black":"white";clock.pausedSide=null;clock.last=Date.now();$("clockStatus").textContent="Running · "+(clock.active==="white"?"White":"Black")+" to move";clockPaint()}
+function clockReset(){clockPause();clock.pausedSide=null;const cfg=clockConfig();clock.white=cfg.base;clock.black=cfg.base;clock.increment=cfg.inc;$("clockStatus").textContent="Ready · "+cfg.base/60+" minutes + "+cfg.inc+" seconds";clockPaint()}
 $("clockStart").onclick=clockStart;$("clockPause").onclick=clockPause;$("clockReset").onclick=clockReset;
 $("whiteMoved").onclick=()=>clockMove("white");$("blackMoved").onclick=()=>clockMove("black");
 $("timeControl").addEventListener("change",()=>{data.time=$("timeControl").value;clockReset()});

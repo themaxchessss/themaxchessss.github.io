@@ -1925,7 +1925,14 @@ input[type="number"]{
      <p class="eyebrow">⭐ FEATURED · WORLD CHAMPIONSHIP</p>
      <h4 style="margin:6px 0">Salesforce FIDE World Championship Match 2026</h4>
      <p><b>Gukesh D vs. Javokhir Sindarov</b><br>Geneva, Switzerland · November 22–December 12, 2026<br>Game 1 · November 24</p>
-     <p class="desc">Replay the completed game move by move on a MaxChess board. The full notation stays visible below, so you can follow the game even after the players have finished.</p>
+     <p class="desc">Watch the official FIDE broadcast here while the game is live, then replay the completed game move by move on the MaxChess board below.</p>
+     <div style="max-width:760px;margin:12px auto 18px">
+      <div style="position:relative;width:100%;aspect-ratio:16/9;background:#080808;border:2px solid var(--gold);border-radius:10px;overflow:hidden">
+       <iframe title="Official FIDE World Championship live broadcast" src="https://www.youtube.com/embed/live_stream?channel=UC9B47GnzCRFHTT1BIBWvStQ" style="position:absolute;inset:0;width:100%;height:100%;border:0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+      </div>
+      <p class="desc" style="text-align:center;margin:7px 0">Official FIDE YouTube live stream · If no event is live, check back at game time.</p>
+      <p style="text-align:center;margin:0"><a href="https://www.youtube.com/@FIDE_chess/live" target="_blank" rel="noopener noreferrer">Open FIDE live broadcast on YouTube ↗</a> · <a href="https://worldchampionship.fide.com/" target="_blank" rel="noopener noreferrer">Official championship site ↗</a></p>
+     </div>
      <div style="max-width:460px;margin:12px auto">
       <div id="watchTournamentBoard" role="img" aria-label="MaxChess tournament chessboard" style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));aspect-ratio:1/1;border:3px solid #b78b35;border-radius:8px;overflow:hidden;box-shadow:0 5px 18px #0002"></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0"><button class="greenbtn" id="tournamentReplayStart" type="button" style="width:auto;margin:0">⏮ Start</button><button class="greenbtn" id="tournamentReplayPrev" type="button" style="width:auto;margin:0">← Previous</button><button class="greenbtn" id="tournamentReplayNext" type="button" style="width:auto;margin:0">Next →</button><button class="greenbtn" id="tournamentReplayEnd" type="button" style="width:auto;margin:0">End ⏭</button></div>
@@ -1933,7 +1940,7 @@ input[type="number"]{
       <div class="notation-head"><h3>Game notation</h3><span id="tournamentMoveCount" class="desc">0 moves</span></div>
       <div id="tournamentBoardMoves" class="notation-sheet" aria-label="Tournament game notation"><div class="notation-empty">Waiting for published moves…</div></div>
      </div>
-     <p class="desc">Archived score · Replay any move from the start to the final drawn position. The notation is available even when the live broadcast has ended.</p>
+     <p class="desc">Archived score · Follow the game live, or replay any move from the start to the final position after the broadcast ends.</p>
     </div>
     <a class="greenbtn" href="./tournament-desk.html">🏆 MaxChess Tournament Desk · Organize your own event →</a>
     <p class="desc">MaxChess displays the broadcast inside this page; it does not host or rebroadcast the tournament feed.</p>

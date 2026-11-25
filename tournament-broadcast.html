@@ -147,6 +147,36 @@ button.secondary,button.ghost{border-radius:4px}
 @media(max-width:850px){.layout{grid-template-columns:1fr}.side{display:block}.side h2{grid-column:auto}}
 @media(max-width:560px){.wrap{width:100%;padding-top:0}.topbar{border-radius:0;padding:11px 13px}.toplinks{font-size:9px}.hero{padding:16px 13px}.summary{border-radius:0;margin:8px 0 12px}.board-zone{padding:12px}.broadcast-lower{padding:10px 12px}.setup{margin:12px 8px}.side{margin:0 8px}}
 
+
+/* MaxChess broadcast desk — featured world championship game */
+.mc-desk{margin:18px 0 22px;border:1px solid #425a76;border-radius:12px;overflow:hidden;background:#0b1420;box-shadow:0 18px 45px #0008}
+.mc-desk-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 17px;background:linear-gradient(100deg,#203650,#111c2b);border-bottom:2px solid #d5ad58}
+.mc-desk-head h2{margin:0;color:#f3c45b;font-size:clamp(19px,3vw,27px);letter-spacing:.5px}
+.mc-desk-head small{color:#b8c7d9;font-size:11px;letter-spacing:1px}
+.mc-desk-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:#101d2d;border-bottom:1px solid #30465f}
+.mc-desk-meta strong{font-size:clamp(15px,2.2vw,21px)}.mc-desk-meta .result{color:#f4d27c;font-weight:1000;font-size:19px}
+.mc-desk-grid{display:grid;grid-template-columns:minmax(240px, min(52vw,610px)) minmax(260px,1fr);gap:16px;padding:16px;background:radial-gradient(ellipse at 30% 40%,#1a2a3e,#080d15 75%)}
+.mc-desk-board{width:100%;aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:6px solid #a9823d;box-shadow:0 0 0 1px #e4c77f,0 12px 30px #000b;overflow:hidden}
+.mc-desk-square{display:grid;place-items:center;position:relative;font-family:"Arial Unicode MS",serif;font-size:clamp(24px,4.3vw,55px);line-height:1;user-select:none}
+.mc-desk-square.light{background:#e8dfc9;color:#111}.mc-desk-square.dark{background:#78916f;color:#111}
+.mc-desk-square .coord{position:absolute;left:3px;top:2px;font:9px Arial,sans-serif;color:#705b3c}
+.mc-desk-square.dark .coord{color:#f5ead6}
+.mc-desk-side{min-width:0;display:flex;flex-direction:column;gap:10px}
+.mc-desk-card{border:1px solid #30465f;border-radius:8px;background:#101b2a;padding:12px}
+.mc-desk-label{font-size:10px;font-weight:900;letter-spacing:1.4px;color:#6ec2ff}
+.mc-desk-current{font-size:19px;font-weight:900;color:#fff;margin-top:3px}
+.mc-desk-controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.mc-desk-controls button{min-width:42px}
+.mc-desk-controls button:disabled{opacity:.4}
+.mc-desk-notation{max-height:430px;overflow:auto}
+.mc-desk-notation table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.mc-desk-notation th,.mc-desk-notation td{padding:6px 7px;border-bottom:1px solid #293d53;text-align:left}
+.mc-desk-notation th{color:#f3c45b;font-size:11px;position:sticky;top:0;background:#101b2a}
+.mc-desk-notation button{width:100%;padding:6px 7px;background:#17283b;border:1px solid transparent;color:#edf3fa;text-align:left;border-radius:4px;font-size:13px}
+.mc-desk-notation button.active{background:#4b3916;border-color:#d5ad58;color:#ffe5a0}
+.mc-desk-note{padding:10px 16px;color:#aebed1;font-size:11px;border-top:1px solid #30465f;background:#080f19}
+@media(max-width:760px){.mc-desk-grid{grid-template-columns:1fr;padding:11px}.mc-desk-board{max-width:540px;margin:auto}.mc-desk-notation{max-height:330px}.mc-desk-side{display:grid;grid-template-columns:1fr}.mc-desk-head,.mc-desk-meta{padding:11px 12px}}
+
 </style>
 </head>
 <body>
@@ -215,6 +245,37 @@ button.secondary,button.ghost{border-radius:4px}
  </div>
  <div class="watch-more">The featured match is Gukesh D vs Javokhir Sindarov. Use the tournament directory to find other live games and upcoming events.</div>
 </section>
+
+<section class="mc-desk" id="maxchessBroadcastDesk" aria-labelledby="mcDeskTitle">
+ <header class="mc-desk-head">
+  <div><small>📺 MAXCHESS TV · BROADCAST DESK</small><h2 id="mcDeskTitle">Gukesh vs Sindarov — Game 1</h2></div>
+  <span class="pill done">GAME FINISHED</span>
+ </header>
+ <div class="mc-desk-meta">
+  <div><strong>Javokhir Sindarov <small>WHITE</small></strong><br><small>vs</small><br><strong>Gukesh D <small>BLACK</small></strong></div>
+  <div class="result">½ – ½</div>
+  <small>FIDE World Championship 2026 · 24 November · 38 moves</small>
+ </div>
+ <div class="mc-desk-grid">
+  <div>
+   <div id="gukeshGameBoard" class="mc-desk-board" role="img" aria-label="MaxChess chessboard showing Sindarov versus Gukesh, Game 1"></div>
+   <div class="mc-desk-controls" aria-label="Game replay controls">
+    <button type="button" id="gukeshFirst" class="secondary" aria-label="First position">|◀</button>
+    <button type="button" id="gukeshPrev" class="secondary" aria-label="Previous move">◀</button>
+    <button type="button" id="gukeshNext" aria-label="Next move">▶</button>
+    <button type="button" id="gukeshLast" aria-label="Final position">▶|</button>
+   </div>
+  </div>
+  <div class="mc-desk-side">
+   <div class="mc-desk-card"><div class="mc-desk-label">REPLAY POSITION</div><div class="mc-desk-current" id="gukeshPosition">Final position · 38...Kg8</div><small id="gukeshMoveCount">76 half-moves · Draw</small></div>
+   <div class="mc-desk-card"><div class="mc-desk-label">GAME NOTATION · CLICK A MOVE TO REPLAY</div>
+    <div class="mc-desk-notation"><table><thead><tr><th>#</th><th>White</th><th>Black</th></tr></thead><tbody id="gukeshNotation"></tbody></table></div>
+   </div>
+  </div>
+ </div>
+ <div class="mc-desk-note">MaxChess board replay with the complete published score. White: Javokhir Sindarov · Black: Gukesh D · Result: draw. This is the completed Game 1 replay, not a live game.</div>
+</section>
+
 <section class="setup" id="setup">
  <h2>Connect a DGT tournament</h2>
  <p class="hint">Paste the tournament viewer link created by DGT LiveChess Cloud. MaxChess will read the tournament, pairing and game feeds and draw its own board view. You do not need to paste a private DGT password.</p>
@@ -535,5 +596,66 @@ else{
 window.addEventListener('beforeunload',function(){if(demoClockTimer)clearInterval(demoClockTimer);if(demoReplayTimer)clearInterval(demoReplayTimer);clearTimeout(state.pollTimer);clearInterval(state.refreshTimer);clearInterval(state.cycleTimer)});
 })();
 </script>
+
+<script>
+(function(){
+ 'use strict';
+ var boardEl=document.getElementById('gukeshGameBoard');
+ if(!boardEl)return;
+ var moves=['e4','e5','Nf3','Nc6','Bb5','Nf6','O-O','Nxe4','d4','Nd6','Bxc6','dxc6','dxe5','Nf5','Qxd8+','Kxd8','Rd1+','Ke8','Nc3','Ne7','h3','Ng6','Be3','Be7','Ne4','Bd7','c4','a5','Rd2','a4','Rad1','Be6','b3','Bb4','Re2','h6','Ng3','c5','Nh5','Rg8','g4','Ke7','Ne1','axb3','axb3','Nxe5','f4','g6','Ng3','Nc6','f5','gxf5','Nxf5+','Kf6','Rf2','Rgd8','Nd3','Bxf5','Rxf5+','Kg7','Rh5','Bc3','Bxh6+','Kg8','Rg5+','Kh7','Rh5','Kg8','Rg5+','Kh7','Rh5','Kg8','Rg5+','Kh7','Rh5','Kg8'];
+ var chess=typeof window.Chess==='function'?new window.Chess():null;
+ var positions=[],ply=0;
+ var glyph={w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
+ var san=[];
+ if(chess){
+  positions.push(chess.fen());
+  for(var i=0;i<moves.length;i++){
+   var move=chess.move(moves[i]);
+   if(!move)break;
+   san.push(move.san);
+   positions.push(chess.fen());
+  }
+ }
+ function draw(){
+  if(!chess||!positions.length){boardEl.textContent='Chessboard library unavailable';return}
+  chess.load(positions[ply]);
+  var matrix=chess.board();boardEl.textContent='';
+  for(var r=0;r<8;r++)for(var c=0;c<8;c++){
+   var sq=document.createElement('div');sq.className='mc-desk-square '+(((r+c)%2===0)?'light':'dark');
+   var rank=8-r,file=String.fromCharCode(97+c);
+   if(c===0){var co=document.createElement('span');co.className='coord';co.textContent=rank;sq.appendChild(co)}
+   var p=matrix[r][c];
+   if(p){var piece=document.createElement('span');piece.textContent=(glyph[p.color]||{})[p.type]||'';sq.appendChild(piece)}
+   if(r===7){var fc=document.createElement('span');fc.className='coord';fc.style.cssText='left:auto;top:auto;right:3px;bottom:2px';fc.textContent=file;sq.appendChild(fc)}
+   boardEl.appendChild(sq);
+  }
+  var text=ply===0?'Starting position':(Math.ceil(ply/2)+(ply%2?' . ':'...')+san[ply-1]);
+  document.getElementById('gukeshPosition').textContent=ply===san.length?'Final position · 38...Kg8':text;
+  document.getElementById('gukeshMoveCount').textContent=ply+' / '+san.length+' half-moves · Draw';
+  document.getElementById('gukeshPrev').disabled=ply===0;
+  document.getElementById('gukeshFirst').disabled=ply===0;
+  document.getElementById('gukeshNext').disabled=ply===san.length;
+  document.getElementById('gukeshLast').disabled=ply===san.length;
+  var active=document.querySelector('#gukeshNotation button[data-ply="'+ply+'"]');
+  document.querySelectorAll('#gukeshNotation button').forEach(function(b){b.classList.toggle('active',b===active)});
+ }
+ function go(n){ply=Math.max(0,Math.min(san.length,n));draw()}
+ var tbody=document.getElementById('gukeshNotation');
+ for(var j=0;j<san.length;j+=2){
+  var tr=document.createElement('tr'),num=document.createElement('td'),w=document.createElement('td'),b=document.createElement('td');
+  num.textContent=String(Math.floor(j/2)+1);
+  var wb=document.createElement('button');wb.type='button';wb.textContent=san[j]||'';wb.dataset.ply=String(j+1);wb.addEventListener('click',function(){go(Number(this.dataset.ply))});w.appendChild(wb);
+  if(san[j+1]){var bb=document.createElement('button');bb.type='button';bb.textContent=san[j+1];bb.dataset.ply=String(j+2);bb.addEventListener('click',function(){go(Number(this.dataset.ply))});b.appendChild(bb)}
+  tr.appendChild(num);tr.appendChild(w);tr.appendChild(b);tbody.appendChild(tr);
+ }
+ document.getElementById('gukeshFirst').addEventListener('click',function(){go(0)});
+ document.getElementById('gukeshPrev').addEventListener('click',function(){go(ply-1)});
+ document.getElementById('gukeshNext').addEventListener('click',function(){go(ply+1)});
+ document.getElementById('gukeshLast').addEventListener('click',function(){go(san.length)});
+ if(san.length!==76){document.getElementById('gukeshMoveCount').textContent='Replay loaded '+san.length+' of 76 half-moves';}
+ go(san.length);
+})();
+</script>
+
 </body>
 </html>

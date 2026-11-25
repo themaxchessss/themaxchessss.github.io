@@ -1925,15 +1925,15 @@ input[type="number"]{
      <p class="eyebrow">⭐ FEATURED · WORLD CHAMPIONSHIP</p>
      <h4 style="margin:6px 0">Salesforce FIDE World Championship Match 2026</h4>
      <p><b>Gukesh D vs. Javokhir Sindarov</b><br>Geneva, Switzerland · November 22–December 12, 2026<br>Game 1 · November 24</p>
-     <p class="desc">A MaxChess board for the featured game. It checks the public tournament moves and displays the position with MaxChess pieces and colors.</p>
+     <p class="desc">Replay the completed game move by move on a MaxChess board. The full notation stays visible below, so you can follow the game even after the players have finished.</p>
      <div style="max-width:460px;margin:12px auto">
       <div id="watchTournamentBoard" role="img" aria-label="MaxChess tournament chessboard" style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));aspect-ratio:1/1;border:3px solid #b78b35;border-radius:8px;overflow:hidden;box-shadow:0 5px 18px #0002"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0"><button class="greenbtn" id="refreshTournamentBoard" type="button" style="width:auto;margin:0">↻ Refresh tournament moves</button></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0"><button class="greenbtn" id="tournamentReplayStart" type="button" style="width:auto;margin:0">⏮ Start</button><button class="greenbtn" id="tournamentReplayPrev" type="button" style="width:auto;margin:0">← Previous</button><button class="greenbtn" id="tournamentReplayNext" type="button" style="width:auto;margin:0">Next →</button><button class="greenbtn" id="tournamentReplayEnd" type="button" style="width:auto;margin:0">End ⏭</button></div>
       <p id="tournamentBoardStatus" class="desc" role="status" aria-live="polite">Loading the featured game…</p>
       <div class="notation-head"><h3>Game notation</h3><span id="tournamentMoveCount" class="desc">0 moves</span></div>
       <div id="tournamentBoardMoves" class="notation-sheet" aria-label="Tournament game notation"><div class="notation-empty">Waiting for published moves…</div></div>
      </div>
-     <p class="desc">The MaxChess board uses the tournament’s public move feed. The event feed is provided by the broadcast organizer; MaxChess displays it in its own board.</p>
+     <p class="desc">Archived score · Replay any move from the start to the final drawn position. The notation is available even when the live broadcast has ended.</p>
     </div>
     <a class="greenbtn" href="./tournament-desk.html">🏆 MaxChess Tournament Desk · Organize your own event →</a>
     <p class="desc">MaxChess displays the broadcast inside this page; it does not host or rebroadcast the tournament feed.</p>
@@ -3321,8 +3321,30 @@ $('exportPGN').onclick=()=>{if(!game||!game.history().length){note('Play a move 
  const tournamentGlyph={k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟',K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙'};
  function drawTournamentMaxBoard(chess){const host=$('watchTournamentBoard');if(!host)return;host.innerHTML='';const rows=chess&&typeof chess.board==='function'?chess.board():null;if(!rows){host.textContent='Board unavailable';return}rows.forEach((row,r)=>row.forEach((piece,c)=>{const cell=document.createElement('div');cell.style.cssText='display:grid;place-items:center;aspect-ratio:1;background:'+((r+c)%2===0?'var(--boardlight,#f0d9b5)':'var(--boarddark,#78936a)')+';font-size:clamp(22px,6vw,42px);line-height:1;color:'+(piece?.color==='w'?'#fffdf4':'#171717')+';text-shadow:0 1px 2px '+(piece?.color==='w'?'#333':'#eee');cell.textContent=piece?tournamentGlyph[piece.color==='w'?piece.type.toUpperCase():piece.type]:'';host.appendChild(cell)}))}
  function renderTournamentNotation(chess){const host=$('tournamentBoardMoves'),count=$('tournamentMoveCount');if(!host||!chess)return;const history=chess.history();count.textContent=Math.ceil(history.length/2)+' move'+(Math.ceil(history.length/2)===1?'':'s');if(!history.length){host.innerHTML='<div class="notation-empty">The game has not started. Notation will appear here when moves are published.</div>';return}host.innerHTML='';for(let i=0;i<history.length;i+=2){const row=document.createElement('div');row.className='notation-row';const number=document.createElement('span');number.className='notation-number';number.textContent=(Math.floor(i/2)+1)+'.';const white=document.createElement('span');white.className='notation-move';white.textContent=history[i]||'';const black=document.createElement('span');black.className='notation-move'+(history[i+1]?'':' empty');black.textContent=history[i+1]||'…';row.append(number,white,black);host.append(row)}}
- async function refreshTournamentMaxBoard(){const status=$('tournamentBoardStatus'),btn=$('refreshTournamentBoard');if(!status||!window.Chess)return;if(btn)btn.disabled=true;status.textContent='Checking the official tournament move feed…';try{const response=await fetch('https://lichess.org/api/broadcast/xLgOJ6cb.pgn',{headers:{Accept:'application/x-chess-pgn,text/plain'},cache:'no-store'});if(!response.ok)throw new Error('Move feed returned '+response.status);const pgn=await response.text();const chess=new Chess();if(!pgn.trim())throw new Error('No game moves have been published yet.');const loaded=chess.load_pgn(pgn);if(loaded===false)throw new Error('The published PGN could not be read.');drawTournamentMaxBoard(chess);renderTournamentNotation(chess);const history=chess.history();const headers=chess.header?chess.header():{};const players=[headers.White,headers.Black].filter(Boolean);status.textContent='MaxChess board · '+(players.length?players.join(' vs. ')+' · ':'')+history.length+' half-moves loaded · '+(chess.game_over()?'Game finished':'Latest published position')}catch(error){const empty=new Chess();drawTournamentMaxBoard(empty);renderTournamentNotation(empty);status.textContent='Could not load live moves: '+error.message+' · Try refresh again when the broadcast is available.'}finally{if(btn)btn.disabled=false}}
- $('refreshTournamentBoard')?.addEventListener('click',refreshTournamentMaxBoard);
+ let tournamentReplayMoves=[],tournamentReplayPly=0;
+ function showTournamentReplayPly(ply){tournamentReplayPly=Math.max(0,Math.min(tournamentReplayMoves.length,ply));const position=new Chess();for(let i=0;i<tournamentReplayPly;i++)position.move(tournamentReplayMoves[i]);drawTournamentMaxBoard(position);const status=$('tournamentBoardStatus');if(status)status.textContent='Archived Game 1 replay · Move '+Math.ceil(tournamentReplayPly/2)+' · '+tournamentReplayPly+' of '+tournamentReplayMoves.length+' half-moves'+(tournamentReplayPly===tournamentReplayMoves.length?' · Final position · Draw':'');const prev=$('tournamentReplayPrev'),next=$('tournamentReplayNext');if(prev)prev.disabled=tournamentReplayPly===0;if(next)next.disabled=tournamentReplayPly===tournamentReplayMoves.length}
+ function refreshTournamentMaxBoard(){const status=$('tournamentBoardStatus');if(!status||!window.Chess)return;status.textContent='Loading the completed Game 1 score…';try{const pgn=`[Event "Salesforce FIDE World Championship Match 2026"]
+[Site "Geneva, Switzerland"]
+[Date "2026.11.24"]
+[Round "1"]
+[White "Javokhir Sindarov"]
+[Black "Gukesh D"]
+[Result "1/2-1/2"]
+[Opening "Ruy Lopez: Berlin Defence"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. O-O Nxe4 5. d4 Nd6 6. Bxc6 dxc6
+7. dxe5 Nf5 8. Qxd8+ Kxd8 9. Rd1+ Ke8 10. Nc3 Ne7 11. h3 Ng6
+12. Be3 Be7 13. Ne4 Bd7 14. c4 a5 15. Rd2 a4 16. Rad1 Be6
+17. b3 Bb4 18. Re2 h6 19. Ng3 c5 20. Nh5 Rg8 21. g4 Ke7
+22. Ne1 axb3 23. axb3 Nxe5 24. f4 g6 25. Ng3 Nc6 26. f5 gxf5
+27. Nxf5+ Kf6 28. Rf2 Rgd8 29. Nd3 Bxf5 30. Rxf5+ Kg7
+31. Rh5 Bc3 32. Bxh6+ Kg8 33. Rg5+ Kh7 34. Rh5 Kg8
+35. Rg5+ Kh7 36. Rh5 Kg8 37. Rg5+ Kh7 38. Rh5 Kg8 1/2-1/2`;
+const game=new Chess();const loaded=game.load_pgn(pgn);if(loaded===false)throw new Error('The archived score did not pass chess move validation.');tournamentReplayMoves=game.history();renderTournamentNotation(game);showTournamentReplayPly(0)}catch(error){status.textContent='Could not load the archived game: '+error.message}}
+ $('tournamentReplayStart')?.addEventListener('click',()=>showTournamentReplayPly(0));
+ $('tournamentReplayPrev')?.addEventListener('click',()=>showTournamentReplayPly(tournamentReplayPly-1));
+ $('tournamentReplayNext')?.addEventListener('click',()=>showTournamentReplayPly(tournamentReplayPly+1));
+ $('tournamentReplayEnd')?.addEventListener('click',()=>showTournamentReplayPly(tournamentReplayMoves.length));
  refreshTournamentMaxBoard();
  async function toggleGameBroadcast(){if(!authClient||!authUser||!onlineGameId){$('broadcastStatus').textContent='Start or reconnect to an online game and sign in first.';return}const btn=$('toggleGameBroadcast'),makePublic=btn.textContent.includes('Share live');btn.disabled=true;$('broadcastStatus').textContent=makePublic?'Turning on public sharing…':'Turning off public sharing…';const z=await authClient.from('games').update({is_public:makePublic}).eq('id',onlineGameId).select('is_public').maybeSingle();btn.disabled=false;if(z.error||!z.data){$('broadcastStatus').textContent='Could not change sharing: '+(z.error?.message||'game not found or you are not a player');return}btn.textContent=z.data.is_public?'Stop sharing this game':'📡 Share live game on MaxChess Watch';$('broadcastStatus').textContent=z.data.is_public?'This game is public on MaxChess Watch.':'This game is private again.';note(z.data.is_public?'Your game is now on MaxChess Watch.':'Your game is private again.');loadWatchGames()}
  $('toggleGameBroadcast').onclick=toggleGameBroadcast;$('refreshWatchGames').onclick=loadWatchGames;

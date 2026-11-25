@@ -1,10 +1,11 @@
-const CACHE_NAME = "maxchess-shell-v36";
+const CACHE_NAME = "maxchess-shell-v37";
 const SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
   "./404.html",
+  "./offline.html",
   "./newsletter.html",
   "./newsletter-maker.html",
   "./owner-control.html",
@@ -30,7 +31,7 @@ self.addEventListener("fetch", event => {
     event.respondWith(fetch(request).then(response => {
       if (response.ok) { const copy = response.clone(); caches.open(CACHE_NAME).then(cache => cache.put(request, copy)); }
       return response;
-    }).catch(() => caches.match(request).then(cachedPage => cachedPage || caches.match("./index.html"))));
+    }).catch(() => caches.match(request).then(cachedPage => cachedPage || caches.match("./offline.html") || caches.match("./index.html"))));
     return;
   }
   const staticExternal = url.hostname === "cdn.jsdelivr.net" || url.hostname === "cdnjs.cloudflare.com" || url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";

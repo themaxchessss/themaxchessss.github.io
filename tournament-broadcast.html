@@ -391,7 +391,9 @@ async function selectBoard(number){
  if(!state.pairing)return;
  if(state.demo){
   state.lastUpdate='DEMO';
-  demoMoveIndex=0;renderGame(Object.assign({},demoGames[number-1]||demoGames[0],{moves:[]}));
+  var demoGame=demoGames[number-1]||demoGames[0];
+  demoMoveIndex=demoGame.moves.length;
+  renderGame(Object.assign({},demoGame,{moves:demoGame.moves}));
   $('gameStatus').textContent='DEMO PREVIEW';
   $('gameResult').textContent='Sample game only · no real DGT data';
   $('airStatus').textContent='● DEMO PREVIEW';$('airStatus').style.color='var(--blue)';
@@ -498,7 +500,7 @@ function startDemo(){
   {white:{fname:'MaxChess Player C',title:'DEMO'},black:{fname:'MaxChess Player D',title:'DEMO'},result:'DRAW',live:false}
  ]};
  $('tournamentLink').value='';$('roundSelect').textContent='';renderScoreboard();
- if(demoClockTimer)clearInterval(demoClockTimer);if(demoReplayTimer)clearInterval(demoReplayTimer);demoMoveIndex=0;demoClockSeconds={white:582,black:535};demoClockTimer=setInterval(function(){var side=demoMoveIndex%2===0?'white':'black';if(demoClockSeconds[side]>0)demoClockSeconds[side]--;renderClocks(null)},1000);demoReplayTimer=setInterval(function(){var game=demoGames[state.board-1]||demoGames[0];if(demoMoveIndex<game.moves.length){demoMoveIndex++;renderGame(Object.assign({},game,{moves:game.moves.slice(0,demoMoveIndex)}));$('gameStatus').textContent='DEMO PREVIEW';$('gameResult').textContent='Simulated replay · sample only';$('airStatus').textContent='● DEMO PREVIEW';$('updated').textContent='DEMO';$('feedTime').textContent='SAMPLE FEED'}else{demoMoveIndex=0;demoClockSeconds={white:582,black:535}}},3200);
+ if(demoClockTimer)clearInterval(demoClockTimer);if(demoReplayTimer)clearInterval(demoReplayTimer);demoMoveIndex=0;demoClockSeconds={white:582,black:535};demoClockTimer=setInterval(function(){var side=demoMoveIndex%2===0?'white':'black';if(demoClockSeconds[side]>0)demoClockSeconds[side]--;renderClocks(null)},1000);demoReplayTimer=setInterval(function(){var game=demoGames[state.board-1]||demoGames[0];if(demoMoveIndex>=game.moves.length){demoMoveIndex=0;demoClockSeconds={white:582,black:535}}if(demoMoveIndex<game.moves.length){demoMoveIndex++;renderGame(Object.assign({},game,{moves:game.moves.slice(0,demoMoveIndex)}));$('gameStatus').textContent='DEMO PREVIEW';$('gameResult').textContent='Simulated replay · sample only';$('airStatus').textContent='● DEMO PREVIEW';$('updated').textContent='DEMO';$('feedTime').textContent='SAMPLE FEED'}},3200);
  var option=document.createElement('option');option.value='1';option.textContent='Round 1 · DEMO';$('roundSelect').appendChild(option);
  setConnected(true);$('refreshBtn').disabled=true;$('copyObsBtn').disabled=true;$('openDgtBtn').disabled=true;
  updateHeader();$('roundName').textContent='Round 1 · DEMO PREVIEW';

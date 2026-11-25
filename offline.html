@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#15122f">
+<title>You're Offline · MaxChess</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#100e20;color:#f7f3e8;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}.panel{width:min(100%,560px);padding:30px;border:1px solid #66552d;border-radius:22px;background:#1b1830;text-align:center;box-shadow:0 18px 60px #0006}.logo{width:82px;height:82px;object-fit:contain}.gold{color:#ffd45c}h1{margin:12px 0 6px;font-size:2rem}p{color:#d5d0e2}.note{margin:22px 0;padding:16px;border-radius:14px;background:#121024;text-align:left}button,a{display:inline-block;margin:6px;padding:12px 18px;border:0;border-radius:12px;background:#e7b83f;color:#191326;font-weight:700;text-decoration:none;cursor:pointer}.secondary{background:#302b49;color:#fff}
+</style>
+</head>
+<body>
+<main class="panel">
+<img class="logo" src="./icon.svg" alt="MaxChess golden queen">
+<h1><span class="gold">MaxChess</span> is offline</h1>
+<p>Your device can't reach the internet right now. You can still open pages that were saved on this device.</p>
+<div class="note"><strong>What needs internet?</strong><br>Online games, signing in, cloud saves, live broadcasts, and leaderboards need a connection. Offline access to the chess computer depends on whether its engine and game files have already been saved on this device.</div>
+<button onclick="location.reload()">Try again</button>
+<a class="secondary" href="./">Open saved homepage</a>
+</main>
+</body>
+</html>

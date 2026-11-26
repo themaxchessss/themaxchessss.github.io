@@ -30,6 +30,7 @@ p,li{color:var(--muted)}
 .small{font-size:.9rem}
 .note{border-left:3px solid var(--gold);padding-left:13px}
 a{color:var(--gold2)}
+.checkout-button{display:inline-block;margin:12px 0 2px;padding:13px 34px;border:1px solid #8c6a25;border-radius:10px;background:linear-gradient(135deg,#f3c85b,#ffe7a0);color:#211805;font:900 1rem system-ui,sans-serif;opacity:.58;cursor:not-allowed}
 footer{border-top:1px solid #303744;padding:22px;text-align:center;color:#929cab}
 footer a{margin:0 9px}
 @media(max-width:480px){.panel{padding:18px 14px}}
@@ -40,8 +41,10 @@ footer a{margin:0 9px}
 <main>
 <section class="hero"><div class="heart" aria-hidden="true">♥</div><h1>Support MaxChess</h1><p>Help us keep free chess fun, welcoming, and available for everyone.</p></section>
 <section class="panel center" role="status" aria-label="Donation notice">
-<h2 id="donate-title">Donations Temporarily Unavailable</h2>
+<h2 id="donate-title">Support MaxChess</h2>
 <p>Donations are temporarily unavailable. Thank you for supporting free chess on MaxChess.</p>
+<button class="checkout-button" type="button" disabled aria-disabled="true">Checkout</button>
+<p class="small">Checkout is coming soon. Donations cannot be processed yet.</p>
 </section>
 <section class="panel center" aria-labelledby="reward-title">
 <h2 id="reward-title">A Digital Thank-You Gift</h2>

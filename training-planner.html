@@ -468,6 +468,57 @@ main { width:min(980px, calc(100% - 32px)); min-width:0; }
 <p class="muted">This is a simplified pawn race with no other pieces. A supporting king, blockers, checks, or a pawn still on its starting rank can change the calculation—always examine the full board.</p>
 </section>
 
+
+<section class="panel" id="queenKingMateLesson">
+<h2>♛ Checkmate lesson · Use your king and queen together</h2>
+<p class="muted">A queen is powerful, but your king helps finish the job. Bring the king close enough to protect the queen and take away the enemy king's escape squares.</p>
+<div class="grid">
+<article class="lesson-card">
+<div class="lesson-kicker">LESSON 13 · CHECKMATE</div>
+<h3>Protect the queen with your king</h3>
+<p>In this simple position, White can checkmate in one move. The important idea is not just to give check: make sure the queen is protected and every escape square is covered.</p>
+<div class="lesson-example"><b>Practice position · White to move:</b> Black king h8, White king f6, and White queen g6. All other squares are empty.
+<pre class="lesson-board" role="img" aria-label="Chessboard with black king on h8, white king on f6, and white queen on g6; White to move.">8 | . . . . . . . k
+7 | . . . . . . . .
+6 | . . . . . K Q .
+5 | . . . . . . . .
+4 | . . . . . . . .
+3 | . . . . . . . .
+2 | . . . . . . . .
+1 | . . . . . . . .
+    a b c d e f g h</pre>
+<b>Winning move:</b> 1. Qg7#.
+<p>The queen moves from g6 to g7 and checks the king on h8. White's king on f6 protects the queen on g7, so Black cannot capture it. The queen also controls g8 and h7. Black has no safe escape: checkmate!</p>
+</div>
+<div class="lesson-example"><b>Remember this plan:</b>
+<ol>
+<li>Use your queen to push the enemy king toward the edge.</li>
+<li>Bring your king closer so it can protect the queen and cover escape squares.</li>
+<li>Before moving, check that your move is checkmate—not stalemate. In stalemate the king is not in check, but has no legal move.</li>
+</ol>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Correct! 1. Qg7# checks the king on h8, and the white king protects the queen on g7." data-hint="Find a move that checks the king on h8 and leaves the queen protected by the white king on f6.">
+<p><b>Try it 1:</b> Which move is checkmate?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">1. Qg7#</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">1. Qh6+</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">1. Qf7</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Exactly. The white king on f6 controls g7, so the black king cannot capture the queen there." data-hint="A king controls the eight squares immediately around it. Which of those squares is the queen moving to?">
+<p><b>Try it 2:</b> Why can't the black king capture the queen on g7?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">The white king on f6 protects g7</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">A queen can never be captured</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">The black king is allowed to capture only rooks</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+</div>
+</section>
+
 <section class="panel"><h2>Useful MaxChess places</h2><div class="grid">
 <div><b>♟ Puzzles</b><p class="muted">Practise tactics and calculation.</p><a href="./">Open MaxChess</a></div>
 <div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="#quickLessons">Jump to quick lessons</a></div>

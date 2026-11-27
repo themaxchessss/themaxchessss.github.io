@@ -519,9 +519,77 @@ main { width:min(980px, calc(100% - 32px)); min-width:0; }
 </div>
 </section>
 
+<section class="panel" id="doubleCheckLesson">
+<h2>♞ Chess tactic lesson · Double check</h2>
+<p class="muted">A double check is a forcing move: two different pieces check the king at the same time. Learn why the king must move and why this is not automatically checkmate.</p>
+<div class="grid">
+<article class="lesson-card">
+<div class="lesson-kicker">LESSON 14 · TACTICS</div>
+<h3>Give two checks with one move</h3>
+<p>A <b>double check</b> happens when one piece moves to give check and also uncovers a second check from a rook, bishop, or queen behind it. Both attacks target the enemy king.</p>
+<div class="lesson-example"><b>Practice position · White to move:</b> Black king d8, White knight d6, White rook d1, and White king g1. All other squares are empty. The knight is standing in front of the rook on the d-file.
+<pre class="lesson-board" role="img" aria-label="Before the move: black king d8, white knight d6, white rook d1 and white king g1. White to move.">8 | . . . ♚ . . . .
+7 | . . . . . . . .
+6 | . . . ♘ . . . .
+5 | . . . . . . . .
+4 | . . . . . . . .
+3 | . . . . . . . .
+2 | . . . . . . . .
+1 | . . . ♖ . . ♔ .
+    a b c d e f g h</pre>
+<b>Winning idea:</b> 1. Nf7+!
+<p>The knight jumps from d6 to f7 and attacks the king on d8. At the same time, the knight has moved off the d-file, opening the rook's attack from d1 to d8. The king is now in check from both pieces.</p>
+<pre class="lesson-board" role="img" aria-label="After Nf7 plus: black king d8 is checked by white knight f7 and white rook d1; white king g1.">8 | . . . ♚ . . . .
+7 | . . . . . ♘ . .
+6 | . . . . . . . .
+5 | . . . . . . . .
+4 | . . . . . . . .
+3 | . . . . . . . .
+2 | . . . . . . . .
+1 | . . . ♖ . . ♔ .
+    a b c d e f g h</pre>
+</div>
+<div class="lesson-example"><b>The important rule:</b>
+<ul>
+<li>In a double check, the only legal response is to move the king.</li>
+<li>Blocking the rook's line would still leave the knight's check unanswered.</li>
+<li>A double check is not automatically checkmate. The king may have a safe square, so keep calculating.</li>
+</ul>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Correct! Nf7 checks the king, and moving the knight uncovers the rook's check down the d-file." data-hint="The knight both moves to a checking square and clears the rook's line.">
+<p><b>Try it 1:</b> Why is 1. Nf7+ a double check?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">The knight checks and opens the rook's line to the king</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">The knight attacks two pawns</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">The rook and knight both attack a queen</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Exactly. The king has to move; blocking or capturing just one checker would leave the other check in place." data-hint="A move that blocks one checking line cannot answer the other checking line at the same time.">
+<p><b>Try it 2:</b> What is the only type of legal response to a double check?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Block one checking line with a pawn</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">Move the king to a safe square</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Ignore the check and attack the queen</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Right. Double check forces the king to move, but the king may still have a safe escape square." data-hint="Checkmate means the king is in check and has no legal move. A double check alone does not prove that.">
+<p><b>Try it 3:</b> Does every double check mean checkmate?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Yes, every double check wins immediately</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">No. The king may still have a safe square</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Only if a pawn is on the seventh rank</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+</div>
+</section>
+
 <section class="panel"><h2>Useful MaxChess places</h2><div class="grid">
 <div><b>♟ Puzzles</b><p class="muted">Practise tactics and calculation.</p><a href="./">Open MaxChess</a></div>
-<div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="#quickLessons">Jump to quick lessons</a></div>
+<div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="#quickLessons">Jump to quick lessons</a> · <a href="#doubleCheckLesson">Double-check lesson</a></div>
 <div><b>🏆 Play</b><p class="muted">Put your practice into a real game.</p><a href="./">Play chess</a></div>
  <div><b>🏆 Tournament Desk</b><p class="muted">Organize players, practice Swiss-style rounds, record results and print standings.</p><a href="./tournament-desk.html">Open Tournament Desk</a></div>
  <div><b>💡 1,000 MaxChess Ideas</b><p class="muted">Explore the big idea library for future free features.</p><a href="./maxchess-1000-ideas.md">Open the idea library</a> <span class="muted">·</span> <a href="./maxchess-top-100.html">Best 100 shortlist</a></div>

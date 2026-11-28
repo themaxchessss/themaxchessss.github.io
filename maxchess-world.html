@@ -16,7 +16,53 @@
 <section class="card"><div class="tag">05 · MAXCHESS TV</div><h2>📺 Watch & replay</h2><p>Open the broadcast room for tournament boards, live feed connections, notation and replay controls.</p><a href="tournament-broadcast.html"><button>Open MaxChess TV</button></a><p class="small">A real live game appears only when a tournament feed is connected and publishing moves.</p></section>
 <section class="card"><div class="tag">06 · PLAYER CAREER</div><h2>📈 Your chess career</h2><p>Keep a personal record of your games, wins, draws and losses.</p><div class="statrow"><div class="stat"><b id="games">0</b><span class="small">Games</span></div><div class="stat"><b id="wins">0</b><span class="small">Wins</span></div><div class="stat"><b id="draws">0</b><span class="small">Draws</span></div><div class="stat"><b id="losses">0</b><span class="small">Losses</span></div></div><label for="careerResult">Result</label><select id="careerResult"><option value="win">Win</option><option value="draw">Draw</option><option value="loss">Loss</option></select><label for="careerOpponent">Opponent (optional)</label><input id="careerOpponent" maxlength="40" placeholder="Opponent name"><button id="addGame">Record game</button><div id="careerList" class="list"></div></section>
 <section class="card wide"><div class="tag">07 · MAXCHESS CLUBS</div><h2>♜ Clubs & teams</h2><p>Create a club on this device and keep its name, description and member list together. Shared online clubs need a secure account/database connection, so these are currently private local clubs.</p><label for="clubName">Club name</label><input id="clubName" maxlength="45" placeholder="MaxChess New York"><label for="clubDesc">Club description</label><input id="clubDesc" maxlength="100" placeholder="Friendly weekly chess games"><label for="clubMember">Add member name</label><input id="clubMember" maxlength="40" placeholder="Member name"><button id="createClub">Create club</button><button id="addMember" class="secondary">Add member to selected club</button><div id="clubList" class="list"></div></section>
-</div><footer>MaxChess · Free chess for everyone · Local tools preview · <a href="./">Return to MaxChess</a></footer></main>
+</div>
+<section class="card wide" id="opening-encyclopedia">
+ <div class="tag">08 · OPENING ENCYCLOPEDIA</div><h2>📚 Explore chess openings</h2>
+ <p>Choose an opening to see its starting moves and the ideas behind it.</p>
+ <div class="list">
+  <details class="item"><summary><b>Italian Game</b> · 1. e4 e5 2. Nf3 Nc6 3. Bc4</summary><p class="small">Develop quickly, control the center and prepare to castle. White often targets f7; Black should develop and contest the center.</p></details>
+  <details class="item"><summary><b>Ruy López</b> · 1. e4 e5 2. Nf3 Nc6 3. Bb5</summary><p class="small">White pressures the knight that supports e5. Both sides develop naturally and fight for central space.</p></details>
+  <details class="item"><summary><b>Sicilian Defence</b> · 1. e4 c5</summary><p class="small">Black challenges the center asymmetrically. Typical plans include queenside play and counterattacking the d4 square.</p></details>
+  <details class="item"><summary><b>French Defence</b> · 1. e4 e6 2. d4 d5</summary><p class="small">Black challenges White's center with ...d5. The light-squared bishop can be a strategic problem to solve.</p></details>
+  <details class="item"><summary><b>Queen's Gambit</b> · 1. d4 d5 2. c4</summary><p class="small">White offers the c-pawn to challenge Black's central pawn on d5. The gambit is usually declined or returned rather than held permanently.</p></details>
+  <details class="item"><summary><b>London System</b> · 1. d4 d5 2. Bf4</summary><p class="small">White develops the light-squared bishop early and builds a solid setup. Plans depend on Black's central structure.</p></details>
+ </div>
+</section>
+<section class="card wide" id="chess-museum">
+ <div class="tag">09 · INTERACTIVE CHESS MUSEUM</div><h2>🏛️ A short history of chess</h2>
+ <p>Open an era to explore how the game developed.</p>
+ <div class="list">
+  <details class="item"><summary><b>Chaturanga · around the 6th century</b></summary><p class="small">An early Indian strategy game is widely regarded as an ancestor of chess. Its pieces represented different parts of an army.</p></details>
+  <details class="item"><summary><b>Shatranj · early medieval period</b></summary><p class="small">Chess spread through Persia and the Islamic world. The names and movement of several pieces developed along the way.</p></details>
+  <details class="item"><summary><b>Modern chess · 15th century</b></summary><p class="small">Major rule changes in Europe gave the queen and bishop their modern long-range movement, making the game faster and more tactical.</p></details>
+  <details class="item"><summary><b>Organized competition · 19th century</b></summary><p class="small">Chess clubs, published analysis and international tournaments helped create modern competitive chess. The first recognized world championship match was held in 1886.</p></details>
+  <details class="item"><summary><b>Computer chess · 20th century to today</b></summary><p class="small">Chess engines transformed preparation and analysis. Online play now lets people compete across the world.</p></details>
+ </div>
+</section>
+<section class="card wide" id="community-puzzle-workshop">
+ <div class="tag">10 · COMMUNITY PUZZLE WORKSHOP</div><h2>🧩 Create a puzzle draft</h2>
+ <p>Prepare a puzzle for review. Drafts stay in this browser until you export and share them; they are not automatically published to other MaxChess players.</p>
+ <label for="puzzleTitle">Puzzle title</label><input id="puzzleTitle" maxlength="70" placeholder="Example: Find the fork">
+ <label for="puzzleFen">Starting position (FEN)</label><textarea id="puzzleFen" rows="2" maxlength="250" placeholder="Paste a FEN position"></textarea>
+ <label for="puzzleSolution">Solution (moves)</label><input id="puzzleSolution" maxlength="120" placeholder="Example: Nf7+ followed by ...">
+ <label for="puzzleLesson">What should the solver learn?</label><textarea id="puzzleLesson" rows="2" maxlength="400" placeholder="Explain the tactic or idea"></textarea>
+ <button id="savePuzzleDraft">Save puzzle draft</button><button class="secondary" id="exportPuzzleDrafts">Export drafts</button>
+ <div id="puzzleDraftList" class="list" aria-live="polite"><span class="small">No puzzle drafts saved yet.</span></div>
+ <p class="small" id="puzzleDraftStatus" aria-live="polite">Please check that your FEN and solution are correct before sharing.</p>
+</section>
+<section class="card wide" id="events-awards">
+ <div class="tag">11 · EVENTS, AWARDS & BROADCASTS</div><h2>🏅 The MaxChess event centre</h2>
+ <div class="list">
+  <div class="item"><span><b>Monthly championship</b><br><span class="small">Create or join a tournament in the existing tournament room.</span></span><a href="./index.html">Open tournaments →</a></div>
+  <div class="item"><span><b>School chess leagues</b><br><span class="small">Open the school and teacher tools in the main MaxChess Community menu.</span></span><a href="./index.html">Open MaxChess →</a></div>
+  <div class="item"><span><b>MaxChess TV & Broadcast Network</b><br><span class="small">Watch supported tournament boards and move replays.</span></span><a href="./tournament-broadcast.html">Watch →</a></div>
+  <div class="item"><span><b>Leaderboard & Hall of Fame starting point</b><br><span class="small">View the current player rankings. Official champion titles and player-of-the-month awards need verified results and organizer review.</span></span><a href="./maxchess-top-100.html">Top 100 ideas →</a></div>
+ </div>
+ <p class="small">Rematch offers, spectator chat, verified tournament medals and official player-of-the-month awards are not switched on by this page. They need server-backed game and event rules so results cannot be edited by visitors.</p>
+</section>
+
+<footer>MaxChess · Free chess for everyone · Local tools preview · <a href="./">Return to MaxChess</a></footer></main>
 <script>
 (()=>{'use strict';const KEY='maxchess-world-hub-v1';const $=id=>document.getElementById(id);let data={countries:[],champions:[],games:[],clubs:[],solved:0,streak:0,lastPuzzle:''};try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&typeof v==='object')data={...data,...v}}catch(e){}function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){alert('This device could not save the update.')}}function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function paint(){const counts={};data.countries.forEach(c=>counts[c]=(counts[c]||0)+1);$('worldStats').innerHTML=Object.keys(counts).length?Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([c,n])=>'<div class="country"><b>'+esc(c)+'</b><span class="small">'+n+' voluntary '+(n===1?'entry':'entries')+'</span></div>').join(''):'<div class="small">No countries added yet.</div>';$('champList').innerHTML=data.champions.length?data.champions.slice().reverse().map((x,i)=>'<div class="champ"><strong>🏆</strong><span><b>'+esc(x.name)+'</b><br><span class="small">'+esc(x.event)+'</span></span><span class="small">'+esc(x.date)+'</span></div>').join(''):'<div class="small">No champions recorded yet.</div>';
@@ -24,11 +70,20 @@ const c={win:0,draw:0,loss:0};data.games.forEach(g=>c[g.result]++);$('games').te
 $('addCountry').onclick=()=>{const c=$('country').value;if(!data.countries.includes(c))data.countries.push(c);save();paint()};
 $('addChamp').onclick=()=>{const name=$('champName').value.trim(),event=$('champEvent').value.trim();if(!name||!event){alert('Enter both a champion and an achievement.');return}data.champions.push({name,event,date:new Date().toLocaleDateString()});$('champName').value='';$('champEvent').value='';save();paint()};
 $('reviewPgn').onclick=()=>{const p=$('pgn').value.trim();if(!p){$('reviewResult').textContent='Paste a PGN first.';return}const tags=(p.match(/\[[A-Za-z]+\s+"/g)||[]).length;const moves=p.replace(/\[[^\]]*\]/g,' ').replace(/\{[^}]*\}/g,' ').replace(/\([^)]*\)/g,' ').replace(/\$\d+/g,' ').replace(/\d+\.(\.\.)?/g,' ').replace(/1-0|0-1|1\/2-1\/2|\*/g,' ').trim().split(/\s+/).filter(Boolean);const result=/1-0|0-1|1\/2-1\/2|\*$/.test(p);$('reviewResult').textContent='PGN check: '+tags+' header tag(s), approximately '+moves.length+' move token(s), '+(result?'a result marker is present.':'no result marker found.')+' This is a format check, not engine analysis or an accuracy score.'};
-$('checkAnswer').onclick=()=>{const a=$('answer').value.trim().replace(/[+#?!]/g,'').toLowerCase();if(['qg7','qg7#'].includes(a)){if(data.lastPuzzle!==new Date().toDateString()){data.solved++;data.streak++;data.lastPuzzle=new Date().toDateString()}$('puzzleResult').textContent='Correct! Qg8 is checkmate. Come back tomorrow for another challenge.';save();paint()}else{$('puzzleResult').textContent='Not quite. Look for the queen move to g7 that checks the black king on h8.'}};
+$('checkAnswer').onclick=()=>{const a=$('answer').value.trim().replace(/[+#?!]/g,'').toLowerCase();if(['qg7','qg7#'].includes(a)){if(data.lastPuzzle!==new Date().toDateString()){data.solved++;data.streak++;data.lastPuzzle=new Date().toDateString()}$('puzzleResult').textContent='Correct! Qg7 is checkmate. Come back tomorrow for another challenge.';save();paint()}else{$('puzzleResult').textContent='Not quite. Look for the queen move to g7 that checks the black king on h8.'}};
 $('addGame').onclick=()=>{data.games.push({result:$('careerResult').value,opponent:$('careerOpponent').value.trim(),date:new Date().toLocaleDateString()});$('careerOpponent').value='';save();paint()};
 $('createClub').onclick=()=>{const name=$('clubName').value.trim();if(!name){alert('Enter a club name.');return}data.clubs.push({name,desc:$('clubDesc').value.trim(),members:[]});data.selectedClub=data.clubs.length-1;$('clubName').value='';$('clubDesc').value='';save();paint()};
 $('clubList').onclick=e=>{const el=e.target.closest('[data-club]');if(!el)return;data.selectedClub=Number(el.dataset.club);save();paint()};
 $('addMember').onclick=()=>{const c=data.clubs[data.selectedClub],m=$('clubMember').value.trim();if(!c||!m){alert('Select a club and enter a member name.');return}if(!c.members.includes(m))c.members.push(m);$('clubMember').value='';save();paint()};
 paint();
+
+const PUZZLE_KEY='maxchess-community-puzzle-drafts-v1';
+let puzzleDrafts=[];try{puzzleDrafts=JSON.parse(localStorage.getItem(PUZZLE_KEY)||'[]');if(!Array.isArray(puzzleDrafts))puzzleDrafts=[]}catch(e){puzzleDrafts=[]}
+function paintPuzzleDrafts(){const box=$('puzzleDraftList');if(!box)return;box.innerHTML=puzzleDrafts.length?puzzleDrafts.map((p,i)=>'<div class="item"><span><b>'+esc(p.title)+'</b><br><span class="small">'+esc(p.solution)+' · '+esc(p.lesson)+'</span></span><button class="secondary" data-remove-puzzle="'+i+'" type="button">Delete</button></div>').join(''):'<span class="small">No puzzle drafts saved yet.</span>'}
+$('savePuzzleDraft').onclick=()=>{const title=$('puzzleTitle').value.trim(),fen=$('puzzleFen').value.trim(),solution=$('puzzleSolution').value.trim(),lesson=$('puzzleLesson').value.trim();if(!title||!fen||!solution||!lesson){$('puzzleDraftStatus').textContent='Fill in all four fields before saving.';return}if(fen.split(' ').length<4||fen.split('/')[0].split('/').length!==8){$('puzzleDraftStatus').textContent='That does not look like a complete FEN. Check the eight board ranks and fields.';return}puzzleDrafts.push({title,fen,solution,lesson,createdAt:new Date().toISOString()});try{localStorage.setItem(PUZZLE_KEY,JSON.stringify(puzzleDrafts));$('puzzleDraftStatus').textContent='Draft saved on this device. It has not been published.';$('puzzleTitle').value='';$('puzzleFen').value='';$('puzzleSolution').value='';$('puzzleLesson').value='';paintPuzzleDrafts()}catch(e){$('puzzleDraftStatus').textContent='Could not save. This device may be out of browser storage.'}};
+$('puzzleDraftList').onclick=e=>{const b=e.target.closest('[data-remove-puzzle]');if(!b)return;puzzleDrafts.splice(Number(b.dataset.removePuzzle),1);localStorage.setItem(PUZZLE_KEY,JSON.stringify(puzzleDrafts));paintPuzzleDrafts()};
+$('exportPuzzleDrafts').onclick=()=>{if(!puzzleDrafts.length){$('puzzleDraftStatus').textContent='There are no drafts to export yet.';return}const blob=new Blob([JSON.stringify(puzzleDrafts,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='maxchess-puzzle-drafts.json';a.click();URL.revokeObjectURL(url);$('puzzleDraftStatus').textContent='Puzzle drafts exported.'};
+paintPuzzleDrafts();
+
 })();
 </script></body></html>

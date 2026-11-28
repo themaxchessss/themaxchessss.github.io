@@ -584,12 +584,76 @@ main { width:min(980px, calc(100% - 32px)); min-width:0; }
 <p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
 </div>
 </article>
+
+<article class="lesson-card" id="enPassantLesson">
+<div class="lesson-kicker">LESSON 15 · PAWN RULES</div>
+<h3>Capture en passant</h3>
+<p><b>En passant</b> is a special pawn capture. It is possible when your opponent moves a pawn two squares forward from its starting square and lands beside one of your pawns. You may capture it as though it had moved only one square.</p>
+<div class="lesson-example"><b>Practice position · White to move:</b> Black has just played ...d7–d5. The black pawn has landed beside White's pawn on e5.
+<pre class="lesson-board" role="img" aria-label="Before en passant: black king a8, black pawn d5, white pawn e5, and white king h1. White to move.">8 | ♚ . . . . . . .
+7 | . . . . . . . .
+6 | . . . . . . . .
+5 | . . . ♟ ♙ . . .
+4 | . . . . . . . .
+3 | . . . . . . . .
+2 | . . . . . . . .
+1 | . . . . . . . ♔
+    a b c d e f g h</pre>
+<b>White's special capture:</b> 1. exd6 e.p.
+<p>The white pawn moves from e5 to d6—the square the black pawn passed over. The black pawn is removed from d5, even though White did not move onto d5.</p>
+<pre class="lesson-board" role="img" aria-label="After en passant: black king a8, white pawn d6, and white king h1. The black pawn has been captured.">8 | ♚ . . . . . . .
+7 | . . . . . . . .
+6 | . . . ♙ . . . .
+5 | . . . . . . . .
+4 | . . . . . . . .
+3 | . . . . . . . .
+2 | . . . . . . . .
+1 | . . . . . . . ♔
+    a b c d e f g h</pre>
+</div>
+<div class="lesson-example"><b>Three rules to remember:</b>
+<ul>
+<li>The opponent's pawn must have just moved two squares from its starting square.</li>
+<li>Your pawn must be beside it on the same rank.</li>
+<li>You must capture en passant immediately, on your very next move. If you play a different move first, the chance is gone.</li>
+</ul>
+<p>En passant is still a normal legal move: you cannot make it if it would leave your own king in check.</p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Correct! The pawn on e5 moves diagonally to d6, and the black pawn on d5 is removed. That is exd6 en passant." data-hint="The capturing pawn lands on the square the black pawn passed over, not on d5.">
+<p><b>Try it 1:</b> After ...d7–d5, which move captures the black pawn en passant?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">1. e6</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">1. exd6 e.p.</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">1. Kxd5</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Exactly. En passant must be played immediately after the two-square pawn advance. A different move uses up the opportunity." data-hint="The special capture is available for one move only.">
+<p><b>Try it 2:</b> If White plays a different legal move instead, can White capture en passant on the following turn?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Yes, at any time while the pawns stay nearby</button>
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">No, the opportunity expires after that move</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Only after castling</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+<div class="lesson-quiz" data-lesson-quiz data-success="Right. En passant is only allowed after the opponent's pawn advances two squares from its starting square." data-hint="A one-square pawn move does not create an en passant opportunity.">
+<p><b>Try it 3:</b> Would en passant be possible if the black pawn had moved only one square, from d7 to d6?</p>
+<div class="lesson-choices">
+<button class="secondary" type="button" data-quiz-option data-correct="true" aria-pressed="false">No. The pawn must move two squares from its starting square.</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Yes. Any pawn move beside your pawn allows it.</button>
+<button class="secondary" type="button" data-quiz-option data-correct="false" aria-pressed="false">Only if the king is in check.</button>
+</div>
+<p class="lesson-feedback" data-quiz-feedback role="status" aria-live="polite"></p>
+</div>
+</article>
+
 </div>
 </section>
 
 <section class="panel"><h2>Useful MaxChess places</h2><div class="grid">
 <div><b>♟ Puzzles</b><p class="muted">Practise tactics and calculation.</p><a href="./">Open MaxChess</a></div>
-<div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="#quickLessons">Jump to quick lessons</a> · <a href="#doubleCheckLesson">Double-check lesson</a></div>
+<div><b>📚 Learn</b><p class="muted">Study chess lessons and opening principles.</p><a href="#quickLessons">Jump to quick lessons</a> · <a href="#doubleCheckLesson">Double-check lesson</a> · <a href="#enPassantLesson">En passant lesson</a></div>
 <div><b>🏆 Play</b><p class="muted">Put your practice into a real game.</p><a href="./">Play chess</a></div>
  <div><b>🏆 Tournament Desk</b><p class="muted">Organize players, practice Swiss-style rounds, record results and print standings.</p><a href="./tournament-desk.html">Open Tournament Desk</a></div>
  <div><b>💡 1,000 MaxChess Ideas</b><p class="muted">Explore the big idea library for future free features.</p><a href="./maxchess-1000-ideas.md">Open the idea library</a> <span class="muted">·</span> <a href="./maxchess-top-100.html">Best 100 shortlist</a></div>

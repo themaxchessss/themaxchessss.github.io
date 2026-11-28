@@ -1,4 +1,4 @@
-const CACHE_NAME = "maxchess-shell-v37";
+const CACHE_NAME = "maxchess-shell-v38";
 const SHELL = [
   "./",
   "./index.html",
@@ -14,6 +14,20 @@ const SHELL = [
   "./team-workspace.html",
   "./training-planner.html",
   "./chess-clock.html",
+  "./dgt-hub.html",
+  "./players.html",
+  "./maxchess-top-100.html",
+  "./maxchess-world.html",
+  "./tournament-broadcast.html",
+  "./tournament-desk.html",
+  "./notation-sheet-session.html",
+  "./workbench.html",
+  "./workspace.html",
+  "./mail-connect.html",
+  "./sso-connect.html",
+  "./owner-setup.html",
+  "./privacy.html",
+  "./terms.html",
   "./maxchess-clock-bridge.js",
   "./owner-newsletter-booklet.js"
 ];

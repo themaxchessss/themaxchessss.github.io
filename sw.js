@@ -1,7 +1,8 @@
-const CACHE_NAME = "maxchess-shell-v38";
+const CACHE_NAME = "maxchess-shell-v39";
 const SHELL = [
   "./",
   "./index.html",
+  "./maxchess-universe.html",
   "./manifest.webmanifest",
   "./icon.svg",
   "./404.html",

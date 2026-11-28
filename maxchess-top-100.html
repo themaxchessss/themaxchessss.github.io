@@ -18,6 +18,30 @@ button.primary{background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;
 </header>
 <section class="panel"><div class="controls"><input id="search" type="search" placeholder="Search the 100 ideas…" aria-label="Search ideas"><select id="category" aria-label="Filter by category"><option value="">All categories</option><option>Tournament essentials</option><option>Play and matchmaking</option><option>Chess learning</option><option>Player progress</option><option>Clubs and schools</option><option>Mobile and accessibility</option><option>Chess clocks and notation</option><option>Community and safety</option><option>Organizer and admin tools</option><option>Polish and reliability</option></select></div>
 <button id="print" class="primary">Print roadmap</button><button id="clear">Clear my checkmarks</button><p class="muted">Check ideas as they are completed. Checkmarks are saved only in this browser.</p></section>
+<section class="panel" id="quick-tools">
+<h2 style="color:var(--gold);margin-top:0">♟ MaxChess Quick Training Tools</h2>
+<p class="muted">Working browser tools you can use now. Your checklist and PGN draft stay on this device.</p>
+<div class="idea" style="display:block">
+<h3>1. Chess focus timer</h3>
+<div class="controls"><select id="focusMinutes" aria-label="Focus timer length"><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="25" selected>25 minutes</option><option value="45">45 minutes</option></select><div id="focusDisplay" aria-live="polite" style="font-size:2rem;font-weight:900;color:var(--gold);text-align:center">25:00</div></div>
+<button class="primary" id="focusStart">Start</button><button id="focusPause">Pause</button><button id="focusReset">Reset</button>
+<p class="muted" id="focusStatus" aria-live="polite">Ready for a focused chess session.</p>
+</div>
+<div class="idea" style="display:block">
+<h3>2. Session checklist</h3>
+<label><input type="checkbox" class="sessionGoal" data-goal="puzzle"> Solve 5 puzzles</label><br>
+<label><input type="checkbox" class="sessionGoal" data-goal="review"> Review one game</label><br>
+<label><input type="checkbox" class="sessionGoal" data-goal="endgame"> Practice one endgame</label><br>
+<label><input type="checkbox" class="sessionGoal" data-goal="opening"> Review an opening</label>
+<p class="muted" id="goalProgress" aria-live="polite">0 of 4 goals complete</p>
+</div>
+<div class="idea" style="display:block">
+<h3>3. PGN practice notebook</h3>
+<p class="muted">Paste or write your own game notation. This is a text notebook, not an engine analysis tool.</p>
+<textarea id="pgnDraft" rows="7" style="width:100%;padding:12px;border:1px solid #506781;border-radius:10px;background:#081321;color:#fff;font:14px/1.5 ui-monospace,monospace" placeholder='[Event "My practice game"]&#10;1. e4 e5 2. Nf3 Nc6'></textarea>
+<button class="primary" id="savePgn">Save draft on this device</button><button id="downloadPgn">Download PGN</button><span id="pgnStatus" class="muted" aria-live="polite"></span>
+</div>
+</section>
 <div id="list"></div>
 <footer class="muted">MaxChess · Free chess tools for everyone · <a href="./maxchess-1000-ideas.md">See the full 1,000 ideas</a></footer>
 </main>
@@ -33,4 +57,26 @@ $('list').innerHTML=html||'<div class="panel">No matching ideas. Try a different
 $('list').addEventListener('change',e=>{if(!e.target.matches('[data-id]'))return;done[e.target.dataset.id]=e.target.checked;try{localStorage.setItem(KEY,JSON.stringify(done))}catch(err){}paint()});
 $('search').addEventListener('input',paint);$('category').addEventListener('change',paint);$('print').onclick=()=>window.print();$('clear').onclick=()=>{if(confirm('Clear all your Top 100 checkmarks on this device?')){done={};localStorage.removeItem(KEY);paint()}};
 paint();
-</script></body></html>
+</script><script>
+(()=>{
+ const $=id=>document.getElementById(id);
+ let remaining=1500, interval=null;
+ const fmt=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
+ const draw=()=>{$('focusDisplay').textContent=fmt(remaining)};
+ const reset=()=>{clearInterval(interval);interval=null;remaining=Number($('focusMinutes').value)*60;draw();$('focusStatus').textContent='Timer reset.'};
+ $('focusMinutes').addEventListener('change',reset);
+ $('focusStart').onclick=()=>{if(interval)return;if(remaining<=0)reset();$('focusStatus').textContent='Focus session running.';interval=setInterval(()=>{remaining=Math.max(0,remaining-1);draw();if(!remaining){clearInterval(interval);interval=null;$('focusStatus').textContent='Session complete. Take a short break!';}},1000)};
+ $('focusPause').onclick=()=>{clearInterval(interval);interval=null;$('focusStatus').textContent='Timer paused.'};
+ $('focusReset').onclick=reset;draw();
+ const goalKey='maxchess-session-goals-v1';
+ let goals={};try{goals=JSON.parse(localStorage.getItem(goalKey)||'{}')||{}}catch(e){}
+ const checks=[...document.querySelectorAll('.sessionGoal')];
+ checks.forEach(c=>{c.checked=!!goals[c.dataset.goal];c.addEventListener('change',()=>{goals[c.dataset.goal]=c.checked;try{localStorage.setItem(goalKey,JSON.stringify(goals))}catch(e){};progress()})});
+ function progress(){$('goalProgress').textContent=checks.filter(c=>c.checked).length+' of 4 goals complete'}
+ progress();
+ const pgnKey='maxchess-pgn-draft-v1';try{$('pgnDraft').value=localStorage.getItem(pgnKey)||''}catch(e){}
+ $('savePgn').onclick=()=>{try{localStorage.setItem(pgnKey,$('pgnDraft').value);$('pgnStatus').textContent=' Saved on this device.'}catch(e){$('pgnStatus').textContent=' Could not save in this browser.'}};
+ $('downloadPgn').onclick=()=>{const blob=new Blob([$('pgnDraft').value],{type:'application/x-chess-pgn;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='maxchess-practice.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('pgnStatus').textContent=' Download started.'};
+})();
+</script>
+</body></html>

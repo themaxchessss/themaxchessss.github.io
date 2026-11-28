@@ -1225,6 +1225,7 @@ input[type="number"]{
    <button class="navitem" data-page="play">Play chess</button>
    <button class="navitem" data-page="computer">Play computer</button>
    <button class="navitem" data-page="mystery-bots">Monthly bot challenge</button>
+   <button class="navitem" data-page="bots">🤖 Daily, Weekly &amp; Yearly Bots</button>
   </div></div>
   <div class="navgroup"><button type="button" class="navtop navitem" data-page="puzzles">Puzzles</button></div>
   <button type="button" class="navtop navitem" data-page="watch">Watch</button>
@@ -1443,6 +1444,44 @@ input[type="number"]{
 </section>
 <section class="pageview" id="page-puzzles"><div class="simplepage"><h2>♞ MaxChess Puzzle Arena</h2><p class="muted">Choose a tactic to train, or race the clock in Puzzle Rush.</p><div class="puzzlebox"><div class="puzzle-head"><div><h3 style="margin:0">Your puzzle rating</h3><p class="desc">Solve puzzles to earn +12 points.</p></div><strong id="puzzleRating" class="puzzle-rating">800</strong></div><label for="puzzleCategory" class="desc">Puzzle category</label><select id="puzzleCategory" class="puzzle-category"><option value="any">♟ All tactics</option><option value="mate">♚ Checkmate</option><option value="mate1">♚ Mate in 1</option><option value="mate2">♚ Mate in 2</option><option value="mate3">♚ Mate in 3</option><option value="fork">⚔ Forks</option><option value="pin">📌 Pins</option><option value="skewer">🎯 Skewers</option><option value="discovered">💥 Discovered attacks</option><option value="endgame">♔ Endgames</option><option value="sacrifice">🔥 Sacrifices</option><option value="opening">🌱 Opening tactics</option><option value="doublecheck">⚡ Double checks</option><option value="deflection">🧲 Deflection</option><option value="clearance">🧹 Clearance</option><option value="zwischenzug">♟ Zwischenzug</option><option value="trapped">🔒 Trapped pieces</option><option value="hanging">🎁 Hanging pieces</option><option value="attraction">🧲 Attraction</option><option value="interference">🚧 Interference</option><option value="xray">👁 X-ray attacks</option><option value="quiet">🤫 Quiet moves</option><option value="promotion">👑 Promotion</option><option value="underpromotion">♟ Underpromotion</option><option value="defensive">🛡 Defensive moves</option><option value="zugzwang">♜ Zugzwang</option><option value="kingside">⚔ Kingside attacks</option><option value="queenside">⚔ Queenside attacks</option></select><div class="puzzle-actions"><button class="greenbtn" id="randomPuzzle">🎯 New random puzzle</button><button class="widebtn" id="dailyPuzzle">🌞 Today’s puzzle</button><button class="widebtn" id="puzzleStart">♟ Starter puzzle</button></div><div id="puzzleFeedback" class="status" aria-live="polite">Choose a category and load a puzzle.</div><div class="puzzle-progress" aria-label="Your puzzle progress"><div><span>PUZZLES SOLVED</span><b id="puzzlesSolvedCount">0</b></div><div><span>DAY STREAK</span><b id="puzzleDayStreak">0 🔥</b></div><div><span>BEST STREAK</span><b id="puzzleBestStreak">0</b></div></div></div><div class="puzzlebox rush-card"><div class="rush-title"><div><h3>⚡ Puzzle Rush</h3><p class="desc">Solve as many as you can in 3 minutes. One mistake ends the run.</p></div><div class="rush-best">BEST <b id="rushBest">0</b></div></div><div class="rush-settings"><label for="rushDuration">Time limit</label><select id="rushDuration" class="puzzle-category"><option value="60">1 minute · Sprint</option><option value="180" selected>3 minutes · Classic</option><option value="300">5 minutes · Marathon</option></select><label for="rushDifficulty">Difficulty</label><select id="rushDifficulty" class="puzzle-category"><option value="easy">Easy · up to 1200</option><option value="mixed" selected>Mixed · any rating</option><option value="hard">Hard · 1800+</option></select><p class="desc" id="rushCategoryLabel">Category: All tactics · Change the category above before starting.</p></div><div class="rush-stats"><div><span>TIME</span><b id="rushTime">3:00</b></div><div><span>SCORE</span><b id="rushScore">0</b></div><div><span>STREAK</span><b id="rushStreak">0 🔥</b></div></div><button class="greenbtn rush-start" id="rushStart">▶ Start Puzzle Rush</button><div class="rush-extra-actions"><button class="widebtn" id="rushSkip" disabled>Skip puzzle · −1 point, −10 sec</button><button class="widebtn" id="rushStop" disabled>End run</button></div><button class="widebtn" id="rushShare" type="button">⚔ Challenge a friend with my score</button><p class="desc" id="rushChallengeNotice" aria-live="polite"></p><p class="desc" id="rushStatus" aria-live="polite">Each correct puzzle earns one point. Your high score is saved on this device and synced to your account when signed in.</p></div><div class="puzzlebox" style="margin-top:14px"><h3>How to solve a puzzle</h3><ol class="puzzle-steps"><li>Look for checks first.</li><li>Look for captures and attacks on valuable pieces.</li><li>Calculate your opponent’s best reply.</li><li>Make your move, then continue the line.</li></ol></div><div class="puzzlebox" id="nextMoveQuiz" style="margin-top:14px"><div class="puzzle-head"><div><h3 style="margin:0">🧠 Next Move Quiz</h3><p class="desc">Study the board, then choose the strongest move for White.</p></div><strong id="nextMoveScore" class="puzzle-rating">0 / 3</strong></div><div id="nextMoveBoard" style="margin:12px auto;max-width:360px;padding:12px;background:var(--panel3);border:1px solid var(--line);border-radius:8px;text-align:center;font:600 19px/1.45 ui-monospace,monospace;white-space:pre;overflow-x:auto" aria-label="Chess position"></div><p id="nextMovePrompt" class="desc" aria-live="polite">Find the best move.</p><div id="nextMoveChoices" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"></div><p id="nextMoveFeedback" class="status" aria-live="polite">Choose a move to begin.</p><button class="greenbtn" id="nextMoveNext" type="button" style="margin-top:8px" disabled>Next position →</button></div></div></section>
 <section class="pageview" id="page-computer"><div class="simplepage"><h2>Play computer</h2><p class="muted">Choose a level, play as White, and build your MaxChess computer rating.</p><div class="puzzlebox"><h3>Choose your challenge</h3><label for="computerLevel" style="display:block;margin:12px 0 6px">Computer level</label><select id="computerLevel" style="width:100%;max-width:none;padding:11px"><option value="400">Beginner · 400</option><option value="600">Easy · 600</option><option value="800" selected>Club · 800</option><option value="1000">Intermediate · 1000</option><option value="1400">Advanced · 1400</option><option value="1800">Expert · 1800</option></select><div style="display:flex;align-items:center;gap:12px;margin:16px 0"><div><div class="desc">YOUR COMPUTER RATING</div><strong id="computerRatingDisplay" style="font-size:34px;color:var(--green2)">800</strong></div><div class="muted" style="font-size:13px">Wins <b id="computerWins">0</b> · Losses <b id="computerLosses">0</b> · Draws <b id="computerDraws">0</b></div></div><button class="greenbtn" id="computerStart">Start rated game</button><p class="desc">Your rating starts at 800 and syncs to your account across devices when you sign in. Without an account, it stays on this device. Stockfish powers the computer levels. Ratings change after checkmate or a draw.</p></div></div></section>
+<section class="pageview" id="page-bots">
+ <div class="simplepage" style="max-width:1000px">
+  <div class="training-hero" style="background:linear-gradient(120deg,#17152f,#233b5a 65%,#6a4b19);border-color:var(--gold)">
+   <span class="eyebrow">♟ MAXCHESS BOT ARENA</span>
+   <h2>🤖 Daily, Weekly &amp; Yearly Bots</h2>
+   <p>Three MaxChess chess opponents powered by the existing Stockfish computer player. Each has its own challenge schedule and strength. Play for free.</p>
+  </div>
+  <div class="watch-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin-top:14px">
+   <section class="puzzlebox">
+    <span class="eyebrow">☀️ DAILY BOT</span><h3>Daily Challenger</h3>
+    <p>Play a fresh game every day against the club-level bot, or solve today's puzzles.</p>
+    <p class="desc" id="dailyBotSchedule">A new daily challenge starts each local day.</p>
+    <button class="greenbtn" type="button" data-max-bot-level="800">Play Daily Bot · 800</button>
+    <button class="toolbtn" type="button" data-max-bot-page="puzzles" style="margin-top:8px">Open daily puzzles</button>
+   </section>
+   <section class="puzzlebox">
+    <span class="eyebrow">📅 WEEKLY BOT</span><h3>Weekly Rival</h3>
+    <p>Take on a stronger weekly opponent and enter the weekly MaxChess tournament.</p>
+    <p class="desc" id="weeklyBotSchedule">Weekly event schedule loads automatically.</p>
+    <button class="greenbtn" type="button" data-max-bot-level="1400">Play Weekly Bot · 1400</button>
+    <button class="toolbtn" type="button" data-max-bot-page="tournaments" data-max-bot-event="weekly" style="margin-top:8px">Open weekly tournament</button>
+   </section>
+   <section class="puzzlebox">
+    <span class="eyebrow">👑 YEARLY BOT</span><h3>Yearly Champion</h3>
+    <p>Face the strongest bot and visit the annual MaxChess championship tournament area.</p>
+    <p class="desc" id="yearlyBotSchedule">Annual event schedule loads automatically.</p>
+    <button class="greenbtn" type="button" data-max-bot-level="1800">Play Yearly Bot · 1800</button>
+    <button class="toolbtn" type="button" data-max-bot-page="tournaments" data-max-bot-event="yearly" style="margin-top:8px">Open yearly championship</button>
+   </section>
+  </div>
+  <section class="puzzlebox" style="margin-top:14px">
+   <h3>🛠 MaxChess Manager Bot</h3>
+   <p>The website's existing hourly GitHub Actions health check monitors published pages, JavaScript errors, broken images, internal links and iPad-sized layouts. It reports failures in the repository's Issues and closes the report after a successful check.</p>
+   <p class="desc">The Daily, Weekly and Yearly opponents use Stockfish's existing computer-game feature. Scheduled tournament creation, automatic pairings and cross-device challenge records still depend on the existing signed-in tournament and account systems.</p>
+   <a class="greenbtn" href="https://github.com/themaxchessss/themaxchessss.github.io/actions/workflows/health-check.yml" target="_blank" rel="noopener noreferrer">View MaxChess automated health checks ↗</a>
+  </section>
+ </div>
+</section>
 <section class="pageview" id="page-mystery-bots">
  <div class="simplepage" style="max-width:980px">
   <div class="training-hero" style="background:linear-gradient(120deg,#25204f,#3b245d 65%,#6b3b24);border-color:#8b6b9e">
@@ -2339,7 +2378,39 @@ try{const db=window.supabase.createClient('https://bvukakfhkebpsviehirr.supabase
   document.body.appendChild(modal);
   modal.querySelectorAll('[data-move-help]').forEach(function(button){button.addEventListener('click',function(){hideLegalDots=button.getAttribute('data-move-help')==='yes';modal.remove();onChoose();});});
 }
-$('playComputer').onclick=()=>askComputerMoveHelp(()=>{reset(true);navigate('play')});$('computerStart').onclick=()=>askComputerMoveHelp(()=>{computerLevel=Number($('computerLevel').value)||800;reset(true);navigate('play');note('Rated computer game started · opponent '+computerLevel+'.')});$('analysisStart').onclick=()=>navigate('play');$('openingStart').onclick=()=>navigate('play');$('practiceStart').onclick=()=>navigate('play');$('puzzleStart').onclick=()=>navigate('play');
+$('playComputer').onclick=()=>askComputerMoveHelp(()=>{reset(true);navigate('play')});$('computerStart').onclick=()=>askComputerMoveHelp(()=>{computerLevel=Number($('computerLevel').value)||800;reset(true);navigate('play');note('Rated computer game started · opponent '+computerLevel+'.')});$('analysisStart').onclick=()=>navigate('play');
+ // MaxChess Daily, Weekly and Yearly bot shortcuts use the existing Stockfish computer opponent.
+ document.querySelectorAll('[data-max-bot-level]').forEach(button=>button.addEventListener('click',()=>{
+  const level=Number(button.dataset.maxBotLevel)||800;
+  $('computerLevel').value=String(level);
+  navigate('computer');
+  $('computerStart').click();
+ }));
+ document.querySelectorAll('[data-max-bot-page]').forEach(button=>button.addEventListener('click',()=>{
+  const eventType=button.dataset.maxBotEvent;
+  navigate(button.dataset.maxBotPage);
+  if(eventType){
+   const name=eventType==='weekly'?'MaxChess Weekly Bot Cup':'MaxChess Yearly Bot Championship';
+   const field=$('tournamentName');
+   if(field){field.value=name;field.focus();}
+   const desc=$('tournamentDescription');
+   if(desc)desc.value=eventType==='weekly'?'Weekly MaxChess bot-season tournament. Free entry.':'Annual MaxChess championship event. Free entry.';
+   note('Tournament details prepared. Sign in and create it to open registration.');
+  }
+ }));
+ function updateMaxChessBotSchedule(){
+  const now=new Date(),dateText=d=>d.toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'});
+  const tomorrow=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+  const daysToMonday=(8-now.getDay())%7||7;
+  const monday=new Date(now.getFullYear(),now.getMonth(),now.getDate()+daysToMonday);
+  const newYear=new Date(now.getFullYear()+1,0,1);
+  const daily=$('dailyBotSchedule'),weekly=$('weeklyBotSchedule'),yearly=$('yearlyBotSchedule');
+  if(daily)daily.textContent='Daily challenge resets tomorrow · '+dateText(tomorrow)+'.';
+  if(weekly)weekly.textContent='Next weekly event begins Monday · '+dateText(monday)+'.';
+  if(yearly)yearly.textContent='Next annual championship season begins · '+dateText(newYear)+'.';
+ }
+ updateMaxChessBotSchedule();
+$('openingStart').onclick=()=>navigate('play');$('practiceStart').onclick=()=>navigate('play');$('puzzleStart').onclick=()=>navigate('play');
  function getGameHintMove(){
   const moves=game.moves({verbose:true});if(!moves.length)return null;
   const side=game.turn(),depth=2;let best=side==='w'?-Infinity:Infinity,choices=[];

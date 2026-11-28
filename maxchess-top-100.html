@@ -42,6 +42,10 @@ button.primary{background:linear-gradient(145deg,#ffe28a,#d3a23a);color:#17120a;
 <button class="primary" id="savePgn">Save draft on this device</button><button id="downloadPgn">Download PGN</button><span id="pgnStatus" class="muted" aria-live="polite"></span>
 </div>
 </section>
+<section class="panel" id="extra-practice-tools"><h2 style="color:var(--gold);margin-top:0">More Chess Practice Tools</h2>
+<div class="idea" style="display:block"><h3>4. Board-square color quiz</h3><p id="squareQuestion">Which color is the square e4?</p><button class="squareAnswer" data-answer="light">Light</button><button class="squareAnswer" data-answer="dark">Dark</button><button id="nextSquare" class="primary">New square</button><p id="squareFeedback" class="muted" aria-live="polite">Hint: a1 is dark.</p></div>
+<div class="idea" style="display:block"><h3>5. Material calculator</h3><p class="muted">Approximate values: pawn 1, knight 3, bishop 3, rook 5, queen 9.</p><div class="controls"><div><strong>White</strong><div id="whiteMaterial"></div><b id="whiteTotal">Total: 39</b></div><div><strong>Black</strong><div id="blackMaterial"></div><b id="blackTotal">Total: 39</b></div></div><p id="materialResult" class="muted" aria-live="polite">Material is equal.</p></div>
+<div class="idea" style="display:block"><h3>6. Opening-principles flashcards</h3><p id="principleCard">Develop your knights and bishops toward useful squares.</p><button id="showPrinciple" class="primary">Show another tip</button><p class="muted">General principles, not rules that override tactics.</p></div></section>
 <div id="list"></div>
 <footer class="muted">MaxChess · Free chess tools for everyone · <a href="./maxchess-1000-ideas.md">See the full 1,000 ideas</a></footer>
 </main>
@@ -79,4 +83,14 @@ paint();
  $('downloadPgn').onclick=()=>{const blob=new Blob([$('pgnDraft').value],{type:'application/x-chess-pgn;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='maxchess-practice.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('pgnStatus').textContent=' Download started.'};
 })();
 </script>
+<script>(()=>{const $=id=>document.getElementById(id);
+const squares=Array.from({length:64},(_,i)=>String.fromCharCode(97+i%8)+(Math.floor(i/8)+1));let square='e4',answered=false;
+function next(){square=squares[Math.floor(Math.random()*64)];answered=false;$('squareQuestion').textContent='Which color is the square '+square+'?';$('squareFeedback').textContent='Hint: a1 is dark; colors alternate.'}
+document.querySelectorAll('.squareAnswer').forEach(b=>b.onclick=()=>{if(answered)return;answered=true;const light=((square.charCodeAt(0)-96)+Number(square[1]))%2===1,correct=light?'light':'dark';$('squareFeedback').textContent=b.dataset.answer===correct?'Correct! '+square+' is '+correct+'.':'Not quite. '+square+' is '+correct+'.'});$('nextSquare').onclick=next;next();
+const pieces=[['Queens',9,1],['Rooks',5,2],['Bishops',3,2],['Knights',3,2],['Pawns',1,8]];
+for(const side of ['white','black'])$(side+'Material').innerHTML=pieces.map(([name,value,max])=>'<label style="display:flex;justify-content:space-between;gap:8px;margin:5px 0">'+name+' ('+value+') <input type="number" min="0" max="'+max+'" value="'+max+'" data-side="'+side+'" data-value="'+value+'" aria-label="'+side+' '+name+'" style="max-width:85px"></label>').join('');
+function calc(){const totals={white:0,black:0};document.querySelectorAll('[data-side]').forEach(i=>totals[i.dataset.side]+=Math.max(0,Math.min(20,Number(i.value)||0))*Number(i.dataset.value));$('whiteTotal').textContent='Total: '+totals.white;$('blackTotal').textContent='Total: '+totals.black;$('materialResult').textContent=totals.white===totals.black?'Material is equal.':(totals.white>totals.black?'White':'Black')+' is ahead by '+Math.abs(totals.white-totals.black)+' point(s).'}
+document.querySelectorAll('[data-side]').forEach(i=>i.addEventListener('input',calc));calc();
+const tips=['Develop your knights and bishops toward useful squares.','Fight for the center with pieces and pawns.','Castle to help your king reach safety.','Avoid moving the same piece repeatedly without a reason.','Connect your rooks by developing your pieces and clearing the back rank.','Before moving, check your opponent’s threats and forcing moves.','Do not bring your queen out early if it can be chased while the opponent develops.','Make sure each move supports a plan or solves a concrete problem.'];$('showPrinciple').onclick=()=>{$('principleCard').textContent=tips[Math.floor(Math.random()*tips.length)]};
+})();</script>
 </body></html>

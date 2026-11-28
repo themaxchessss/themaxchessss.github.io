@@ -1305,3 +1305,138 @@ A searchable-by-heading planning library of possible additions. These are ideas,
 1098. **Privacy-friendly analytics opt-out.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
 1099. **Change log for website updates.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
 1100. **Free-forever commitment and funding transparency page.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+# More MaxChess ideas: 1,101–1,200
+
+These are planning suggestions, not claims that the features are already implemented.
+
+## Chess variants and creative play
+
+1101. **Chess960 setup and castling explainer.** Keep the experience free, understandable, and usable on phones and tablets.
+1102. **Three-check practice positions.** Keep the experience free, understandable, and usable on phones and tablets.
+1103. **King of the Hill objective trainer.** Keep the experience free, understandable, and usable on phones and tablets.
+1104. **Atomic chess rules sandbox.** Keep the experience free, understandable, and usable on phones and tablets.
+1105. **Crazyhouse drop-square trainer.** Keep the experience free, understandable, and usable on phones and tablets.
+1106. **Horde chess survival puzzles.** Keep the experience free, understandable, and usable on phones and tablets.
+1107. **Mini-board chess challenges.** Keep the experience free, understandable, and usable on phones and tablets.
+1108. **Handicap game presets.** Keep the experience free, understandable, and usable on phones and tablets.
+1109. **Custom starting-position editor.** Keep the experience free, understandable, and usable on phones and tablets.
+1110. **Variant rules comparison guide.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Opening preparation
+
+1111. **Repertoire tree by color.** Keep the experience free, understandable, and usable on phones and tablets.
+1112. **Repertoire gap finder.** Keep the experience free, understandable, and usable on phones and tablets.
+1113. **Opening trap safety quiz.** Keep the experience free, understandable, and usable on phones and tablets.
+1114. **Transposition map between openings.** Keep the experience free, understandable, and usable on phones and tablets.
+1115. **Model game collection by opening.** Keep the experience free, understandable, and usable on phones and tablets.
+1116. **Opening end-position trainer.** Keep the experience free, understandable, and usable on phones and tablets.
+1117. **Move-order practice mode.** Keep the experience free, understandable, and usable on phones and tablets.
+1118. **Opening flashcard review.** Keep the experience free, understandable, and usable on phones and tablets.
+1119. **Repertoire notes attached to moves.** Keep the experience free, understandable, and usable on phones and tablets.
+1120. **Opening preparation checklist.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Tactics and calculation
+
+1121. **Deflection puzzle sets.** Keep the experience free, understandable, and usable on phones and tablets.
+1122. **Clearance sacrifice exercises.** Keep the experience free, understandable, and usable on phones and tablets.
+1123. **Overloaded defender puzzles.** Keep the experience free, understandable, and usable on phones and tablets.
+1124. **Interference tactic trainer.** Keep the experience free, understandable, and usable on phones and tablets.
+1125. **Desperado tactic examples.** Keep the experience free, understandable, and usable on phones and tablets.
+1126. **Back-rank weakness detector.** Keep the experience free, understandable, and usable on phones and tablets.
+1127. **Defensive zwischenzug puzzles.** Keep the experience free, understandable, and usable on phones and tablets.
+1128. **Quiet move challenge.** Keep the experience free, understandable, and usable on phones and tablets.
+1129. **Mate-in-three calculation drills.** Keep the experience free, understandable, and usable on phones and tablets.
+1130. **Candidate-move elimination practice.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Endgames
+
+1131. **King and pawn opposition trainer.** Keep the experience free, understandable, and usable on phones and tablets.
+1132. **Lucena position practice.** Keep the experience free, understandable, and usable on phones and tablets.
+1133. **Philidor defense practice.** Keep the experience free, understandable, and usable on phones and tablets.
+1134. **Rook activity endgame lessons.** Keep the experience free, understandable, and usable on phones and tablets.
+1135. **Wrong-bishop rook-pawn test.** Keep the experience free, understandable, and usable on phones and tablets.
+1136. **Triangulation practice board.** Keep the experience free, understandable, and usable on phones and tablets.
+1137. **Zugzwang recognition puzzles.** Keep the experience free, understandable, and usable on phones and tablets.
+1138. **Basic fortress examples.** Keep the experience free, understandable, and usable on phones and tablets.
+1139. **Queen versus pawn race trainer.** Keep the experience free, understandable, and usable on phones and tablets.
+1140. **Endgame conversion checklist.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Game review and improvement
+
+1141. **Opening-to-middlegame transition review.** Keep the experience free, understandable, and usable on phones and tablets.
+1142. **Missed-win finder for self-review.** Keep the experience free, understandable, and usable on phones and tablets.
+1143. **Repeated mistake pattern journal.** Keep the experience free, understandable, and usable on phones and tablets.
+1144. **Decision time reflection prompts.** Keep the experience free, understandable, and usable on phones and tablets.
+1145. **Move-quality explanation glossary.** Keep the experience free, understandable, and usable on phones and tablets.
+1146. **Compare two candidate plans.** Keep the experience free, understandable, and usable on phones and tablets.
+1147. **Critical-position bookmark list.** Keep the experience free, understandable, and usable on phones and tablets.
+1148. **Post-game self-assessment form.** Keep the experience free, understandable, and usable on phones and tablets.
+1149. **One-lesson-per-game summary.** Keep the experience free, understandable, and usable on phones and tablets.
+1150. **Review completion tracker.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Live events and tournaments
+
+1151. **Round-by-round event announcements.** Keep the experience free, understandable, and usable on phones and tablets.
+1152. **Player check-in list for organizers.** Keep the experience free, understandable, and usable on phones and tablets.
+1153. **Tournament standings change history.** Keep the experience free, understandable, and usable on phones and tablets.
+1154. **Board assignment display.** Keep the experience free, understandable, and usable on phones and tablets.
+1155. **Digital pairing slips.** Keep the experience free, understandable, and usable on phones and tablets.
+1156. **Team roster and board order.** Keep the experience free, understandable, and usable on phones and tablets.
+1157. **Event schedule timezone display.** Keep the experience free, understandable, and usable on phones and tablets.
+1158. **Spectator-friendly result cards.** Keep the experience free, understandable, and usable on phones and tablets.
+1159. **Tournament archive by year.** Keep the experience free, understandable, and usable on phones and tablets.
+1160. **Organizer event checklist.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Broadcast production
+
+1161. **Custom broadcast board labels.** Keep the experience free, understandable, and usable on phones and tablets.
+1162. **Featured game spotlight.** Keep the experience free, understandable, and usable on phones and tablets.
+1163. **Verified player title and federation display.** Keep the experience free, understandable, and usable on phones and tablets.
+1164. **Broadcast intro and outro cards.** Keep the experience free, understandable, and usable on phones and tablets.
+1165. **Commentary chapter markers.** Keep the experience free, understandable, and usable on phones and tablets.
+1166. **PGN-to-broadcast preparation guide.** Keep the experience free, understandable, and usable on phones and tablets.
+1167. **Viewer-friendly notation settings.** Keep the experience free, understandable, and usable on phones and tablets.
+1168. **Board flip on player color.** Keep the experience free, understandable, and usable on phones and tablets.
+1169. **Broadcast event archive.** Keep the experience free, understandable, and usable on phones and tablets.
+1170. **Live board connection diagnostics.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Friends and clubs
+
+1171. **Club event RSVP list.** Keep the experience free, understandable, and usable on phones and tablets.
+1172. **Club puzzle of the week.** Keep the experience free, understandable, and usable on phones and tablets.
+1173. **Friend activity privacy controls.** Keep the experience free, understandable, and usable on phones and tablets.
+1174. **Club noticeboard.** Keep the experience free, understandable, and usable on phones and tablets.
+1175. **Shared study folders with permissions.** Keep the experience free, understandable, and usable on phones and tablets.
+1176. **Club ladder with clear rules.** Keep the experience free, understandable, and usable on phones and tablets.
+1177. **Volunteer organizer roles.** Keep the experience free, understandable, and usable on phones and tablets.
+1178. **Club welcome guide.** Keep the experience free, understandable, and usable on phones and tablets.
+1179. **Invite-only practice room.** Keep the experience free, understandable, and usable on phones and tablets.
+1180. **Community code of conduct acknowledgement.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Accessibility and learning support
+
+1181. **Dyslexia-friendly notation option.** Keep the experience free, understandable, and usable on phones and tablets.
+1182. **Plain-language chess glossary.** Keep the experience free, understandable, and usable on phones and tablets.
+1183. **Adjustable board coordinate labels.** Keep the experience free, understandable, and usable on phones and tablets.
+1184. **Left-handed control layout option.** Keep the experience free, understandable, and usable on phones and tablets.
+1185. **Tap-to-select piece movement option.** Keep the experience free, understandable, and usable on phones and tablets.
+1186. **Optional move confirmation.** Keep the experience free, understandable, and usable on phones and tablets.
+1187. **Screen magnifier-friendly panels.** Keep the experience free, understandable, and usable on phones and tablets.
+1188. **Captions for instructional videos.** Keep the experience free, understandable, and usable on phones and tablets.
+1189. **Text alternatives for diagrams.** Keep the experience free, understandable, and usable on phones and tablets.
+1190. **Simplified beginner navigation.** Keep the experience free, understandable, and usable on phones and tablets.
+
+## Site quality and account tools
+
+1191. **Browser compatibility test page.** Keep the experience free, understandable, and usable on phones and tablets.
+1192. **Connection quality indicator.** Keep the experience free, understandable, and usable on phones and tablets.
+1193. **Save-before-refresh warning.** Keep the experience free, understandable, and usable on phones and tablets.
+1194. **Session timeout explanation.** Keep the experience free, understandable, and usable on phones and tablets.
+1195. **Account security activity summary.** Keep the experience free, understandable, and usable on phones and tablets.
+1196. **Profile data download preview.** Keep the experience free, understandable, and usable on phones and tablets.
+1197. **Clear cache troubleshooting guide.** Keep the experience free, understandable, and usable on phones and tablets.
+1198. **Keyboard shortcut reference.** Keep the experience free, understandable, and usable on phones and tablets.
+1199. **Report a broken link button.** Keep the experience free, understandable, and usable on phones and tablets.
+1200. **Public roadmap with planned and shipped labels.** Keep the experience free, understandable, and usable on phones and tablets.

@@ -1166,3 +1166,142 @@ A searchable-by-heading planning library of possible additions. These are ideas,
 5. Community features only after moderation and abuse-reporting workflows are ready.
 
 **Total: 1000 distinct category-and-feature combinations.**
+
+## Game creation and matchmaking — ideas 1,001–1,100
+
+1001. **Rated and casual queue separation.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1002. **Preferred time-control matchmaking.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1003. **Rematch with color swap.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1004. **Takeback rules for casual games.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1005. **Invite link with expiry.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1006. **Private game room passcodes.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1007. **Reconnect after a dropped connection.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1008. **Pre-game lag and connection check.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1009. **Automatic draw-offer reminders.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1010. **Clear abort-versus-resign explanation.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Chess learning — ideas 1,001–1,100
+
+1011. **Explain-the-threat mini lessons.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1012. **Candidate-move comparison trainer.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1013. **Tactical motif flashcards.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1014. **Endgame position of the week.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1015. **Checkmate pattern trainer.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1016. **Defensive resource finder.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1017. **Blunder-prevention checklist.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1018. **Calculate-three-moves exercise.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1019. **Convert-a-winning-position trainer.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1020. **Practical decision-making lessons.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Analysis and notation — ideas 1,001–1,100
+
+1021. **Side-by-side game comparison.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1022. **Opening transposition explorer.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1023. **Mistake review by phase.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1024. **Annotate a move with arrows and text.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1025. **PGN tag editor.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1026. **FEN position bookmark folders.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1027. **Variation tree collapse and expand.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1028. **Export annotated study as PGN.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1029. **Game score integrity checker.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1030. **Move-time chart when clock data exists.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Tournaments — ideas 1,001–1,100
+
+1031. **Late-join policy settings.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1032. **Round start countdown.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1033. **Organizer pairing preview.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1034. **Pairing conflict warning.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1035. **Bye request workflow.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1036. **Team match scoreboards.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1037. **Arena streak display.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1038. **Tie-break explanation panel.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1039. **Tournament code of conduct.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1040. **Post-event downloadable crosstable.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Broadcast and spectators — ideas 1,001–1,100
+
+1041. **Board orientation toggle for viewers.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1042. **Follow a selected player across boards.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1043. **Broadcast delay indicator.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1044. **Live move list with keyboard navigation.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1045. **Opening name shown during broadcast.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1046. **Download broadcast PGN.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1047. **Multiple-board compact view.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1048. **Commentary notes panel.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1049. **Replay speed controls.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1050. **Broadcast correction history.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Community and safety — ideas 1,001–1,100
+
+1051. **Block and mute controls.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1052. **Report-game flow with reason categories.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1053. **Friend request privacy settings.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1054. **Club invitation approval queue.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1055. **Community lesson moderation queue.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1056. **Public profile visibility controls.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1057. **Hide online status option.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1058. **Age-appropriate community defaults.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1059. **Clear chat and message reporting.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1060. **Transparent fair-play appeal status.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Accessibility and devices — ideas 1,001–1,100
+
+1061. **High-contrast board palette.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1062. **Color-blind-friendly square markers.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1063. **Piece shape alternatives.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1064. **Reduced-motion setting.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1065. **Large clock digits.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1066. **VoiceOver labels for board squares.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1067. **Keyboard-only board navigation.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1068. **Adjustable notation text size.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1069. **Portrait and landscape layout memory.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1070. **Low-bandwidth mode.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Personal progress — ideas 1,001–1,100
+
+1071. **Weekly training reflection.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1072. **Puzzle accuracy by theme.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1073. **Opening practice streaks.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1074. **Endgame confidence tracker.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1075. **Personal game milestone timeline.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1076. **Time-trouble frequency report.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1077. **Practice goal calendar.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1078. **Review-later game collection.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1079. **Compare current and past training periods.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1080. **Private progress journal.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Schools and coaches — ideas 1,001–1,100
+
+1081. **Teacher-created class study folders.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1082. **Class tournament calendar.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1083. **Printable lesson attendance sheet.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1084. **Coach feedback attached to a game.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1085. **Student-controlled sharing permissions.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1086. **Practice assignment due dates.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1087. **Class puzzle set builder.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1088. **Teacher view with minimal student data.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1089. **Parent-approved account guidance.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1090. **Export class results without private messages.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+
+
+## Reliability and transparency — ideas 1,001–1,100
+
+1091. **Public service status page.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1092. **Feature availability labels.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1093. **Saved-game recovery checkpoint.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1094. **Clear offline and reconnect state.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1095. **Accessible error messages with next steps.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1096. **Data export and account portability guide.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1097. **Account deletion confirmation summary.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1098. **Privacy-friendly analytics opt-out.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1099. **Change log for website updates.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.
+1100. **Free-forever commitment and funding transparency page.** Add it as a clearly explained, optional tool with mobile-friendly controls and sensible privacy defaults.

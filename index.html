@@ -1968,7 +1968,7 @@ input[type="number"]{
       <p style="text-align:center;margin:0"><a href="https://www.youtube.com/@FIDE_chess/live" target="_blank" rel="noopener noreferrer">Open FIDE live broadcast on YouTube ↗</a> · <a href="https://worldchampionship.fide.com/" target="_blank" rel="noopener noreferrer">Official championship site ↗</a></p>
      </div>
      <div style="max-width:760px;width:100%;margin:12px auto">
-      <label for="tournamentGameSelect" class="desc" style="display:block;text-align:center;margin:8px 0">Choose championship game</label><select id="tournamentGameSelect" aria-label="Choose championship game" style="display:block;max-width:320px;width:100%;margin:0 auto 12px;padding:10px;border-radius:8px"><option value="1">Game 1 · Sindarov vs Gukesh</option><option value="2">Game 2 · Sindarov vs Gukesh</option></select>
+      <label for="tournamentGameSelect" class="desc" style="display:block;text-align:center;margin:8px 0">Choose championship game</label><select id="tournamentGameSelect" aria-label="Choose championship game" style="display:block;max-width:320px;width:100%;margin:0 auto 12px;padding:10px;border-radius:8px"><option value="1">Game 1 · Sindarov vs Gukesh</option><option value="2">Game 2 · Gukesh vs Sindarov</option><option value="3">Game 3 · Sindarov vs Gukesh</option><option value="4">Game 4 · Gukesh vs Sindarov</option><option value="5">Game 5 · Gukesh vs Sindarov</option><option value="6">Game 6 · Gukesh vs Sindarov</option><option value="7">Game 7 · Gukesh vs Sindarov</option><option value="8">Game 8 · Gukesh vs Sindarov</option><option value="9">Game 9 · Gukesh vs Sindarov</option><option value="10">Game 10 · Gukesh vs Sindarov</option><option value="11">Game 11 · Gukesh vs Sindarov</option><option value="12">Game 12 · Gukesh vs Sindarov</option><option value="13">Game 13 · Gukesh vs Sindarov</option><option value="14">Game 14 · Gukesh vs Sindarov</option></select>
       <div id="watchTournamentClock" class="lesson" style="margin:14px 0;padding:14px;border:1px solid var(--gold);border-radius:12px;background:var(--card)">
        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><h3 style="margin:0">⏱ Tournament chess clock</h3><span class="desc">Manual spectator clock</span></div>
        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0">
@@ -3472,11 +3472,56 @@ const movetext=pgn.split(/\r?\n\r?\n/).slice(1).join(' ').replace(/\d+\.(?:\.\.)
  $('tournamentReplayEnd')?.addEventListener('click',()=>{tournamentFollowingLive=false;showTournamentReplayPly(tournamentReplayMoves.length)});
  $('tournamentFollowLive')?.addEventListener('click',()=>{tournamentFollowingLive=true;showTournamentReplayPly(tournamentReplayMoves.length)});
  refreshTournamentMaxBoard();
- // Official Lichess broadcast rounds for the FIDE World Championship.
- // Game 1 is archived; Game 2 has its own round ID and will populate when moves begin.
- let tournamentRoundId='xLgOJ6cb',tournamentGameNumber=1,tournamentFeedTimer=null;
- async function refreshOfficialTournamentFeed(){const status=$('tournamentBoardStatus');try{const response=await fetch('https://lichess.org/api/broadcast/round/'+tournamentRoundId+'.pgn',{cache:'no-store',headers:{Accept:'application/x-chess-pgn'}});if(!response.ok)throw new Error('HTTP '+response.status);const raw=await response.text();if(!raw.trim())throw new Error('The broadcast has not published a PGN yet.');const parsed=new Chess();if(parsed.load_pgn(raw)===false)throw new Error('The published PGN could not be parsed.');const moves=parsed.history();if(!moves.length){if(status&&tournamentFollowingLive)status.textContent='Game '+tournamentGameNumber+' · Waiting for the official broadcast to publish its first move.';return}const resultMatch=raw.match(/\[Result "([^"]+)"\]/);tournamentLiveResult=resultMatch?resultMatch[1]:'*';const changed=moves.length!==tournamentReplayMoves.length||moves.join(' ')!==tournamentReplayMoves.join(' ');if(changed){tournamentReplayMoves=moves;renderTournamentNotation(moves);if(tournamentFollowingLive)showTournamentReplayPly(moves.length)}if(status&&tournamentFollowingLive){status.textContent=(tournamentLiveResult==='*'?'LIVE · Game '+tournamentGameNumber+' · Official Lichess moves connected':'Game '+tournamentGameNumber+' · Official feed complete')+' · '+Math.ceil(moves.length/2)+' moves · Checking every 12 seconds';}}catch(error){if(status&&tournamentFollowingLive)status.textContent='Game '+tournamentGameNumber+' live feed is temporarily unavailable ('+error.message+').';}}
- function selectTournamentGame(){const selected=$('tournamentGameSelect')?.value||'1';tournamentGameNumber=Number(selected);tournamentRoundId=selected==='2'?'L3j03TZq':'xLgOJ6cb';tournamentFollowingLive=true;tournamentReplayMoves=[];tournamentReplayPly=0;tournamentLiveResult='*';if(selected==='1'){refreshTournamentMaxBoard()}else{renderTournamentNotation([]);drawTournamentMaxBoard(new Chess())}const status=$('tournamentBoardStatus');if(status)status.textContent='Connecting to the official Lichess Game '+tournamentGameNumber+' broadcast…';refreshOfficialTournamentFeed();}
+ // Official Lichess broadcast rounds for all 14 games of the 2026 title match.
+ // Known Lichess round IDs are filled in as each round is published. Future rounds are discovered automatically.
+ const tournamentRoundIds={1:'xLgOJ6cb',2:'L3j03TZq',3:'fnmEB1kH',4:'wIwJtPqz'};
+ let tournamentRoundId=tournamentRoundIds[1],tournamentGameNumber=1,tournamentFeedTimer=null,tournamentDiscoveryAt=0;
+ async function discoverTournamentRoundId(gameNumber){
+  if(tournamentRoundIds[gameNumber])return tournamentRoundIds[gameNumber];
+  const now=Date.now();if(now-tournamentDiscoveryAt<45000)return null;tournamentDiscoveryAt=now;
+  const target='game-'+gameNumber;
+  const endpoints=[
+   'https://lichess.org/api/broadcast/search?q=FIDE%20World%20Chess%20Championship%202026',
+   'https://lichess.org/api/broadcast'
+  ];
+  for(const endpoint of endpoints){try{
+   const response=await fetch(endpoint,{cache:'no-store',headers:{Accept:'application/json'}});
+   if(!response.ok)continue;
+   const raw=await response.text();let data;
+   try{data=JSON.parse(raw)}catch(_){data=raw.split(/\r?\n/).filter(Boolean).map(line=>{try{return JSON.parse(line)}catch(_){return null}}).filter(Boolean)}
+   const candidates=[];
+   const walk=(node,parent='')=>{if(!node)return;if(Array.isArray(node)){node.forEach(x=>walk(x,parent));return}if(typeof node==='object'){const label=[node.slug,node.name,node.roundName,node.title,node.round?.name,node.round?.slug].filter(Boolean).join(' ').toLowerCase();const id=node.id||node.roundId||node.round?.id;if(id&&label.includes(target))candidates.push(String(id));for(const [key,value] of Object.entries(node))walk(value,key)}};
+   walk(data);
+   if(candidates.length){tournamentRoundIds[gameNumber]=candidates[0];return candidates[0]}
+   const match=raw.match(new RegExp(target+'[^\\n]{0,260}?(?:roundId|round|id)[^A-Za-z0-9]{0,12}([A-Za-z0-9]{8})','i'));
+   if(match){tournamentRoundIds[gameNumber]=match[1];return match[1]}
+  }catch(_){}}
+  return null;
+ }
+ async function refreshOfficialTournamentFeed(){
+  const status=$('tournamentBoardStatus');if(!status)return;
+  try{
+   if(!tournamentRoundId){tournamentRoundId=await discoverTournamentRoundId(tournamentGameNumber)}
+   if(!tournamentRoundId){status.textContent='Game '+tournamentGameNumber+' is on the 14-game schedule. MaxChess is checking Lichess automatically for its published broadcast round…';return}
+   const response=await fetch('https://lichess.org/api/broadcast/round/'+tournamentRoundId+'.pgn',{cache:'no-store',headers:{Accept:'application/x-chess-pgn'}});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   const raw=await response.text();if(!raw.trim())throw new Error('The broadcast has not published a PGN yet.');
+   const parsed=new Chess();if(parsed.load_pgn(raw)===false)throw new Error('The published PGN could not be parsed.');
+   const moves=parsed.history();
+   if(!moves.length){if(tournamentFollowingLive)status.textContent='Game '+tournamentGameNumber+' · Waiting for the official broadcast to publish its first move.';return}
+   const resultMatch=raw.match(/\[Result "([^"]+)"\]/);tournamentLiveResult=resultMatch?resultMatch[1]:'*';
+   const changed=moves.length!==tournamentReplayMoves.length||moves.join(' ')!==tournamentReplayMoves.join(' ');
+   if(changed){tournamentReplayMoves=moves;renderTournamentNotation(moves);if(tournamentFollowingLive)showTournamentReplayPly(moves.length)}
+   if(tournamentFollowingLive)status.textContent=(tournamentLiveResult==='*'?'LIVE · Game '+tournamentGameNumber+' · Official Lichess moves connected':'Game '+tournamentGameNumber+' · Official feed complete')+' · '+Math.ceil(moves.length/2)+' moves · Auto-refreshing';
+  }catch(error){if(tournamentFollowingLive)status.textContent='Game '+tournamentGameNumber+' feed check: '+error.message+'. MaxChess will retry automatically.'}
+ }
+ function selectTournamentGame(){
+  const selected=$('tournamentGameSelect')?.value||'1';tournamentGameNumber=Number(selected);tournamentRoundId=tournamentRoundIds[tournamentGameNumber]||null;
+  tournamentFollowingLive=true;tournamentReplayMoves=[];tournamentReplayPly=0;tournamentLiveResult='*';
+  renderTournamentNotation([]);drawTournamentMaxBoard(new Chess());
+  const status=$('tournamentBoardStatus');if(status)status.textContent='Loading Game '+tournamentGameNumber+' automatically from the official Lichess broadcast…';
+  refreshOfficialTournamentFeed();
+ }
  $('tournamentGameSelect')?.addEventListener('change',selectTournamentGame);
  refreshOfficialTournamentFeed();
  window.setInterval(refreshOfficialTournamentFeed,12000); async function toggleGameBroadcast(){if(!authClient||!authUser||!onlineGameId){$('broadcastStatus').textContent='Start or reconnect to an online game and sign in first.';return}const btn=$('toggleGameBroadcast'),makePublic=btn.textContent.includes('Share live');btn.disabled=true;$('broadcastStatus').textContent=makePublic?'Turning on public sharing…':'Turning off public sharing…';const z=await authClient.from('games').update({is_public:makePublic}).eq('id',onlineGameId).select('is_public').maybeSingle();btn.disabled=false;if(z.error||!z.data){$('broadcastStatus').textContent='Could not change sharing: '+(z.error?.message||'game not found or you are not a player');return}btn.textContent=z.data.is_public?'Stop sharing this game':'📡 Share live game on MaxChess Watch';$('broadcastStatus').textContent=z.data.is_public?'This game is public on MaxChess Watch.':'This game is private again.';note(z.data.is_public?'Your game is now on MaxChess Watch.':'Your game is private again.');loadWatchGames()}
